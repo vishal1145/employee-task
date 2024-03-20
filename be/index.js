@@ -76,6 +76,15 @@ app.get("/taskautofill/:id", async (req, resp) => {
   }
 });
 
+app.get("/profileautofill/:id", async (req, resp) => {
+  const result = await EmpAdd.findOne({ _id: req.params.id });
+  if (result) {
+    resp.send(result);
+  } else {
+    resp.send("result not found");
+  }
+});
+
 app.get("/listname", async (req, resp) => {
   const result = await EmpAdd.find();
   if (result) {
@@ -126,6 +135,15 @@ app.put("/addstatus/:id", async (req, resp) => {
   );
   resp.send(result);
 });
+
+app.put("/updateprofile/:id", async (req, resp) => {
+  const result = await EmpAdd.updateOne(
+    { _id: req.params.id },
+    { $set: req.body }
+  );
+  resp.send(result);
+});
+
 
 app.get("/empdetailssearch/:key", async (req, resp) => {
   let result = await EmpDetail.find({
