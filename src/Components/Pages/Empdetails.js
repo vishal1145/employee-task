@@ -25,7 +25,7 @@ export default function Empdetails() {
   useEffect(() => {
     getEmpdetails();
     // getUpdate();
-  }, );
+  },);
 
   // const searchuser = async (event) => {
   //   let key = event.target.value;

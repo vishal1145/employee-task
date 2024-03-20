@@ -2,38 +2,38 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function Updatetask() {
-  const [task, setTask] = useState('');
-  const [time, setTime] = useState('');
-  const [status, setStatus] = useState('');
+  const [task, setTask] = useState("");
+  const [time, setTime] = useState("");
+  const [status, setStatus] = useState("");
 
   const navigate = useNavigate();
   const params = useParams();
 
-    const getUpdate = async () => {
-      let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/taskautofill/${params.id}`,
-        {
-          method: "get",
-          //   headers: {
-          //     // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
-          //   },
-        }
-      );
-      
-      result = await result.json();
-      console.log(result);
-      setTask(result.task);
-      setTime(result.time);
-      setStatus(result.status);
-    };
+  const getUpdate = async () => {
+    let result = await fetch(
+      `${process.env.REACT_APP_API_KEY}/taskautofill/${params.id}`,
+      {
+        method: "get",
+        //   headers: {
+        //     // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
+        //   },
+      }
+    );
 
-    useEffect(() => {
-      getUpdate();
-    }, []);
+    result = await result.json();
+    console.log(result);
+    setTask(result.task);
+    setTime(result.time);
+    setStatus(result.status);
+  };
 
-    
+  useEffect(() => {
+    getUpdate();
+  }, []);
+
   const collectData = async () => {
-    const empid = JSON.parse(localStorage.getItem("user"))._id;
+    // const empid = JSON.parse(localStorage.getItem("user"))._id;
+    // const empid=params.id;
 
     let result = await fetch(
       `${process.env.REACT_APP_API_KEY}/updatetask/${params.id}`,
@@ -49,10 +49,10 @@ export default function Updatetask() {
     if (result) {
       alert("Task updated successfully");
     }
-    navigate("/alldetails");
+      // history.goBack();
+    // navigate("/alldetails/");
+    navigate(-1);
   };
-
-  
 
   return (
     <>

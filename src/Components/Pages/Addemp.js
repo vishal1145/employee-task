@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Adddetails() {
   const [name,setName]=useState("");
   const [email,setEmail]=useState("");
   const [password,setPassword]=useState("");
+
+  const navigate= useNavigate();
 
   const collectData=async()=>{
     let result = await fetch(`${process.env.REACT_APP_API_KEY}/addemp`, {
@@ -17,7 +20,7 @@ export default function Adddetails() {
     if(result){
       alert("Employee add successfully");
     }
-    
+    navigate(-1);
   }
 
   return (

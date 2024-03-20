@@ -25,7 +25,9 @@ export default function Adddetails() {
     if(result){
       alert("Task added successfully");
     }
-    navigate('/userdashboard/' + empid);
+    
+      // navigate('/alldetails/' + empid);
+      navigate(-1);
     // console.log(result);
   }
 
