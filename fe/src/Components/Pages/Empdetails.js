@@ -114,7 +114,7 @@ export default function Empdetails() {
         <table className="wid-100">
           <thead>
             <tr>
-              <th className="wid-5">S.N</th>
+              {/* <th className="wid-5">S.N</th> */}
               <th className="wid-50">Task</th>
               <th className="wid-10">Estimate</th>
               <th className="wid-10">Status</th>
@@ -127,7 +127,7 @@ export default function Empdetails() {
             {empdeatils.length > 0
               ? empdeatils.map((item, index) => (
                   <tr>
-                    <td>{index + 1}</td>
+                    {/* <td>{index + 1}</td> */}
                     <td>{item.task}</td>
                     <td>{item.time}</td>
                     {/* <td>{item.status}</td> */}

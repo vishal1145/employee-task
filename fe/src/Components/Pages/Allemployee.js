@@ -23,18 +23,18 @@ export default function Allemployee() {
       <div className="container-xl">
         <div className="row">
           <div>
-            <h5>All Employees</h5>
+            {/* <h5>All Employees</h5> */}
           </div>
           {listname.length > 0 ? (
             listname.map((item, index) => (
-              <div className="p-3 col-12 col-sm-6 col-md-4 col-lg-4">
+              <div className="p-2 col-12 col-sm-6 col-md-4 col-lg-4">
                 <NavLink
                   to={"/empprofile/" + item._id}
                   className="text-decoration-none"
                 >
                   <div className="cards">
-                    <div className="emppic wid-40">
-                      <img src="" alt="Photo" />
+                    <div className="emppic wid-30">
+                      <img src="empimg.jpg" alt="Photo" style={{width:"100%"}}/>
                     </div>
                     <div className="empcontent wid-60">
                       <h6>Name: {item.name}</h6>

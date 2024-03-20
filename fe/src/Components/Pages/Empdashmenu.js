@@ -13,11 +13,11 @@ export default function Empdashmenu() {
   return (
     <>
       <div
-        className="menu wid-20 border-end mt-2"
+        className="menu wid-20 border-end mt-2 pe-3"
         style={{ height: "85vh", justifyContent: "start" }}
       >
-        <div className="authpic">
-          <img src="" alt="Photo" />
+        <div className="authpic" style={{overflow:"hidden"}}>
+          <img src="/empimg.jpg" alt="Photo"  style={{width:"100%"}}/>
         </div>
 
         <div className="card mt-3 border-0">
@@ -27,6 +27,8 @@ export default function Empdashmenu() {
           <h6>Pending: {authData.pending}</h6>
           <h6>Completed: {authData.completed}</h6>
         </div>
+
+        <NavLink to={"/empprofile/" + authData._id} className="btn btn-outline-primary">Profile</NavLink>
       </div>
     </>
   );

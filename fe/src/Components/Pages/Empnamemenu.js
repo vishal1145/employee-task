@@ -21,18 +21,23 @@ export default function Empnamemenu() {
 
   return (
     <>
-      <div className="menu wid-20">
+      <div
+        className="menu wid-20 border-end"
+        style={{ height: "85vh", justifyContent: "start" }}
+      >
         <div>
           <h5>Employee Name</h5>
         </div>
         {listname.length > 0 ? (
           listname.map((item, index) => (
-            <NavLink
-              to={"/alldetails/" + item._id}
-              className="btn btn-outline-primary"
-            >
-              {item.name}
-            </NavLink>
+            <div className="wid-90 pe-2" >
+              <NavLink
+                to={"/alldetails/" + item._id}
+                className="btn btn-outline-primary"
+              >
+                {item.name}
+              </NavLink>
+            </div>
           ))
         ) : (
           <h6>Record not found..</h6>

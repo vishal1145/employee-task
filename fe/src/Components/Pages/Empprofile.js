@@ -20,6 +20,8 @@ export default function Empprofile() {
     setEmpprofile(result);
   };
 
+  const emprole = JSON.parse(localStorage.getItem("user")).role;
+
   return (
     <div>
       <div className="container-xl">
@@ -42,6 +44,17 @@ export default function Empprofile() {
                     <h4>Completed Project : </h4>
                     <h4>Running Project : </h4>
                     <h4>Pending Project : </h4>
+
+                    {emprole === "user" ? (
+                      <div>
+                        <NavLink
+                          to={"/updateprofile/" + item._id}
+                          className="btn btn-outline-primary"
+                        >
+                          Edit Profile
+                        </NavLink>
+                      </div>
+                    ) : null}
                   </div>
                 ))
               : null}

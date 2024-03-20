@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   var authData = localStorage.getItem("user");
@@ -13,23 +13,15 @@ export default function Navbar() {
   return (
     <div className="header">
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container-fluid">
-          {/* {JSON.parse(authData).role === "admin" ? ( */}
+        <div className="container-fluid" >
           <div>
-            <NavLink className="navbar-brand flex-grow-1 active" to="/">
-              Algofolks
-            </NavLink>
+            <Link className="navbar-brand active" to="/">
+              
+                <img src="cropelogo.png" alt="AlgoFolks" style={{width:"13%"}}/>
+              
+            </Link>
           </div>
-          {/* ) : ( */}
-          {/* <div>
-              <NavLink
-                className="navbar-brand flex-grow-1 active"
-                to={"/userdashboard/" + JSON.parse(authData)._id }
-              >
-                Algofolks
-              </NavLink>
-            </div>
-          )} */}
+          
           <button
             className="navbar-toggler"
             type="button"

@@ -18,6 +18,8 @@ import Empprofile from "./Components/Pages/Empprofile";
 import Updatetask from "./Components/Pages/Updatetask";
 import Userdashboard from "./Components/Layouts/Userdashboard";
 import Empdashmenu from "./Components/Pages/Empdashmenu";
+import Updateprofile from "./Components/Pages/Updateprofile";
+import Algofolkshome from "./Components/Pages/Algofolkshome";
 
 function App() {
   return (
@@ -26,6 +28,7 @@ function App() {
       <Routes>
         <Route element={<PrivateComponent />}>
           <Route path="/" element={<Home />} />
+          <Route path="/" element={<Algofolkshome />} />
           <Route path="/allemployee" element={<Allemployee />} />
           <Route path="/empprofile/:id" element={<Empprofile />} />
           <Route path="/alldetails" element={<Alldetails />} />
@@ -37,6 +40,7 @@ function App() {
           <Route path="/addemp" element={<Addemp />} />
           <Route path="/updatetask/:id" element={<Updatetask />} />
           <Route path="/userdashboard/:id" element={<Userdashboard />} />
+          <Route path="/updateprofile/:id" element={<Updateprofile />} />
         </Route>
 
         <Route path="/loginpage" element={<Loginpage />} />
