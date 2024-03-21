@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, useParams, useNavigate } from "react-router-dom";
+import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
 
 export default function Empdetails() {
   var authData = localStorage.getItem("user");
@@ -101,23 +101,25 @@ export default function Empdetails() {
     <>
       <div className="empdeatils wid-80">
         <div className="headsec">
-          <h5 className="text-center">Employee Details</h5>
-          <form action="">
-            <input
-              className="p-1"
-              type="text"
-              placeholder="Search here"
-              // onChange={searchuser}
-            />
-          </form>
+          <h5 className="">Task</h5>
+          {JSON.parse(authData).role === "admin" ? (
+            <div
+              className="addtaskbtn"
+              // style={{ position: "fixed", top: "10%", right: "1.5%" }}
+            >
+              <NavLink className="btn" to={"/adddetails/" + params.id}>
+                Add Task
+              </NavLink>
+            </div>
+          ) : null}
         </div>
         <table className="wid-100">
           <thead>
             <tr>
               {/* <th className="wid-5">S.N</th> */}
-              <th className="wid-50">Task</th>
-              <th className="wid-10">Estimate</th>
-              <th className="wid-10">Status</th>
+              <th className="wid-50 text-start">Task</th>
+              <th className="wid-10 text-start">Estimate</th>
+              <th className="wid-10 text-start">Status</th>
               {JSON.parse(authData).role === "admin" ? (
                 <th className="wid-10">Modify</th>
               ) : null}
@@ -127,11 +129,9 @@ export default function Empdetails() {
             {empdeatils.length > 0
               ? empdeatils.map((item, index) => (
                   <tr>
-                    {/* <td>{index + 1}</td> */}
-                    <td>{item.task}</td>
-                    <td>{item.time}</td>
-                    {/* <td>{item.status}</td> */}
-                    <td>
+                    <td className="text-start">{item.task}</td>
+                    <td className="text-start">{item.time}</td>
+                    <td className="text-start">
                       <NavLink
                         className="text-decoration-none"
                         onClick={() => addstatus(item._id)}
@@ -154,12 +154,12 @@ export default function Empdetails() {
                     </td>
                     {JSON.parse(authData).role === "admin" ? (
                       <td className="modifysec">
-                        <NavLink to={"/updatetask/" + item._id}>
+                        <Link to={"/updatetask/" + item._id}>
                           <i class="bi bi-pencil-square"></i>
-                        </NavLink>
-                        <NavLink onClick={() => deletetask(item._id)}>
+                        </Link>
+                        <Link onClick={() => deletetask(item._id)}>
                           <i class="bi bi-trash3-fill"></i>
-                        </NavLink>
+                        </Link>
                       </td>
                     ) : null}
                   </tr>
@@ -167,20 +167,6 @@ export default function Empdetails() {
               : null}
           </tbody>
         </table>
-
-        {JSON.parse(authData).role === "admin" ? (
-          <div
-            className="addtaskbtn"
-            style={{ position: "fixed", bottom: "10%", right: "1.5%" }}
-          >
-            <NavLink
-              className="btn btn-outline-primary"
-              to={"/adddetails/" + params.id}
-            >
-              Add Task
-            </NavLink>
-          </div>
-        ) : null}
       </div>
     </>
   );

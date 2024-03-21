@@ -76,7 +76,7 @@ export default function Adddetails() {
           </select> */}
 
           <button
-            className="btn btn-outline-primary mt-3"
+            className="btn mt-3"
             type="button"
             onClick={collectData}
           >

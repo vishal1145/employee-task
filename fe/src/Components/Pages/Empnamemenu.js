@@ -22,20 +22,42 @@ export default function Empnamemenu() {
   return (
     <>
       <div
-        className="menu wid-20 border-end"
-        style={{ height: "85vh", justifyContent: "start" }}
+        className="menu wid-20 border-end ms-0"
+        style={{ height: "92vh", justifyContent: "start" }}
       >
-        <div>
-          <h5>Employee Name</h5>
+        <div className=" menusearch">
+          {/* <h5 className="text-center">Employees</h5> */}
+          <form action="">
+            <input
+              className="p-1 mt-3"
+              type="text"
+              placeholder="Search here"
+              // onChange={searchuser}
+            />
+          </form>
         </div>
         {listname.length > 0 ? (
           listname.map((item, index) => (
-            <div className="wid-90 pe-2" >
-              <NavLink
-                to={"/alldetails/" + item._id}
-                className="btn btn-outline-primary"
-              >
-                {item.name}
+            <div className="pe-0 allemp">
+              <NavLink to={"/alldetails/" + item._id} className="btn">
+                <div className="menudiv">
+                  <div className="menuimg">
+                    {item.profileimage === "" || item.profileimage == null ? (
+                      <img
+                        className="profimage"
+                        src={"/empimg.jpg"}
+                        alt="Photo"
+                      />
+                    ) : (
+                      <img
+                        className="profimage"
+                        src={item.profileimage}
+                        alt="Photo"
+                      />
+                    )}
+                  </div>
+                  <div className="menuname">{item.name}</div>
+                </div>
               </NavLink>
             </div>
           ))

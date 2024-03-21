@@ -4,7 +4,7 @@ import "./App.css";
 
 // Components for different routes
 import Navbar from "./Components/Pages/Navbar";
-import Footer from "./Components/Pages/Footer";
+// import Footer from "./Components/Pages/Footer";
 import Adddetails from "./Components/Pages/Addtask";
 import Empnamemenu from "./Components/Pages/Empnamemenu";
 import Empdetails from "./Components/Pages/Empdetails";
@@ -45,7 +45,7 @@ function App() {
 
         <Route path="/loginpage" element={<Loginpage />} />
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </Router>
   );
 }

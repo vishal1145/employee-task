@@ -21,27 +21,42 @@ export default function Allemployee() {
   return (
     <>
       <div className="container-xl">
-        <div className="row">
-          <div>
-            {/* <h5>All Employees</h5> */}
-          </div>
+        <div className="row allemployee">
+          <div>{/* <h5>All Employees</h5> */}</div>
           {listname.length > 0 ? (
             listname.map((item, index) => (
-              <div className="p-2 col-12 col-sm-6 col-md-4 col-lg-4">
+              <div className="p-3 col-6 col-sm-4 col-md-3 col-lg-3">
                 <NavLink
                   to={"/empprofile/" + item._id}
                   className="text-decoration-none"
                 >
-                  <div className="cards">
-                    <div className="emppic wid-30">
-                      <img src="empimg.jpg" alt="Photo" style={{width:"100%"}}/>
+                  <div className="card">
+                    <div className="card-header justify-content-center d-flex">
+                      <div className="emppic">
+                        {/* <img src="empimg.jpg" alt="Photo" style={{width:"100%"}}/> */}
+                        {item.profileimage === "" ||
+                        item.profileimage == null ? (
+                          <img
+                            src={"/empimg.jpg"}
+                            alt="photo"
+                            style={{ width: "100%" }}
+                          />
+                        ) : (
+                          <img
+                            src={item.profileimage}
+                            alt="photo"
+                            style={{ width: "100%" }}
+                          />
+                        )}
+                      </div>
                     </div>
-                    <div className="empcontent wid-60">
-                      <h6>Name: {item.name}</h6>
+                    <div className="card-body text-center pb-0">
+                      <h6>{item.name}</h6>
+                      <h6>Developer</h6>
                       {/* <h6 className="emailtext">Email: {item.email}</h6> */}
-                      <h6>Completed: </h6>
-                      <h6>Running: </h6>
-                      <h6>Pending:</h6>
+                      {/* <h6>Completed: {item.completed}</h6> */}
+                      {/* <h6>Running: {item.running}</h6> */}
+                      {/* <h6>Pending: {item.pending}</h6> */}
                     </div>
                   </div>
                 </NavLink>

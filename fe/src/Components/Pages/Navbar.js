@@ -13,15 +13,17 @@ export default function Navbar() {
   return (
     <div className="header">
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container-fluid" >
+        <div className="container-fluid">
           <div>
-            <Link className="navbar-brand active" to="/">
-              
-                <img src="cropelogo.png" alt="AlgoFolks" style={{width:"13%"}}/>
-              
-            </Link>
+            <NavLink className="navbar-brand" to="/">
+              <img
+                src="/cropelogo.png"
+                alt="AlgoFolks"
+                style={{ width: "80%", height: "6vh" }}
+              />
+            </NavLink>
           </div>
-          
+
           <button
             className="navbar-toggler"
             type="button"
@@ -36,33 +38,33 @@ export default function Navbar() {
           <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
             {authData ? (
               <div className="navbar-nav">
+                {/* <div className="alignend"> */}
                 {JSON.parse(authData).role === "admin" ? (
                   <div>
                     <NavLink
-                      className="btn btn-outline-primary"
+                      className="btn"
                       aria-current="page"
                       to="/alldetails"
                     >
                       All Details
                     </NavLink>
-                    <NavLink className="btn btn-outline-primary" to="/addemp">
+                    <NavLink className="btn" to="/addemp">
                       Add Employee
                     </NavLink>
                   </div>
                 ) : (
-                  <div>
-                    <NavLink
-                      className="btn btn-outline-primary"
-                      aria-current="page"
-                      to={"/userdashboard/" + JSON.parse(authData)._id}
-                    >
-                      User Dashboard
-                    </NavLink>
-                  </div>
-                )}
-                <div className=" position-fixed" style={{ right: "0.7%" }}>
                   <NavLink
-                    className="btn btn-outline-primary"
+                    className="btn"
+                    aria-current="page"
+                    to={"/userdashboard/" + JSON.parse(authData)._id}
+                  >
+                    User Dashboard
+                  </NavLink>
+                )}
+                {/* </div> */}
+                <div className="logoutbtn">
+                  <NavLink
+                    className="btn"
                     to="/loginpage"
                     onClick={logout}
                   >
@@ -72,9 +74,7 @@ export default function Navbar() {
               </div>
             ) : (
               <div className=" position-fixed" style={{ right: "0.7%" }}>
-                <NavLink className="btn btn-outline-primary" to="/loginpage">
-                  Login
-                </NavLink>
+                <NavLink className="" to="/loginpage"></NavLink>
               </div>
             )}
           </div>

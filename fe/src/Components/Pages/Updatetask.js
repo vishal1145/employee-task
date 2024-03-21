@@ -99,7 +99,7 @@ export default function Updatetask() {
           </select>
 
           <button
-            className="btn btn-outline-primary mt-3"
+            className="btn mt-3"
             type="button"
             onClick={collectData}
           >
