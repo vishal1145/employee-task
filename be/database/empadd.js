@@ -20,6 +20,10 @@ const empaddSchema = new mongoose.Schema(
       type: String,
       default: "user",
     },
+    profileimage: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true }
 );

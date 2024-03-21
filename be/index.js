@@ -11,6 +11,16 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use(express.json({ limit: 52428800 }));
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: 52428800,
+    parameterLimit: 52428800,
+  })
+);
+
+
 // **********************************************For Login page**********************************************************
 app.post("/login", async (req, resp) => {
   if (req.body.password && req.body.email) {
