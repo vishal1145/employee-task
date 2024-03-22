@@ -125,6 +125,15 @@ app.get("/empprofile/:id", async (req, resp) => {
   }
 });
 
+// app.get("/empdashmenu/:id", async (req, resp) => {
+//   const result = await EmpAdd.find({ _id: req.body.id });
+//   if (result) {
+//     resp.send(result);
+//   } else {
+//     resp.send("result not found");
+//   }
+// });
+
 app.put("/updatetask/:id", async (req, resp) => {
   let result = await EmpDetail.updateOne(
     { _id: req.params.id },
@@ -138,12 +147,17 @@ app.delete("/deletetask/:id", async (req, resp) => {
   resp.send(result);
 });
 
+app.delete("/deleteemp/:id", async (req, resp) => {
+  const result = await EmpAdd.deleteOne({ _id: req.params.id });
+  resp.send(result);
+});
+
 app.put("/addstatus/:id", async (req, resp) => {
   const result = await EmpDetail.updateOne(
     { _id: req.params.id },
     { $set: req.body }
   );
-  resp.send(result);
+  resp.send(result)
 });
 
 app.put("/updateprofile/:id", async (req, resp) => {
@@ -165,4 +179,4 @@ app.get("/empdetailssearch/:key", async (req, resp) => {
   resp.send(result);
 });
 
-app.listen(5001);
+app.listen(5000);
