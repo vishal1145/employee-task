@@ -4,7 +4,7 @@ import React from "react";
 import Empdashmenu from "../Pages/Empdashmenu";
 import Empdetails from "../Pages/Empdetails";
 
-export default function Alldetails() {
+export default function Userdashboard() {
   return (
     <>
       <div className="main">

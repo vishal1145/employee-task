@@ -3,6 +3,11 @@ import { NavLink, useParams } from "react-router-dom";
 
 export default function Empdashmenu() {
   var authData = localStorage.getItem("user");
+  if (authData) {
+    var authData = JSON.parse(authData);
+  } else {
+    <h6>No Record Found</h6>;
+  }
 
   const [empprofile, setEmpprofile] = React.useState([]);
 
@@ -22,11 +27,7 @@ export default function Empdashmenu() {
     setEmpprofile(result);
   };
 
-  if (authData) {
-    var authData = JSON.parse(authData);
-  } else {
-    <h6>No Record Found</h6>;
-  }
+  
 
   return (
     <>

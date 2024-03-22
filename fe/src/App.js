@@ -19,28 +19,115 @@ import Updatetask from "./Components/Pages/Updatetask";
 import Userdashboard from "./Components/Layouts/Userdashboard";
 import Empdashmenu from "./Components/Pages/Empdashmenu";
 import Updateprofile from "./Components/Pages/Updateprofile";
-import Algofolkshome from "./Components/Pages/Algofolkshome";
+// import Algofolkshome from "./Components/Pages/Algofolkshome";
+import Pagenotfound from "./Components/Pages/Pagenotfound";
 
 function App() {
   return (
     <Router>
-      <Navbar />
+      {/* <Navbar /> */}
       <Routes>
         <Route element={<PrivateComponent />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/" element={<Algofolkshome />} />
-          <Route path="/allemployee" element={<Allemployee />} />
-          <Route path="/empprofile/:id" element={<Empprofile />} />
-          <Route path="/alldetails" element={<Alldetails />} />
-          <Route path="/alldetails/:id" element={<Alldetails />} />
+          <Route
+            path="/"
+            element={
+              <>
+                <Home /> <Navbar />{" "}
+              </>
+            }
+          />
+          <Route
+            path="/:id"
+            element={
+              <>
+                <Userdashboard /> <Navbar />{" "}
+              </>
+            }
+          />
+          {/* <Route
+            path="/userdashboard"
+            element={
+              <>
+                <Userdashboard /> {" "}
+              </>
+            }
+          /> */}
+          <Route
+            path="/allemployee"
+            element={
+              <>
+                <Allemployee />
+              </>
+            }
+          />
+          <Route
+            path="/empprofile/:id"
+            element={
+              <>
+                <Empprofile /> <Navbar />
+              </>
+            }
+          />
+          <Route
+            path="/alldetails"
+            element={
+              <>
+                <Alldetails /> <Navbar />{" "}
+              </>
+            }
+          />
+          <Route
+            path="/alldetails/:id"
+            element={
+              <>
+                <Alldetails /> <Navbar />
+              </>
+            }
+          />
           <Route path="/empnamemenu" element={<Empnamemenu />} />
           <Route path="/empdashmenu" element={<Empdashmenu />} />
           <Route path="/empdetails/:id" element={<Empdetails />} />
-          <Route path="/adddetails/:id" element={<Adddetails />} />
-          <Route path="/addemp" element={<Addemp />} />
-          <Route path="/updatetask/:id" element={<Updatetask />} />
-          <Route path="/userdashboard/:id" element={<Userdashboard />} />
-          <Route path="/updateprofile/:id" element={<Updateprofile />} />
+          <Route
+            path="/adddetails/:id"
+            element={
+              <>
+                <Adddetails /> <Navbar />
+              </>
+            }
+          />
+          <Route
+            path="/addemp"
+            element={
+              <>
+                <Addemp /> <Navbar />
+              </>
+            }
+          />
+          <Route
+            path="/updatetask/:id"
+            element={
+              <>
+                <Updatetask /> <Navbar />
+              </>
+            }
+          />
+          {/* <Route
+            path="/Userdashboard/:id"
+            element={
+              <>
+                <Userdashboard /> <Navbar />
+              </>
+            }
+          /> */}
+          <Route
+            path="/updateprofile/:id"
+            element={
+              <>
+                <Updateprofile /> <Navbar />
+              </>
+            }
+          />
+          <Route path="*" element={<Pagenotfound />} />
         </Route>
 
         <Route path="/loginpage" element={<Loginpage />} />

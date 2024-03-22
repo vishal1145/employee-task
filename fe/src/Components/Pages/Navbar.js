@@ -11,18 +11,33 @@ export default function Navbar() {
     navigate("/loginpage");
   };
   return (
-    <div className="header">
+    // <div className="header">
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
-          <div>
-            <NavLink className="navbar-brand" to="/">
-              <img
-                src="/cropelogo.png"
-                alt="AlgoFolks"
-                style={{ width: "80%", height: "6vh" }}
-              />
-            </NavLink>
-          </div>
+          {JSON.parse(authData).role === "admin" ? (
+            <div>
+              <NavLink className="navbar-brand" to="/">
+                <img
+                  src="/cropelogo.png"
+                  alt="AlgoFolks"
+                  style={{ width: "80%", height: "6vh" }}
+                />
+              </NavLink>
+            </div>
+          ) : (
+            <div>
+              <NavLink
+                className="navbar-brand"
+                to={"/" + JSON.parse(authData)._id}
+              >
+                <img
+                  src="/cropelogo.png"
+                  alt="AlgoFolks"
+                  style={{ width: "80%", height: "6vh" }}
+                />
+              </NavLink>
+            </div>
+          )}
 
           <button
             className="navbar-toggler"
@@ -52,22 +67,17 @@ export default function Navbar() {
                       Add Employee
                     </NavLink>
                   </div>
-                ) : (
-                  <NavLink
+                ) : null}
+                {/* </div> */}
+                {/* <NavLink
                     className="btn"
                     aria-current="page"
-                    to={"/userdashboard/" + JSON.parse(authData)._id}
+                    to={"/" + JSON.parse(authData)._id}
                   >
                     User Dashboard
-                  </NavLink>
-                )}
-                {/* </div> */}
+                  </NavLink> */}
                 <div className="logoutbtn">
-                  <NavLink
-                    className="btn"
-                    to="/loginpage"
-                    onClick={logout}
-                  >
+                  <NavLink className="btn" to="/loginpage" onClick={logout}>
                     Logout | {JSON.parse(authData).name}
                   </NavLink>
                 </div>
@@ -80,6 +90,6 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
-    </div>
+    // </div>
   );
 }

@@ -5,6 +5,8 @@ export default function Loginpage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,11 +25,23 @@ export default function Loginpage() {
       },
     });
     result = await result.json();
-    // console.log(result);
+  
     if (result.auth) {
       localStorage.setItem("user", JSON.stringify(result.user));
       localStorage.setItem("token", JSON.stringify(result.auth));
-      navigate("/");
+
+      var authData = localStorage.getItem("user");
+
+      if(JSON.parse(authData).role === "admin"){
+        navigate("/");
+      }else{
+        navigate("/" + JSON.parse(authData)._id);
+      }
+      // { JSON.parse(authData).role === "admin" ? (
+      //   navigate("/");
+      // )
+      // :(navigate("/" + JSON.parse(authData)._id));
+      // }
     } else {
       alert("please enter correct details.");
     }

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, Link, useParams } from "react-router-dom";
 
 export default function Allemployee() {
   // const auth = localStorage.getItem('user');
@@ -18,6 +18,24 @@ export default function Allemployee() {
 
     setListname(result);
   };
+
+  const deleteemp = async (id) => {
+    let result = await fetch(
+      `${process.env.REACT_APP_API_KEY}/deleteemp/${id}`,
+      {
+        method: "Delete",
+        headers: {
+          // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
+        },
+      }
+    );
+    result = await result.json();
+    if (result) {
+      // alert("Task deleted Successfully");
+      getListname();
+    }
+  };
+
   return (
     <>
       <div className="container-xl">
@@ -32,6 +50,35 @@ export default function Allemployee() {
                 >
                   <div className="card">
                     <div className="card-header justify-content-center d-flex">
+                      <div className="dotmenu">
+                        <div class="dropdown">
+                          <button
+                            class="btn btn-secondary dropdown-toggl"
+                            type="button"
+                            id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                          >
+                            <i class="bi bi-three-dots-vertical"></i>
+                          </button>
+                          <ul
+                            class="dropdown-menu p-0"
+                            aria-labelledby="dropdownMenuButton1"
+                          >
+                            <li>
+                              <Link
+                                className="dropdown-item p-1"
+                                onClick={() => deleteemp(item._id)}
+                              >
+                                Delete
+                              </Link>
+                            </li>
+                            {/* <li><a class="dropdown-item" href="#">Another action</a></li> */}
+                            {/* <li><a class="dropdown-item" href="#">Something else here</a></li> */}
+                          </ul>
+                        </div>
+                        <Link></Link>
+                      </div>
                       <div className="emppic">
                         {/* <img src="empimg.jpg" alt="Photo" style={{width:"100%"}}/> */}
                         {item.profileimage === "" ||
