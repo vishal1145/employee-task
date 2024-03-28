@@ -2,16 +2,19 @@ const express = require("express");
 require("./database/config");
 const EmpDetail = require("./database/empdetails");
 const EmpAdd = require("./database/empadd");
+const nodemailer = require("nodemailer");
 const cors = require("cors");
 
 const Jwt = require("jsonwebtoken");
 const jwtKey = "algofolks";
+
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 app.use(express.json({ limit: 52428800 }));
+
 app.use(
   express.urlencoded({
     extended: true,
@@ -19,7 +22,6 @@ app.use(
     parameterLimit: 52428800,
   })
 );
-
 
 // **********************************************For Login page**********************************************************
 app.post("/login", async (req, resp) => {
@@ -110,11 +112,31 @@ app.post("/adddetails", async (req, resp) => {
   resp.send(result);
 });
 
+// app.post("/addemp", async (req, resp) => {
+//   let details = new EmpAdd(req.body);
+//   let result = await details.save();
+//   resp.send(result);
+// });
+
+
 app.post("/addemp", async (req, resp) => {
-  let details = new EmpAdd(req.body);
-  let result = await details.save();
-  resp.send(result);
+  try {
+    const existingEmployee = await EmpAdd.findOne({ email: req.body.email });
+
+    if (existingEmployee) {
+      return resp.status(400).send("Email already exists");
+    }
+
+    let details = new EmpAdd(req.body);
+    let result = await details.save();
+    resp.send(result);
+  } catch (error) {
+    // Handle other errors
+    console.error("An error occurred:", error);
+    return resp.status(500).send("An error occurred while adding the employee.");
+  }
 });
+
 
 app.get("/empprofile/:id", async (req, resp) => {
   const result = await EmpAdd.find({ _id: req.params.id });
@@ -168,7 +190,6 @@ app.put("/updateprofile/:id", async (req, resp) => {
   resp.send(result);
 });
 
-
 app.get("/empdetailssearch/:key", async (req, resp) => {
   let result = await EmpDetail.find({
     $or: [
@@ -178,5 +199,85 @@ app.get("/empdetailssearch/:key", async (req, resp) => {
   });
   resp.send(result);
 });
+
+
+
+
+
+
+app.post("/forgotpassword", async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Check if email exists in the database
+    const user = await EmpAdd.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Generate JWT token for resetting password
+    const resetToken = Jwt.sign({ userId: user._id }, jwtKey, {
+      expiresIn: "1h", // Expiry time for the token
+    });
+
+    // Configure Nodemailer transporter
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.ethereal.email',
+      port: 587,
+      auth: {
+          user: 'kenton10@ethereal.email',
+          pass: 'mMCkET8vQ5WwFDYUa4'
+      }
+    });
+
+    // Email options
+    const baseURL = process.env.BASE_URL || 'http://localhost:3000/resetpassword'; // Assuming BASE_URL is set in your environment variables
+
+    const resetLink = `${baseURL}?token=${resetToken}`; // Include the token in the reset link
+
+    const mailOptions = {
+      from: process.env.EMAIL_ADDRESS,
+      to: email,
+      subject: "Reset Your Password",
+      html: `
+        <p>Hello ${user.name},</p>
+        <p>We received a request to reset your password. Click the link below to reset your password:</p>
+        <a href="${resetLink}">Reset Password</a>
+        <p>If you didn't request this, you can safely ignore this email.</p>
+      `,
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "Reset password email sent" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+
+// Endpoint for resetting password
+app.post("/resetpassword", async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    // Verify the token
+    const decoded = Jwt.verify(token, jwtKey);
+
+    // Update user's password
+    await EmpAdd.updateOne(
+      { _id: decoded.userId },
+      { $set: { password: newPassword } }
+    );
+
+    res.status(200).json({ message: "Password reset successful" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(400).json({ message: "Invalid or expired token" });
+  }
+});
+
 
 app.listen(5000);

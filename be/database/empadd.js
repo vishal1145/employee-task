@@ -14,7 +14,7 @@ const empaddSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      unique: true,
+     
     },
     role: {
       type: String,
@@ -27,4 +27,6 @@ const empaddSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 module.exports = mongoose.model("empadd", empaddSchema);
+

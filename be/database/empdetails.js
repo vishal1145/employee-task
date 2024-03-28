@@ -13,7 +13,7 @@ const empdetailsSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: "pending",
+      default: "Pending",
     },
     empid: String,
   },

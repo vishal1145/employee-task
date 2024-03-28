@@ -1,9 +1,9 @@
 const mongoose= require('mongoose');
-mongoose.connect("mongodb://0.0.0.0:27017/empstatus");
+// mongoose.connect("mongodb://0.0.0.0:27017/empstatus");
 
-// mongoose.connect(
-//   "mongodb+srv://yashgupta7247:Y%40sh7247@cluster0.4pumz8s.mongodb.net/empstatus"
-// );
+mongoose.connect(
+  "mongodb+srv://yashgupta7247:Y%40sh7247@cluster0.4pumz8s.mongodb.net/empstatus"
+);
 
 // ***********for mysql*****************
 // const mysql= require('mysql');
