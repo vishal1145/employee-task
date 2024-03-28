@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Empdetails() {
   var authData = localStorage.getItem("user");
@@ -59,7 +60,7 @@ export default function Empdetails() {
     );
     result = await result.json();
     if (result) {
-      alert("Task deleted Successfully");
+      toast("Task deleted Successfully");
       getEmpdetails();
     }
   };
@@ -119,7 +120,7 @@ export default function Empdetails() {
               {/* <th className="wid-5">S.N</th> */}
               <th className="wid-50 text-start">Task</th>
               <th className="wid-10 text-start">Estimate</th>
-              <th className="wid-10 text-start">Status</th>
+              <th className="wid-15 text-start">Status</th>
               {JSON.parse(authData).role === "admin" ? (
                 <th className="wid-10">Modify</th>
               ) : null}
@@ -135,19 +136,15 @@ export default function Empdetails() {
                       <NavLink
                         className="text-decoration-none"
                         onClick={() => addstatus(item._id)}
-                        onChange={(e) => setStatus(e.target.value)}
-                        value={status}
                       >
                         <select
-                          class="form-select choosestatus"
-                          // aria-label="Default select example"
-                          // value={status}
-
-                          // onChange={(e) => setStatus(e.target.value)}
+                          className="form-select choosestatus"
+                          value={item.status || status}
+                          onChange={(e) => setStatus(e.target.value)}
                         >
-                          {/* <option selected>{item.status}</option> */}
-                          <option value="Running">Running</option>
+                          {" "}
                           <option value="Pending">Pending</option>
+                          <option value="Running">Running</option>
                           <option value="Completed">Completed</option>
                         </select>
                       </NavLink>
@@ -168,6 +165,7 @@ export default function Empdetails() {
           </tbody>
         </table>
       </div>
+      <ToastContainer />
     </>
   );
 }

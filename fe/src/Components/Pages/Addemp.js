@@ -1,26 +1,48 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ClipLoader } from 'react-spinners';
 
 export default function Adddetails() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false); 
 
   const navigate = useNavigate();
 
   const collectData = async () => {
-    let result = await fetch(`${process.env.REACT_APP_API_KEY}/addemp`, {
-      method: "post",
-      body: JSON.stringify({ name, email, password }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    result = await result.json();
-    if (result) {
-      alert("Employee add successfully");
+    setLoading(true); 
+    try {
+      let result = await fetch(`${process.env.REACT_APP_API_KEY}/addemp`, {
+        method: "post",
+        body: JSON.stringify({ name, email, password,role }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!result.ok) {
+        throw new Error('Email Id is already in database');
+      }
+      const data = await result.json();
+      
+      if (data) {
+        toast.success("Employee added successfully");
+
+        setTimeout(() => {
+          navigate(-1);
+        }, 2000);
+      } else {
+        throw new Error('Email Id is already in database');
+      }
+    } catch (error) {
+      toast.error("Email Id is already in database");
+    } finally {
+      setLoading(false); // Set loading to false after data submission completes
     }
-    navigate(-1);
   };
 
   return (
@@ -28,12 +50,12 @@ export default function Adddetails() {
       <div className="addform">
         <h3 className="mb-2">Add New Employee</h3>
         <form>
-          <label for="addname" className="form-label shno">
+          <label htmlFor="addname" className="form-label shno">
             Name
           </label>
           <input
             type="text"
-            class="form-control"
+            className="form-control"
             id="addname"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -41,49 +63,57 @@ export default function Adddetails() {
             required
           />
 
-          <label for="addemail" class="form-label">
+          <label htmlFor="addemail" className="form-label">
             Email Id
           </label>
           <input
             type="email"
-            class="form-control"
+            className="form-control"
             id="addemail"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
           />
 
-          <label for="addpassword" class="form-label">
+          <label htmlFor="addpassword" className="form-label">
             Password
           </label>
           <input
             type="password"
-            class="form-control"
+            className="form-control"
             id="addpassword"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
           />
-
-          {/* <label for="status" class="form-label">
-            Status
-          </label>
-          <select class="form-select" aria-label="Default select example" value={status} onChange={(e)=>setStatus(e.target.value)} >
-            <option selected>Choose any one</option>
-            <option value="Running">Running</option>
-            <option value="Pending">Pending</option>
-            <option value="Completed">Completed</option>
-          </select> */}
+           <label htmlFor="role" className="form-label">
+      Role
+    </label>
+    <select
+      className="form-select"
+      id="role"
+      value={role}
+      onChange={(e) => setRole(e.target.value)}
+    >
+      <option value="user">User</option>
+      <option value="admin">Admin</option>
+    </select>
 
           <button
             className="btn mt-3"
             type="button"
             onClick={collectData}
+            disabled={loading} // Disable button when loading is true
           >
-            Submit
+            {loading ? (
+              <ClipLoader size={20} color={"#ffffff"} loading={loading} />
+            ) : (
+              "Submit"
+            )}
           </button>
         </form>
       </div>
+      <ToastContainer />
     </>
   );
 }

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Updatetask() {
   const [task, setTask] = useState("");
   const [time, setTime] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("Pending");
 
   const navigate = useNavigate();
   const params = useParams();
@@ -31,10 +32,38 @@ export default function Updatetask() {
     getUpdate();
   }, []);
 
-  const collectData = async () => {
-    // const empid = JSON.parse(localStorage.getItem("user"))._id;
-    // const empid=params.id;
+  // const collectData = async () => {
+  //   // const empid = JSON.parse(localStorage.getItem("user"))._id;
+  //   // const empid=params.id;
 
+  //   let result = await fetch(
+  //     `${process.env.REACT_APP_API_KEY}/updatetask/${params.id}`,
+  //     {
+  //       method: "put",
+  //       body: JSON.stringify({ task, time, status }),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   );
+  //   result = await result.json();
+  //   if (result) {
+  //     alert("Task updated successfully");
+  //   }
+  //   // history.goBack();
+  //   // navigate("/alldetails/");
+  //   navigate(-1);
+  // };
+
+
+
+  const collectData = async () => {
+    // Check if status is selected
+    if (!status || status === "Choose any one") {
+      // Set status to "Pending"
+      setStatus("Pending");
+    }
+  
     let result = await fetch(
       `${process.env.REACT_APP_API_KEY}/updatetask/${params.id}`,
       {
@@ -47,13 +76,13 @@ export default function Updatetask() {
     );
     result = await result.json();
     if (result) {
-      alert("Task updated successfully");
+      toast("Task updated successfully");
     }
-    // history.goBack();
-    // navigate("/alldetails/");
-    navigate(-1);
+    setTimeout(() => {
+      navigate(-1);
+    }, 2000);
   };
-
+  
   return (
     <>
       <div className="addform">
@@ -93,8 +122,9 @@ export default function Updatetask() {
             onChange={(e) => setStatus(e.target.value)}
           >
             <option selected>Choose any one</option>
+             <option value="Pending" selected>Pending</option>
             <option value="Running">Running</option>
-            <option value="Pending">Pending</option>
+           
             <option value="Completed">Completed</option>
           </select>
 
@@ -107,6 +137,7 @@ export default function Updatetask() {
           </button>
         </form>
       </div>
+      <ToastContainer />
     </>
   );
 }

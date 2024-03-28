@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Loginpage() {
   const [email, setEmail] = useState("");
@@ -15,6 +16,7 @@ export default function Loginpage() {
       navigate("/");
     }
   }, []);
+  
   const handlelogin = async () => {
     // console.log(email, password)
     let result = await fetch(`${process.env.REACT_APP_API_KEY}/login`, {
@@ -43,7 +45,13 @@ export default function Loginpage() {
       // :(navigate("/" + JSON.parse(authData)._id));
       // }
     } else {
-      alert("please enter correct details.");
+      toast("please enter correct details.");
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handlelogin();
     }
   };
 
@@ -63,12 +71,12 @@ export default function Loginpage() {
               </div>
             </div>
             <form className="pt-4" style={{ marginLeft: "10%" }}>
-              <label for="addemail" class="form-label">
+              <label for="addemail" className="form-label">
                 Email Id
               </label>
               <input
                 type="text"
-                class="form-control"
+                className="form-control"
                 id="addemail"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -76,15 +84,17 @@ export default function Loginpage() {
                 required
               />
 
-              <label for="addpassword" class="form-label">
+              <label for="addpassword" className="form-label">
                 Password
               </label>
               <input
                 type="password"
-                class="form-control"
+                className="form-control"
                 id="addpassword"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyPress={handleKeyPress}
+
                 placeholder="Password"
                 required
               />
@@ -92,7 +102,8 @@ export default function Loginpage() {
                 <Link className="text-decoration-none">Reset Password</Link>
               </div>
               {/* <div className="wid-100"> */}
-              <button className="btn mt-2" type="button" onClick={handlelogin}>
+              <button className="btn mt-2" type="button" onClick={handlelogin
+              }>
                 Login
               </button>
               {/* </div> */}
@@ -117,6 +128,7 @@ export default function Loginpage() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }

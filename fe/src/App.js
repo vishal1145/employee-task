@@ -11,6 +11,7 @@ import Empdetails from "./Components/Pages/Empdetails";
 import Addemp from "./Components/Pages/Addemp";
 import Home from "./Components/Layouts/Home";
 import Loginpage from "./Components/Pages/Loginpage";
+import ResetPasswordPage from "./Components/Pages/ResetPage"
 import PrivateComponent from "./Components/Pages/PrivateComponent";
 import Alldetails from "./Components/Layouts/Alldetails";
 import Allemployee from "./Components/Pages/Allemployee";
@@ -131,6 +132,8 @@ function App() {
         </Route>
 
         <Route path="/loginpage" element={<Loginpage />} />
+        <Route path="/resetpassword" element={<ResetPasswordPage />} />
+
       </Routes>
       {/* <Footer /> */}
     </Router>

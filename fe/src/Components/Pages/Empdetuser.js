@@ -5,7 +5,7 @@ export default function Empdetails() {
   var authData = localStorage.getItem("user");
 
   const [empdeatils, setEmpdetails] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("Pending");
 
   const params = useParams();
   const navigate = useNavigate();
@@ -114,7 +114,7 @@ export default function Empdetails() {
               <th className="wid-5">S.N</th>
               <th className="wid-50">Task</th>
               <th className="wid-10">Estimate</th>
-              <th className="wid-10">Status</th>
+              <th className="wid-15">Status</th>
               {JSON.parse(authData).role === "admin" ? (
                 <th className="wid-10">Modify</th>
               ) : null}
@@ -134,12 +134,12 @@ export default function Empdetails() {
                         onClick={() => addstatus("65f93e20df6d8ba52073f82b")}
                       >
                         <select
-                          class="form-select choosestatus"
+                          className="form-select choosestatus"
                           // aria-label="Default select example"
                           value={item.status}
-                          onChange={(e) => setStatus(e.target.value)}
+                          // onChange={(e) => setStatus(e.target.value)}
                         >
-                          {/* <option selected>{item.status}</option> */}
+                          <option selected>{item.status}</option>
                           <option value="Running">Running</option>
                           <option value="Pending">Pending</option>
                           <option value="Completed">Completed</option>
@@ -149,10 +149,10 @@ export default function Empdetails() {
                     {JSON.parse(authData).role === "admin" ? (
                       <td className="modifysec">
                         <NavLink to={"/updatetask/" + item._id}>
-                          <i class="bi bi-pencil-square"></i>
+                          <i className="bi bi-pencil-square"></i>
                         </NavLink>
                         <NavLink onClick={() => deletetask(item._id)}>
-                          <i class="bi bi-trash3-fill"></i>
+                          <i className="bi bi-trash3-fill"></i>
                         </NavLink>
                       </td>
                     ) : null}

@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ClipLoader } from 'react-spinners';
 
 export default function Updatetask() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [profileimage, setProfileImage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const params = useParams();
@@ -15,53 +19,57 @@ export default function Updatetask() {
   }, []);
 
   const getUpdate = async () => {
-    let result = await fetch(
-      `${process.env.REACT_APP_API_KEY}/profileautofill/${params.id}`,
-      {
-        method: "get",
-        //   headers: {
-        //     // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
-        //   },
-      }
-    );
-
-    result = await result.json();
-    // console.log(result);
-    setName(result.name);
-    setEmail(result.email);
-    setPassword(result.password);
-    setProfileImage(result.profileimage);
+    setLoading(true); // Set loading to true when data submission starts
+    try {
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/profileautofill/${params.id}`,
+        {
+          method: "get",
+        }
+      );
+      result = await result.json();
+      setName(result.name);
+      setEmail(result.email);
+      setPassword(result.password);
+      setProfileImage(result.profileimage);
+    } catch (error) {
+      console.error("Error fetching update:", error);
+    } finally {
+      setLoading(false); // Set loading to false after data is fetched
+    }
   };
 
   const collectData = async () => {
-    // const empid = JSON.parse(localStorage.getItem("user"))._id;
-    // const empid=params.id;
-
-    let result = await fetch(
-      `${process.env.REACT_APP_API_KEY}/updateprofile/${params.id}`,
-      {
-        method: "put",
-        body: JSON.stringify({ name, email, password, profileimage }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+    setLoading(true); // Set loading to true when data submission starts
+    try {
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/updateprofile/${params.id}`,
+        {
+          method: "put",
+          body: JSON.stringify({ name, email, password, profileimage }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      result = await result.json();
+      if (result) {
+        toast("Profile updated successfully");
       }
-    );
-    result = await result.json();
-    if (result) {
-      alert("Profile updated successfully");
+      setTimeout(() => {
+        navigate(-1);
+      }, 2000);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    } finally {
+      setLoading(false); // Set loading to false after data submission
     }
-    // history.goBack();
-    // navigate("/alldetails/");
-    navigate(-1);
   };
 
   const convertToBase64 = (e) => {
-    console.log(e);
     var reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
     reader.onload = () => {
-      console.log(reader.result);
       setProfileImage(reader.result);
     };
     reader.onerror = (error) => {
@@ -73,79 +81,84 @@ export default function Updatetask() {
     <>
       <div className="addform">
         <h3 className="mb-2">Update Task</h3>
-        <form className=" " style={{ width: "60%" }}>
-          <div className="d-flex justify-content-between">
-            <div className="col-lg-7">
-              <label for="addname" className="form-label shno">
-                Name
-              </label>
-              <input
-                type="text"
-                class="form-control"
-                id="addname"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Name"
-                required
-              />
+        {loading ? ( // Display loader if loading state is true
+          <div className="loader-container">
+            <ClipLoader size={35} color={"#36D7B7"} loading={loading} />
+          </div>
+        ) : (
+          <form className=" " style={{ width: "60%" }}>
+            <div className="d-flex justify-content-between">
+              <div className="col-lg-7">
+                <label htmlFor="addname" className="form-label shno">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="addname"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Name"
+                  required
+                />
 
-              <label for="addemail" class="form-label">
-                Email Id
-              </label>
-              <input
-                type="email"
-                class="form-control"
-                id="addemail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-              />
+                <label htmlFor="addemail" className="form-label">
+                  Email Id
+                </label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="addemail"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                />
 
-              <label for="addpassword" class="form-label">
-                Password
-              </label>
-              <input
-                type="text"
-                class="form-control"
-                id="addpassword"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-              />
-            </div>
+                <label htmlFor="addpassword" className="form-label">
+                  Password
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="addpassword"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                />
+              </div>
 
-            <div className=" col-4 col-sm-4 col-md-4 col-lg-4">
-              <div className="profileimg">
-                <div className="profileimgbox">
-                  {profileimage == "" || profileimage == null ? (
-                    <img className="profimage" src={"/empimg.jpg"} alt="Photo" />
-                  ) : (
-                    <img className="profimage" src={profileimage} alt="Photo" />
-                  )}
-                </div>
-                <div className="overflow-hidden">
-                  <input
-                    accept="image/*"
-                    onChange={convertToBase64}
-                    type="file"
-                    className="inputboxp"
-                  />
+              <div className="col-4 col-sm-4 col-md-4 col-lg-4">
+                <div className="profileimg">
+                  <div className="profileimgbox">
+                    {profileimage == "" || profileimage == null ? (
+                      <img className="profimage" src={"/empimg.jpg"} alt="Photo" />
+                    ) : (
+                      <img className="profimage" src={profileimage} alt="Photo" />
+                    )}
+                  </div>
+                  <div className="overflow-hidden">
+                    <input
+                      accept="image/*"
+                      onChange={convertToBase64}
+                      type="file"
+                      className="inputboxp"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* <div className="col-lg-12"> */}
-          <button
-            className="btn mt-3"
-            type="button"
-            onClick={collectData}
-          >
-            Submit
-          </button>
-          {/* </div> */}
-        </form>
+            <button
+              className="btn mt-3"
+              type="button"
+              onClick={collectData}
+            >
+              Submit
+            </button>
+          </form>
+        )}
       </div>
+      <ToastContainer />
     </>
   );
 }
