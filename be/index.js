@@ -231,7 +231,7 @@ app.post("/forgotpassword", async (req, res) => {
     });
 
     // Email options
-    const baseURL = process.env.BASE_URL || 'http://localhost:3000/resetpassword'; // Assuming BASE_URL is set in your environment variables
+    const baseURL = process.env.BASE_URL || 'https://employee-backend.algofolks.com/resetpassword'; // Assuming BASE_URL is set in your environment variables
 
     const resetLink = `${baseURL}?token=${resetToken}`; // Include the token in the reset link
 
