@@ -143,14 +143,14 @@ table,th,td{
 
 /*Addform section*/
 .addform{
-  margin-top:7%;
+  margin-top:3%;
   display:flex;
   align-items:center;
   flex-direction:column;
 }
 .addform form{
   /* border:1px solid black; */
-  width:45%;
+  width:100%;
   padding:3%;
   display:flex;
   /* align-items:center; */
@@ -187,9 +187,9 @@ button{
 }
 
 .modifysec i{
-  font-size:18px;
+  font-size:14px;
   color:black;
-  margin:12%;
+  margin:5%;
 }
 .modifysec i:hover{
   color:blue;
@@ -212,7 +212,7 @@ button{
   padding:8px;
   overflow:hidden;
   color:#26A69A;
-  height:100%;
+  /* height:100%; */
   /* box-shadow:1px 0px 3px 2px ; */
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
   
@@ -456,4 +456,33 @@ button{
   
   transform: translate(-50%, -50%);
   z-index: 9999;
+}
+
+
+.bi-trash3-fill::before {
+  content: "\f78a";
+  color: rgba(255, 0, 0, 0.702);
+}
+
+.textBlue
+{
+  color: rgba(0, 0, 255, 0.692)!important;
+}
+
+.textRed
+{
+  color: rgba(255, 0, 0, 0.585)!important;
+}
+.textGray
+{
+  color: gray!important;
+}.textGreen
+{
+  color: rgba(0, 128, 0, 0.687)!important;
+}
+
+.modal-body {
+  position: relative;
+  flex: 1 1 auto;
+  /* padding: 1rem; */
 }

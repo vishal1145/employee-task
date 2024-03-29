@@ -2,22 +2,22 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 
-export default function Updatetask() {
+export default function Updatetask(props) {
+
+  const { taskId } = props;
   const [task, setTask] = useState("");
   const [time, setTime] = useState("");
-  const [status, setStatus] = useState("Pending");
+  const [status, setStatus] = useState("In Development");
+  const [date, setDate] = useState("");
 
   const navigate = useNavigate();
-  const params = useParams();
+ 
 
   const getUpdate = async () => {
     let result = await fetch(
-      `${process.env.REACT_APP_API_KEY}/taskautofill/${params.id}`,
+      `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
       {
         method: "get",
-        //   headers: {
-        //     // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
-        //   },
       }
     );
 
@@ -25,50 +25,24 @@ export default function Updatetask() {
     console.log(result);
     setTask(result.task);
     setTime(result.time);
-    setStatus(result.status);
+    setStatus(result.status || "In Development");
+    setDate(result.date || ""); // If date is not present, set it to an empty string
   };
 
   useEffect(() => {
     getUpdate();
   }, []);
 
-  // const collectData = async () => {
-  //   // const empid = JSON.parse(localStorage.getItem("user"))._id;
-  //   // const empid=params.id;
-
-  //   let result = await fetch(
-  //     `${process.env.REACT_APP_API_KEY}/updatetask/${params.id}`,
-  //     {
-  //       method: "put",
-  //       body: JSON.stringify({ task, time, status }),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     }
-  //   );
-  //   result = await result.json();
-  //   if (result) {
-  //     alert("Task updated successfully");
-  //   }
-  //   // history.goBack();
-  //   // navigate("/alldetails/");
-  //   navigate(-1);
-  // };
-
-
-
   const collectData = async () => {
-    // Check if status is selected
     if (!status || status === "Choose any one") {
-      // Set status to "Pending"
       setStatus("Pending");
     }
-  
+
     let result = await fetch(
-      `${process.env.REACT_APP_API_KEY}/updatetask/${params.id}`,
+      `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
       {
         method: "put",
-        body: JSON.stringify({ task, time, status }),
+        body: JSON.stringify({ task, time, status, date }), // Include date in the request body
         headers: {
           "Content-Type": "application/json",
         },
@@ -78,63 +52,91 @@ export default function Updatetask() {
     if (result) {
       toast("Task updated successfully");
     }
-    setTimeout(() => {
-      navigate(-1);
+    setTimeout(() => { navigate(-1);
     }, 2000);
   };
-  
+  const handleCancel = () => {
+    navigate(-1);
+  };
   return (
     <>
       <div className="addform">
         <h3 className="mb-2">Update Task</h3>
         <form>
-          <label for="addtask" className="form-label shno">
+          <label htmlFor="addtask" className="form-label shno">
             Add Task
           </label>
           <textarea
             type="text"
-            class="form-control"
+            className="form-control"
             id="addtask"
             value={task}
             onChange={(e) => setTask(e.target.value)}
             placeholder="Add Task Here"
           />
 
-          <label for="timeduration" class="form-label">
+<label htmlFor="timeduration" className="form-label">
             Time Duration
           </label>
-          <input
+          <select
             type="text"
-            class="form-control"
+            className="form-control"
             id="timeduration"
             value={time}
             onChange={(e) => setTime(e.target.value)}
             placeholder="Time Duration"
-          />
+            required
+          >
+            <option disabled selected>Choose any one</option>  
+            <option value="2 hours">2 hours</option>
+            <option value="4 hours">4 hours</option>
+            <option value="6 hours">6 hours</option>
+          </select>
 
-          <label for="status" class="form-label">
+          <label htmlFor="status" className="form-label">
             Status
           </label>
           <select
-            class="form-select"
+            className="form-select"
             aria-label="Default select example"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
-            <option selected>Choose any one</option>
-             <option value="Pending" selected>Pending</option>
-            <option value="Running">Running</option>
-           
+            <option disabled>Choose any one</option>
+            <option value="In Development">In Development</option>
+            <option value="In Testing">In Testing</option>
+            <option value="Ready for work">Ready for work</option>
+            <option value="Canceled">Canceled</option> 
             <option value="Completed">Completed</option>
           </select>
 
-          <button
-            className="btn mt-3"
+          <label htmlFor="date" className="form-label">
+            Date
+          </label>
+          <input
+            type="date"
+            className="form-control"
+            id="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+<div className="d-flex flex-row">
+  <button
+            className="btn mt-3 me-2 wid-50"
             type="button"
             onClick={collectData}
           >
             Update
           </button>
+          <button
+            className="btn mt-3 wid-50"
+            type="button"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+</div>
+
         </form>
       </div>
       <ToastContainer />

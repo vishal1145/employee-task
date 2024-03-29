@@ -5,7 +5,7 @@ export default function Empdetails() {
   var authData = localStorage.getItem("user");
 
   const [empdeatils, setEmpdetails] = useState("");
-  const [status, setStatus] = useState("Pending");
+  const [status, setStatus] = useState("In Development");
 
   const params = useParams();
   const navigate = useNavigate();
@@ -140,9 +140,11 @@ export default function Empdetails() {
                           // onChange={(e) => setStatus(e.target.value)}
                         >
                           <option selected>{item.status}</option>
-                          <option value="Running">Running</option>
-                          <option value="Pending">Pending</option>
-                          <option value="Completed">Completed</option>
+                          <option value="In Development">In Development</option>
+                          <option value="In Testing">In Testing</option>
+                          <option value="Ready for work">Ready for work</option>
+                          <option value="Canceled">Canceled</option> 
+                           <option value="Completed">Completed</option>
                         </select>
                       </NavLink>
                     </td>
