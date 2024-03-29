@@ -55,6 +55,28 @@ export default function Loginpage() {
     }
   };
 
+
+  const handleResetPassword = async () => {
+    try {
+      let result = await fetch(`${process.env.REACT_APP_API_KEY}/forgotpassword`, {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      result = await result.json();
+      if (result.message === "Reset password email sent") {
+        toast.success("Reset password email sent successfully.");
+      } else {
+        toast.error("Failed to send reset password email.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Internal Server Error");
+    }
+  };
+
   return (
     <>
       <div className="container-xl">
@@ -99,7 +121,7 @@ export default function Loginpage() {
                 required
               />
               <div className="resetpass text-end py-2">
-                <Link className="text-decoration-none">Reset Password</Link>
+                <Link className="text-decoration-none" onClick={handleResetPassword}>Reset Password</Link>
               </div>
               {/* <div className="wid-100"> */}
               <button className="btn mt-2" type="button" onClick={handlelogin
