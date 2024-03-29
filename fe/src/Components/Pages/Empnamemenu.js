@@ -49,8 +49,10 @@ export default function Empnamemenu() {
           </div>
         ) : (
           <>
-            {listname.length > 0 ? (
-              listname.map((item, index) => (
+           {listname.length > 0 ? (
+              listname
+                .filter(item => item.role !== 'admin') // Filter out admins
+                .map((item, index) => (
                 <div className="pe-0 allemp" key={index}>
                 <NavLink to={"/alldetails/" + item._id} className="navlink-custom">
                   <div className="menudiv">

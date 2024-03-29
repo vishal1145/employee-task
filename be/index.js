@@ -199,12 +199,6 @@ app.get("/empdetailssearch/:key", async (req, resp) => {
   });
   resp.send(result);
 });
-
-
-
-
-
-
 app.post("/forgotpassword", async (req, res) => {
   const { email } = req.body;
 
@@ -256,7 +250,6 @@ app.post("/forgotpassword", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-
 
 // Endpoint for resetting password
 app.post("/resetpassword", async (req, res) => {
