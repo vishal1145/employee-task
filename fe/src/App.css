@@ -18,7 +18,7 @@
   width:20%;
 }
 .wid-30{
-  width:30%;
+  width:30%; 
 }
 .wid-40{
   width:40%;
@@ -418,17 +418,39 @@ button{
 .cursor-pointer {
   cursor: pointer;
 }
+/* .navlink-custom {
+  text-decoration: none; /* Remove default underline */
+/* } */
+
+/* .navlink-custom:hover .menudiv {
+  background-color: #26a69950; /* Change background color to Bootstrap primary color on hover */
+/* } */
+
+/* .navlink-custom:hover .menuname {
+  color: black; /* Change text color to black on hover */
+/* }  */
+
 .navlink-custom {
   text-decoration: none; /* Remove default underline */
 }
 
-.navlink-custom:hover .menudiv {
-  background-color: #26a69950; /* Change background color to Bootstrap primary color on hover */
+.navlink-custom:hover .menudiv,
+.navlink-custom.active-link .menudiv { /* Apply the same styles for active link */
+  background-color: #26a69950; /* Change background color to Bootstrap primary color */
 }
 
-.navlink-custom:hover .menuname {
-  color: black; /* Change text color to black on hover */
+.navlink-custom:hover .menuname,
+.navlink-custom.active-link .menuname { /* Apply the same styles for active link */
+  color: black; /* Change text color to black */
 }
+
+.active-link .menudiv { /* Change background color for active link */
+  background-color: #26a69950; /* Change to your preferred color */
+}
+
+
+
+
 
 .menuname {
   transition: color 0.3s ease; /* Smooth transition for text color change */

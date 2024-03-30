@@ -127,6 +127,7 @@ export default function Empdetails() {
     setSelectedTaskId(taskId);
     setShowUpdateTaskModal(true);
   };
+
   return (
     <>
       <div className="empdeatils wid-80">
@@ -148,7 +149,7 @@ export default function Empdetails() {
             <tr>
               <th className="wid-20 text-start">Task</th>
               <th className="wid-10 text-start">Date</th>
-   <th className="wid-10 text-start">Estimate</th>
+              <th className="wid-10 text-start">Estimate</th>
               <th className="wid-15 text-start">Status</th>
               
               {JSON.parse(authData).role === "admin" ? (
@@ -160,7 +161,8 @@ export default function Empdetails() {
           {empdeatils.length > 0
               ? empdeatils.map((item, index) => (
                 <tr>
-                <td className="text-start">{item.task}</td>       <td className="text-start">{item.date}</td>
+                <td className="text-start">{item.task}</td>       
+                <td className="text-start">{item.date}</td>
                 <td className="text-start">{item.time}</td>
          
 
@@ -171,7 +173,7 @@ export default function Empdetails() {
                   >
                   <select
                     className={`form-select choosestatus ${getStatusColorClass(
-                      item.status
+                      item.status || status
                     )}`}
                     value={item.status || status}
                     onChange={(e) => setStatus(e.target.value)}
@@ -198,8 +200,7 @@ export default function Empdetails() {
           </tbody>
         </table>
       </div>
-
-      {showAddTaskModal && (
+  {showAddTaskModal && (
         <div className="modal" style={{ display: 'block' }}>
           <div className="modal-dialog">
             <div className="modal-content">
@@ -215,7 +216,7 @@ export default function Empdetails() {
         </div>
       )}
 
- {showUpdateTaskModal && (
+   {showUpdateTaskModal && (
         <div className="modal" style={{ display: 'block' }}>
           <div className="modal-dialog">
             <div className="modal-content">
@@ -224,7 +225,9 @@ export default function Empdetails() {
                 <button type="button" className="btn-close" onClick={() => setShowUpdateTaskModal(false)}></button>
               </div>
               <div className="modal-body">
-             <Updatetask taskId={selectedTaskId} /> 
+            
+<Updatetask taskId={selectedTaskId} paramsId={params.id} />
+
             
               </div>
             </div>

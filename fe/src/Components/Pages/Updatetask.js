@@ -4,21 +4,23 @@ import { ToastContainer, toast } from 'react-toastify';
 
 export default function Updatetask(props) {
 
-  const { taskId } = props;
+  const { taskId, paramsId } = props;
   const [task, setTask] = useState("");
   const [time, setTime] = useState("");
   const [status, setStatus] = useState("In Development");
   const [date, setDate] = useState("");
 
   const navigate = useNavigate();
- 
+ console.log("dbchdhc",taskId)
 
   const getUpdate = async () => {
     let result = await fetch(
-      `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
+      `${process.env.REACT_APP_API_KEY}/taskautofill/${taskId}`,
       {
-        method: "get",
+        method: "get", 
       }
+   
+     
     );
 
     result = await result.json();
@@ -52,11 +54,13 @@ export default function Updatetask(props) {
     if (result) {
       toast("Task updated successfully");
     }
-    setTimeout(() => { navigate(-1);
+    setTimeout(() => {
+      navigate("/alldetails/" + paramsId); // Navigating to the same page with paramsId
     }, 2000);
   };
   const handleCancel = () => {
-    navigate(-1);
+    navigate("/alldetails/" + paramsId); 
+
   };
   return (
     <>

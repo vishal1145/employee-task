@@ -54,7 +54,11 @@ export default function Empnamemenu() {
                 .filter(item => item.role !== 'admin') // Filter out admins
                 .map((item, index) => (
                 <div className="pe-0 allemp" key={index}>
-                <NavLink to={"/alldetails/" + item._id} className="navlink-custom">
+                <NavLink 
+                  to={"/alldetails/" + item._id} 
+                  className="navlink-custom"
+                  activeClassName="active-link" // Add activeClassName for active state
+                >
                   <div className="menudiv">
                     <div className="menuimg">
                       {item.profileimage === "" || item.profileimage == null ? (
