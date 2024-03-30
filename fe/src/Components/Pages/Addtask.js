@@ -9,7 +9,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
   const [task, setTask] = useState("");
   const [time, setTime] = useState("2 hours");
   const [date, setDate] = useState("");
-  const [status, setStatus] = useState("In Development");
+  const [status, setStatus] = useState("pending");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -30,15 +30,15 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
       });
       result = await result.json();
       if (result) {
-        toast.success("Task added successfully");
+        // toast.success("Task added successfully");
         
         // Call the fetchUpdatedEmpDetails callback function
         fetchUpdatedEmpDetails();
       }
 
-      setTimeout(() => {
-        navigate("/alldetails/"+params.id);
-      }, 2000); 
+      // setTimeout(() => {
+      //   navigate("/alldetails/"+params.id);
+      // }, 2000); 
     } catch (error) {
       toast.error("Failed to add task");
     } finally {
@@ -46,14 +46,14 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
     }
   };
   
-  const handleCancel = () => {
-    navigate("/alldetails/" + params.id);
-  };
+  // const handleCancel = () => {
+  //   navigate("/alldetails/" + params.id);
+  // };
   
   return (
     <>
-      <div className="addform">
-        <h3 className="mb-2">Add New Task</h3>
+      <div className="">
+        {/* <h3 className="mb-2">Add New Task</h3> */}
         <form>
           <label htmlFor="addtask" className="form-label shno">
             Add Task
@@ -118,19 +118,19 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
 
           <div className="d-flex flex-row">
             <button
-              className="btn mt-3 me-2 wid-50"
+              className="btn mt-3 me-2 wid-100"
               type="button"
               onClick={collectData}
             >
-              Update
+              Submit
             </button>
-            <button
+            {/* <button
               className="btn mt-3 wid-50"
               type="button"
               onClick={handleCancel}
             >
               Cancel
-            </button>
+            </button> */}
           </div>
         </form>
       </div>

@@ -39,11 +39,6 @@ export default function Loginpage() {
       }else{
         navigate("/" + JSON.parse(authData)._id);
       }
-      // { JSON.parse(authData).role === "admin" ? (
-      //   navigate("/");
-      // )
-      // :(navigate("/" + JSON.parse(authData)._id));
-      // }
     } else {
       toast("please enter correct details.");
     }

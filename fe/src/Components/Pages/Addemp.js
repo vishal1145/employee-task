@@ -1,34 +1,34 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { ClipLoader } from 'react-spinners';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ClipLoader } from "react-spinners";
 
 export default function Adddetails() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const collectData = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       let result = await fetch(`${process.env.REACT_APP_API_KEY}/addemp`, {
         method: "post",
-        body: JSON.stringify({ name, email, password,role }),
+        body: JSON.stringify({ name, email, password, role }),
         headers: {
           "Content-Type": "application/json",
         },
       });
 
       if (!result.ok) {
-        throw new Error('Email Id is already in database');
+        throw new Error("Email Id is already in database");
       }
       const data = await result.json();
-      
+
       if (data) {
         toast.success("Employee added successfully");
 
@@ -36,7 +36,7 @@ export default function Adddetails() {
           navigate(-1);
         }, 2000);
       } else {
-        throw new Error('Email Id is already in database');
+        throw new Error("Email Id is already in database");
       }
     } catch (error) {
       toast.error("Email Id is already in database");
@@ -86,18 +86,18 @@ export default function Adddetails() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
           />
-           <label htmlFor="role" className="form-label">
-      Role
-    </label>
-    <select
-      className="form-select"
-      id="role"
-      value={role}
-      onChange={(e) => setRole(e.target.value)}
-    >
-      <option value="user">User</option>
-      <option value="admin">Admin</option>
-    </select>
+          <label htmlFor="role" className="form-label">
+            Role
+          </label>
+          <select
+            className="form-select"
+            id="role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
 
           <button
             className="btn mt-3"

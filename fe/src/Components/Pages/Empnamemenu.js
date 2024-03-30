@@ -24,55 +24,82 @@ export default function Empnamemenu() {
     }
   };
 
+  const searchuser = async (event) => {
+    let key = event.target.value;
+    if (key) {
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/empsearch/${key}`,
+        {
+          headers: {
+            // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
+          },
+        }
+      );
+      result = await result.json();
+      // var input=result.toLowerCase();
+      if (result) {
+        setListname(result);
+      }
+    } else {
+      getListname();
+    }
+  };
+
   return (
     <>
       <div
-        className="menu wid-30 border-end ms-0"
-        style={{ height: "92vh", justifyContent: "start" }}
+        className="menu wid-35 border-end ms-0"
+        style={{ justifyContent: "start" }}
       >
-        <div className=" px-2">
-          <form action="px-2">
+        <div className=" menusearch">
+          <form className="px-2">
             <input
-              className="mt-3 p-1 px-2 wid-100"
+              className="p-1"
               type="text"
               placeholder="Search here"
+              onChange={searchuser}
+              // style={{ width: "100%" }}
             />
           </form>
         </div>
         {loading ? ( // Display loader if loading state is true
           <div className="loader-container">
-            <ClipLoader
-              size={35}
-              color={"#36D7B7"}
-              loading={loading}
-            />
+            <ClipLoader size={35} color={"#36D7B7"} loading={loading} />
           </div>
         ) : (
           <>
-           {listname.length > 0 ? (
+            {listname.length > 0 ? (
               listname
-                .filter(item => item.role !== 'admin') // Filter out admins
+                .filter((item) => item.role !== "admin") // Filter out admins
                 .map((item, index) => (
-                <div className="pe-0 allemp" key={index}>
-                <NavLink 
-                  to={"/alldetails/" + item._id} 
-                  className="navlink-custom"
-                  activeClassName="active-link" // Add activeClassName for active state
-                >
-                  <div className="menudiv">
-                    <div className="menuimg">
-                      {item.profileimage === "" || item.profileimage == null ? (
-                        <img className="profimage" src={"/empimg.jpg"} alt="Photo" />
-                      ) : (
-                        <img className="profimage" src={item.profileimage} alt="Photo" />
-                      )}
-                    </div>
-                    <div className="menuname">{item.name}</div>
+                  <div className="pe-0 allemp" key={index}>
+                    <NavLink
+                      to={"/alldetails/" + item._id}
+                      className="navlink-custom btn"
+                      activeClassName="active-link" // Add activeClassName for active state
+                    >
+                      <div className="menudiv">
+                        <div className="menuimg">
+                          {item.profileimage === "" ||
+                          item.profileimage == null ? (
+                            <img
+                              className="profimage"
+                              src={"/empimg.jpg"}
+                              alt=""
+                            />
+                          ) : (
+                            <img
+                              className="profimage"
+                              src={item.profileimage}
+                              alt=""
+                            />
+                          )}
+                        </div>
+                        <div className="menuname">{item.name}</div>
+                      </div>
+                    </NavLink>
                   </div>
-                </NavLink>
-              </div>
-              
-              ))
+                ))
             ) : (
               <h6>Record not found..</h6>
             )}

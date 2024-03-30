@@ -34,27 +34,25 @@ export default function Empdashmenu() {
       {empprofile.length > 0
         ? empprofile.map((item, index) => (
             <div
-              className="menu wid-20 border-end mt-2 pe-3"
-              style={{ height: "85vh", justifyContent: "start" }}
+              className="menu wid-25 border-end mt-2 px-3 pt-2"
+              style={{ justifyContent: "start" }}
             >
               <div
                 className="authpic"
-                style={{ overflow: "hidden", width: "100%", height: "35vh" }}
               >
                 {/* <img src={authData.profileimage} alt="Photo"  style={{width:"100%"}}/> */}
-                {item.profileimage == "" || item.profileimage == null ? (
-                  <img src={"/empimg.jpg"} alt="photo" style={{ width: "100%", height: "35vh" }} />
+                {item.profileimage === "" || item.profileimage == null ? (
+                  <img src={"/empimg.jpg"} alt="" />
                 ) : (
-                  <img src={item.profileimage} alt="photo" style={{ width: "100%", height: "35vh" }} />
+                  <img src={item.profileimage} alt="" />
                 )}
               </div>
 
-              <div className="card mt-3 border-0">
-                <h6>Name: {item.name}</h6>
-                <h6>Email: {item.email}</h6>
-                <h6>Running: {item.running}</h6>
-                <h6>Pending: {item.pending}</h6>
-                <h6>Completed: {item.completed}</h6>
+              <div className="card mt-3 border-0 text-center">
+                <h6>{item.name}</h6>
+                <h6>{item.email}</h6>
+                <h6>{item.position}</h6>
+                
               </div>
 
               <NavLink

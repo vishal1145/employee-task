@@ -8,6 +8,9 @@ export default function Updatetask() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [dob, setDob] = useState("");
+  const [position, setPosition] = useState("");
   const [profileimage, setProfileImage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -31,6 +34,9 @@ export default function Updatetask() {
       setName(result.name);
       setEmail(result.email);
       setPassword(result.password);
+      setMobile(result.mobile);
+      setDob(result.dob);
+      setPosition(result.position);
       setProfileImage(result.profileimage);
     } catch (error) {
       console.error("Error fetching update:", error);
@@ -46,7 +52,15 @@ export default function Updatetask() {
         `${process.env.REACT_APP_API_KEY}/updateprofile/${params.id}`,
         {
           method: "put",
-          body: JSON.stringify({ name, email, password, profileimage }),
+          body: JSON.stringify({
+            name,
+            email,
+            password,
+            mobile,
+            dob,
+            position,
+            profileimage,
+          }),
           headers: {
             "Content-Type": "application/json",
           },
@@ -86,9 +100,9 @@ export default function Updatetask() {
             <ClipLoader size={35} color={"#36D7B7"} loading={loading} />
           </div>
         ) : (
-          <form className=" " style={{ width: "60%" }}>
+          <form className=" " style={{ width: "75%" }}>
             <div className="d-flex justify-content-between">
-              <div className="col-lg-7">
+              <div className="col-14 col-sm-4 col-md-4 col-lg-4">
                 <label htmlFor="addname" className="form-label shno">
                   Name
                 </label>
@@ -128,12 +142,50 @@ export default function Updatetask() {
               </div>
 
               <div className="col-4 col-sm-4 col-md-4 col-lg-4">
+                <label for="addmobile" class="form-label">
+                  Mobile No
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="addmobile"
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value)}
+                  placeholder="Mobile No"
+                />
+
+                <label for="adddob" class="form-label">
+                  Date of birth
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="adddob"
+                  value={dob}
+                  onChange={(e) => setDob(e.target.value)}
+                  placeholder="DD/MM/Year"
+                />
+
+                <label for="addposition" class="form-label">
+                  Position
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="addposition"
+                  value={position}
+                  onChange={(e) => setPosition(e.target.value)}
+                  placeholder="Position"
+                />
+              </div>
+
+              <div className="col-3 col-sm-3 col-md-3 col-lg-3">
                 <div className="profileimg">
                   <div className="profileimgbox">
-                    {profileimage == "" || profileimage == null ? (
-                      <img className="profimage" src={"/empimg.jpg"} alt="Photo" />
+                    {profileimage === "" || profileimage == null ? (
+                      <img className="profimage" src={"/empimg.jpg"} alt="" />
                     ) : (
-                      <img className="profimage" src={profileimage} alt="Photo" />
+                      <img className="profimage" src={profileimage} alt="" />
                     )}
                   </div>
                   <div className="overflow-hidden">
@@ -148,13 +200,11 @@ export default function Updatetask() {
               </div>
             </div>
 
-            <button
-              className="btn mt-3"
-              type="button"
-              onClick={collectData}
-            >
-              Submit
-            </button>
+            <div className="" style={{ width: "71%" }}>
+              <button className="btn mt-3 w-100" type="button" onClick={collectData}>
+                Submit
+              </button>
+            </div>
           </form>
         )}
       </div>
