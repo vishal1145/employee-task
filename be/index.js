@@ -10,7 +10,7 @@ const jwtKey = "algofolks";
 
 
 const app = express();
-app.use(express.json());
+// app.use(express.json());
 app.use(cors());
 
 app.use(express.json({ limit: 52428800 }));
@@ -69,15 +69,6 @@ app.get("/empdetails/:id", async (req, resp) => {
     resp.send("result not found");
   }
 });
-
-// app.get("/empdetailss/:id", async (req, resp) => {
-//   const result = await EmpDetail.findOne({ _id: req.params.id });
-//   if (result) {
-//     resp.send(result);
-//   } else {
-//     resp.send("result not found");
-//   }
-// });
 
 app.get("/taskautofill/:id", async (req, resp) => {
   const result = await EmpDetail.findOne({ _id: req.params.id });
@@ -190,15 +181,16 @@ app.put("/updateprofile/:id", async (req, resp) => {
   resp.send(result);
 });
 
-app.get("/empdetailssearch/:key", async (req, resp) => {
-  let result = await EmpDetail.find({
+app.get("/empsearch/:key", async (req, resp) => {
+  let result = await EmpAdd.find({
     $or: [
-      { task: { $regex: req.params.key } },
-      { status: { $regex: req.params.key } },
+      { name: { $regex: req.params.key } },
+      // { status: { $regex: req.params.key } },
     ],
   });
   resp.send(result);
 });
+
 app.post("/forgotpassword", async (req, res) => {
   const { email } = req.body;
 
@@ -215,14 +207,14 @@ app.post("/forgotpassword", async (req, res) => {
     });
 
     // Configure Nodemailer transporter
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
-      auth: {
-          user: 'kenton10@ethereal.email',
-          pass: 'mMCkET8vQ5WwFDYUa4'
-      }
-    });
+   const transporter = nodemailer.createTransport({
+     host: "smtp.ethereal.email",
+     port: 587,
+     auth: {
+       user: "lexus.smith16@ethereal.email",
+       pass: "rjg7r9F4vc6qBfCkVy",
+     },
+   });
 
     // Email options
     const baseURL = process.env.BASE_URL || 'https://employee-backend.algofolks.com/resetpassword'; // Assuming BASE_URL is set in your environment variables
