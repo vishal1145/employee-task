@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 
 export default function Updatetask(props) {
+  // const [empdeatils, setEmpdetails] = useState("");
   const { taskId, paramsId } = props;
   const [task, setTask] = useState("");
   const [time, setTime] = useState("");
@@ -10,8 +11,26 @@ export default function Updatetask(props) {
   const [date, setDate] = useState("");
 
   const navigate = useNavigate();
+  // const params = useParams();
   console.log("dbchdhc", taskId);
 
+  // const getEmpdetails = async () => {
+  //   let result = await fetch(
+  //     `${process.env.REACT_APP_API_KEY}/empdetails/${params.id}`,
+  //     {
+  //       method: "get",
+  //     }
+  //   );
+
+  //   result = await result.json();
+  //   setEmpdetails(result);
+  // };
+
+  useEffect(() => {
+    getUpdate();
+    // getEmpdetails();
+  }, []);
+  
   const getUpdate = async () => {
     let result = await fetch(
       `${process.env.REACT_APP_API_KEY}/taskautofill/${taskId}`,
@@ -27,10 +46,6 @@ export default function Updatetask(props) {
     setStatus(result.status || "pending");
     setDate(result.date || ""); // If date is not present, set it to an empty string
   };
-
-  useEffect(() => {
-    getUpdate();
-  },[]);
 
   const collectData = async () => {
     if (!status || status === "Choose any one") {
@@ -50,10 +65,11 @@ export default function Updatetask(props) {
     result = await result.json();
     if (result) {
       toast("Task updated successfully");
+      window.location.reload();
     }
-    setTimeout(() => {
-      navigate("/alldetails/" + paramsId); // Navigating to the same page with paramsId
-    }, 1000);
+    // setTimeout(() => {
+    //   navigate("/alldetails/" + paramsId); // Navigating to the same page with paramsId
+    // }, 1000);
   };
   // const handleCancel = () => {
   //   navigate("/alldetails/" + paramsId);
@@ -140,7 +156,7 @@ export default function Updatetask(props) {
           </div>
         </form>
       </div>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </>
   );
 }

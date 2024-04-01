@@ -30,7 +30,7 @@ export default function Empdetails() {
 
   useEffect(() => {
     getEmpdetails();
-  }, [params.id, dataUploaded]); // Adding params.id to the dependency array
+  }, [params.id, dataUploaded]); 
 
   // const searchuser = async (event) => {
   //   let key = event.target.value;
@@ -126,6 +126,7 @@ export default function Empdetails() {
   const handleUpdateTaskClick = (taskId) => {
     setSelectedTaskId(taskId);
     setShowUpdateTaskModal(true);
+    getEmpdetails();
   };
 
   return (

@@ -30,7 +30,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
       });
       result = await result.json();
       if (result) {
-        // toast.success("Task added successfully");
+        toast.success("Task added successfully");
         
         // Call the fetchUpdatedEmpDetails callback function
         fetchUpdatedEmpDetails();
@@ -44,6 +44,10 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
     } finally {
       setLoading(false);
     }
+    setTask("");
+    setDate("");
+    setTime("2 hours");
+    setStatus("pending");
   };
   
   // const handleCancel = () => {
@@ -80,7 +84,9 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
             placeholder="Time Duration"
             required
           >
-            <option disabled selected>Choose any one</option>  
+            <option disabled selected>
+              Choose any one
+            </option>
             <option value="2 hours">2 hours</option>
             <option value="4 hours">4 hours</option>
             <option value="6 hours">6 hours</option>
@@ -108,12 +114,22 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
-            <option disabled selected>Choose any one</option>     
+            {/* <option disabled selected>Choose any one</option>     
             <option value="In Development">In Development</option>
             <option value="In Testing">In Testing</option>
             <option value="Ready for work">Ready for work</option>
             <option value="Canceled">Canceled</option> 
-            <option value="Completed">Completed</option>
+            <option value="Completed">Completed</option> */}
+
+            <option value="pending" className="textRed">
+              Pending
+            </option>
+            <option value="running" className="textYellow">
+              Running
+            </option>
+            <option value="completed" className="textGreen">
+              Completed
+            </option>
           </select>
 
           <div className="d-flex flex-row">
@@ -134,7 +150,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
           </div>
         </form>
       </div>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </>
   );
 }
