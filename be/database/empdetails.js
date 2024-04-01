@@ -1,3 +1,4 @@
+const { text } = require("express");
 const mongoose = require("mongoose");
 
 const empdetailsSchema = new mongoose.Schema(
@@ -9,7 +10,7 @@ const empdetailsSchema = new mongoose.Schema(
     },
     date:{
       type: String,
-      required: true,
+      // required: true,
     },
     time: {
       type: String,

@@ -14,7 +14,18 @@ const empaddSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-     
+    },
+    mobile:{
+      type: Number,
+      default: null,
+    },
+    dob:{
+      type: String,
+      default: null,
+    },
+    position:{
+      type: String,
+      default:"Developer",
     },
     role: {
       type: String,

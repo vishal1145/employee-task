@@ -2,6 +2,7 @@ const express = require("express");
 require("./database/config");
 const EmpDetail = require("./database/empdetails");
 const EmpAdd = require("./database/empadd");
+const Message = require("./database/messages");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 
@@ -188,6 +189,35 @@ app.get("/empsearch/:key", async (req, resp) => {
       // { status: { $regex: req.params.key } },
     ],
   });
+  resp.send(result);
+});
+
+app.get("/messagebodyname/:id", async (req, resp) => {
+  const result = await EmpAdd.find({_id: req.params.id });
+  if (result) {
+    resp.send(result);
+  } else {
+    resp.send("result not found");
+  }
+});
+
+app.post("/addmessages", async (req, resp) => {
+  let message = new Message(req.body);
+  let result = await message.save();
+  resp.send(result);
+});
+
+app.get("/getmessages/:id", async (req, resp) => {
+  let result = await Message.find({ empid: req.params.id });
+  if (result) {
+    resp.send(result);
+  } else {
+    resp.send("result not found");
+  }
+});
+
+app.delete("/deletechat/:id", async (req, resp) => {
+  const result = await Message.deleteOne({ _id: req.params.id });
   resp.send(result);
 });
 
