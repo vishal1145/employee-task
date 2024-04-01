@@ -67,12 +67,12 @@ export default function Updatetask() {
         }
       );
       result = await result.json();
-      if (result) {
-        toast("Profile updated successfully");
-      }
-      setTimeout(() => {
-        navigate(-1);
-      }, 2000);
+      // if (result) {
+      //   toast("Profile updated successfully");
+      // }
+      navigate(-1);
+      // setTimeout(() => {
+      // }, 1000);
     } catch (error) {
       console.error("Error updating profile:", error);
     } finally {

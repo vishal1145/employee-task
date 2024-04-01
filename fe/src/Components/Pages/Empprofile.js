@@ -48,9 +48,10 @@ export default function Empprofile() {
                   <div className="card border-0">
                     <h4>Name : {item.name}</h4>
                     <h4>Email : {item.email}</h4>
-                    <h4>Mobile No : </h4>
-                    <h4>Age : </h4>
-                    <h4>State : </h4>
+                    <h4>Mobile No : {item.mobile}</h4>
+                    <h4>Date of birth : {item.dob}</h4>
+                    <h4>Position : {item.position}</h4>
+                    <h4>Date of joining : {item.joining}</h4>
                     {/* <h4>Completed Project : </h4>
                       <h4>Running Project : </h4>
                       <h4>Pending Project : </h4> */}

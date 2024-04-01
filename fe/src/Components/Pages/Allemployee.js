@@ -117,13 +117,13 @@ export default function Allemployee() {
                                 item.profileimage == null ? (
                                   <img
                                     src={"/empimg.jpg"}
-                                    alt="photo"
+                                    alt=""
                                     style={{ width: "100%" }}
                                   />
                                 ) : (
                                   <img
                                     src={item.profileimage}
-                                    alt="photo"
+                                    alt=""
                                     style={{ width: "100%" }}
                                   />
                                 )}

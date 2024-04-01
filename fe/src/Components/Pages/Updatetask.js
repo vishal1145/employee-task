@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import JoditEditor from "jodit-react";
+import DOMPurify from "dompurify";
+
+// import CKEditor from "@ckeditor/ckeditor5-react";
+// import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default function Updatetask(props) {
   // const [empdeatils, setEmpdetails] = useState("");
@@ -13,6 +18,15 @@ export default function Updatetask(props) {
   const navigate = useNavigate();
   // const params = useParams();
   console.log("dbchdhc", taskId);
+
+  // const config = useMemo(
+    
+  //   {
+  //     readonly: false, // all options from https://xdsoft.net/jodit/docs/,
+  //     placeholder: "Start typings...",
+  //   },
+  //   []
+  // );
 
   // const getEmpdetails = async () => {
   //   let result = await fetch(
@@ -51,6 +65,7 @@ export default function Updatetask(props) {
     if (!status || status === "Choose any one") {
       setStatus("Pending");
     }
+    // const sanitizedContent = DOMPurify.sanitize(editor.current.value);
 
     let result = await fetch(
       `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
@@ -82,62 +97,80 @@ export default function Updatetask(props) {
           <label htmlFor="addtask" className="form-label shno">
             Add Task
           </label>
-          <textarea
+
+          <JoditEditor
+            //ref={editor}
+            value={task}
+            
+            // config={config}
+            // tabIndex={1} // tabIndex of textarea
+            // onBlur={(newContent) => setContent(newContent)} // preferred to use only this option to update the content for performance reasons
+            onChange={(newTask) => {
+              setTask(newTask);
+            }}
+          />
+          {/* <textarea
             type="text"
             className="form-control"
             id="addtask"
             value={task}
             onChange={(e) => setTask(e.target.value)}
             placeholder="Add Task Here"
-          />
+          /> */}
+          <div className="d-flex justify-content-between pt-2">
+            <div className="wid-50 p-1">
+              <label htmlFor="timeduration" className="form-label">
+                Time Duration
+              </label>
+              <select
+                type="text"
+                className="form-control"
+                id="timeduration"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                placeholder="Time Duration"
+                required
+              >
+                <option disabled selected>
+                  Choose any one
+                </option>
+                <option value="2 hours">2 hours</option>
+                <option value="4 hours">4 hours</option>
+                <option value="6 hours">6 hours</option>
+              </select>
+            </div>
+            
 
-          <label htmlFor="timeduration" className="form-label">
-            Time Duration
-          </label>
-          <select
-            type="text"
-            className="form-control"
-            id="timeduration"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-            placeholder="Time Duration"
-            required
-          >
-            <option disabled selected>
-              Choose any one
-            </option>
-            <option value="2 hours">2 hours</option>
-            <option value="4 hours">4 hours</option>
-            <option value="6 hours">6 hours</option>
-          </select>
-
-          <label htmlFor="status" className="form-label">
+            <div className="wid-50 p-1">
+              <label htmlFor="date" className="form-label">
+                Date
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                id="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </div>
+          </div>
+          {/* <div>
+            <label htmlFor="status" className="form-label">
             Status
           </label>
-          <select
+            <select
             className="form-select"
             aria-label="Default select example"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
             <option disabled>Choose any one</option>
-            {/* <option value="In Development">In Development</option> */}
-            {/* <option value="In Testing">In Testing</option> */}
             <option value="pending">Pending</option>
             <option value="running">Running</option>
             <option value="completed">Completed</option>
           </select>
+          </div> */}
 
-          <label htmlFor="date" className="form-label">
-            Date
-          </label>
-          <input
-            type="date"
-            className="form-control"
-            id="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
           <div className="d-flex flex-row">
             <button
               className="btn mt-3 me-2 wid-100"

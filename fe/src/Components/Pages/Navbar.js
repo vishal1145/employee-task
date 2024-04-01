@@ -67,7 +67,11 @@ export default function Navbar() {
               {/* <div className="alignend"> */}
               {JSON.parse(authData).role === "admin" ? (
                 <div>
-                  <NavLink className="btn" aria-current="page" to={"/alldetails/6607bf172046ed21af45bb74"}>
+                  <NavLink
+                    className="btn"
+                    aria-current="page"
+                    to={"/alldetails/660ac3661e2437097f39c4ea"}
+                  >
                     All Details
                   </NavLink>
                   <NavLink className="btn" to="/addemp">

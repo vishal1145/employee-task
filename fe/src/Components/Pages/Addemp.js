@@ -34,7 +34,7 @@ export default function Adddetails() {
 
         setTimeout(() => {
           navigate(-1);
-        }, 2000);
+        }, 1000);
       } else {
         throw new Error("Email Id is already in database");
       }
