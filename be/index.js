@@ -168,7 +168,7 @@ app.delete("/deleteemp/:id", async (req, resp) => {
 
 app.put("/addstatus/:id", async (req, resp) => {
   const result = await EmpDetail.updateOne(
-    { _id: req.params.id },
+    { _id: req.params.id},
     { $set: req.body }
   );
   resp.send(result)
