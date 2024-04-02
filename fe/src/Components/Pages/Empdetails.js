@@ -3,6 +3,7 @@ import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import Adddetails from "./Addtask";
 import Updatetask from "./Updatetask";
+// import * as DOMPurify from 'dompurify';
 
 
 export default function Empdetails() {
@@ -17,6 +18,7 @@ export default function Empdetails() {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState("");
   const [listname, setListname] = useState("");
+
   const params = useParams();
   const navigate = useNavigate();
 
@@ -24,12 +26,13 @@ export default function Empdetails() {
     getEmpdetails();
     getMessages();
     getListname();
-  }, [params.id, dataUploaded]); 
+  }, [params.id, dataUploaded]);
 
   function htmlToText(html) {
     const tempElement = document.createElement("div");
     tempElement.innerHTML = html;
     return tempElement.textContent || tempElement.innerText || "";
+    // return tempElement.innerHTML;
   }
 
   const getEmpdetails = async () => {
@@ -41,11 +44,14 @@ export default function Empdetails() {
     );
 
     result = await result.json();
+    // let tasks = result.task
+    // let clean = DOMPurify.sanitize(tasks);
+    // console.log(clean);
     // let textContent = htmlToText(result);
     setEmpdetails(result);
   };
 
-  
+
 
   // const searchuser = async (event) => {
   //   let key = event.target.value;
@@ -98,6 +104,7 @@ export default function Empdetails() {
     result = await result.json();
     if (result) {
       getEmpdetails();
+      setStatus("");
     }
   };
 
@@ -141,7 +148,7 @@ export default function Empdetails() {
   const handleUpdateTaskClick = (taskId) => {
     setSelectedTaskId(taskId);
     setShowUpdateTaskModal(true);
-    getEmpdetails();
+    // getEmpdetails();
   };
 
   const addMessages = async () => {
@@ -234,10 +241,13 @@ export default function Empdetails() {
           <thead>
             <tr>
               <th className="wid-20 text-start">Task</th>
-              <th className="wid-10 text-center">Date</th>
-              <th className="wid-10 text-center">Estimate</th>
-              <th className="wid-10 text-center">Status</th>
-
+              <th className="wid-7 text-center">Date</th>
+              <th className="wid-5 text-center">Estimate</th>
+              {JSON.parse(authData).role === "admin" ? (
+                <th className="wid-5 text-center">Status</th>
+              ) : (
+                <th className="wid-7 text-center">Status</th>
+              )}
               {JSON.parse(authData).role === "admin" ? (
                 <th className="wid-5 text-center">Modify</th>
               ) : null}
@@ -249,48 +259,53 @@ export default function Empdetails() {
                   <tr
                     style={{
                       backgroundColor:
-                        item.status === "pending"
+                        item.status === "Pending"
                           ? "rgba(239, 154, 154, 0.7)"
-                          : item.status === "running"
+                          : item.status === "Running"
                           ? "rgba(255, 235, 59, 0.6)"
-                          : item.status === "completed"
+                          : item.status === "Completed"
                           ? "rgba(0, 137, 123, 0.8)"
                           : "rgba(239, 154, 154, 0.7)",
                     }}
                   >
-                    <td className="text-start">{htmlToText(item.task)}</td>
+                    <td className="text-start">
+                      {htmlToText(item.task)}
+                    </td>
+                    {/* <td className="text-start">{item.task}</td> */}
                     <td className="text-center">{item.date}</td>
                     <td className="text-center">{item.time}</td>
-                    <td className="text-center">
-                      <NavLink
-                        className="text-decoration-none"
-                        onClick={() => addstatus(item._id)}
-                      >
-                        <select
-                          className={`form-select choosestatus ${getStatusColorClass(
-                            item.status || status
-                          )}`}
-                          value={item.status || status}
-                          onChange={(e) => setStatus(e.target.value)}
+                    {/* <div>
+
+                  dangerouslySetInnerHTML={{ __html: item.task }}
+                  </div> */}
+                    {JSON.parse(authData).role === "admin" ? (
+                      <td className="text-center">{item.status}</td>
+                    ) : (
+                      <td className="text-center" key={index}>
+                        <NavLink
+                          className="text-decoration-none"
+                          onClick={() => addstatus(item._id)}
                         >
-                          <option value="pending" className="textRed">
-                            Pending
-                          </option>
-                          <option value="running" className="textYellow">
-                            Running
-                          </option>
-                          <option value="completed" className="textGreen">
-                            Completed
-                          </option>
-                          {/* <option value="Ready for work" className="textGray">
-                            Ready for work
-                          </option>
-                          <option value="Canceled" className="textRed">
-                            Canceled
-                          </option> */}
-                        </select>{" "}
-                      </NavLink>
-                    </td>
+                          <select
+                            className={`form-select choosestatus ${getStatusColorClass(
+                              status
+                            )}`}
+                            value={item.status || status}
+                            onChange={(e) => setStatus(e.target.value)}
+                          >
+                            <option value="Pending" className="textRed">
+                              Pending
+                            </option>
+                            <option value="Running" className="textYellow">
+                              Running
+                            </option>
+                            <option value="Completed" className="textGreen">
+                              Completed
+                            </option>
+                          </select>
+                        </NavLink>
+                      </td>
+                    )}
                     {JSON.parse(authData).role === "admin" ? (
                       <td className="modifysec text-center">
                         <i
@@ -383,14 +398,12 @@ export default function Empdetails() {
                     <div
                       className="getmessage"
                       style={{
-                        textAlign:
-                          item.name === "Admin" ? "left" : "left",
+                        textAlign: item.name === "Admin" ? "left" : "left",
                         backgroundColor:
                           item.name === "Rishi Ranjan"
                             ? "rgba(9, 185, 129, 0.4)"
                             : "rgba(0, 137, 123, 0.4)",
-                        alignSelf:
-                          item.name === "Admin" ? "start" : "end",
+                        alignSelf: item.name === "Admin" ? "start" : "end",
                       }}
                     >
                       <div className="">

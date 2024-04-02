@@ -2,21 +2,21 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import JoditEditor from "jodit-react";
-import DOMPurify from "dompurify";
+// import DOMPurify from "dompurify";
 
 // import CKEditor from "@ckeditor/ckeditor5-react";
 // import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default function Updatetask(props) {
-  // const [empdeatils, setEmpdetails] = useState("");
+  const [empdeatils, setEmpdetails] = useState("");
   const { taskId, paramsId } = props;
   const [task, setTask] = useState("");
   const [time, setTime] = useState("");
-  const [status, setStatus] = useState("pending");
+  const [status, setStatus] = useState("Pending");
   const [date, setDate] = useState("");
 
   const navigate = useNavigate();
-  // const params = useParams();
+  const params = useParams();
   console.log("dbchdhc", taskId);
 
   // const config = useMemo(
@@ -28,22 +28,10 @@ export default function Updatetask(props) {
   //   []
   // );
 
-  // const getEmpdetails = async () => {
-  //   let result = await fetch(
-  //     `${process.env.REACT_APP_API_KEY}/empdetails/${params.id}`,
-  //     {
-  //       method: "get",
-  //     }
-  //   );
-
-  //   result = await result.json();
-  //   setEmpdetails(result);
-  // };
 
   useEffect(() => {
     getUpdate();
-    // getEmpdetails();
-  }, []);
+  },[]);
   
   const getUpdate = async () => {
     let result = await fetch(
@@ -54,10 +42,10 @@ export default function Updatetask(props) {
     );
 
     result = await result.json();
-    console.log(result);
+    // console.log(result);
     setTask(result.task);
     setTime(result.time);
-    setStatus(result.status || "pending");
+    setStatus(result.status || "Pending");
     setDate(result.date || ""); // If date is not present, set it to an empty string
   };
 
@@ -80,6 +68,7 @@ export default function Updatetask(props) {
     result = await result.json();
     if (result) {
       toast("Task updated successfully");
+      // navigate("/alldetails/" + paramsId);
       window.location.reload();
     }
     // setTimeout(() => {
@@ -154,7 +143,7 @@ export default function Updatetask(props) {
               />
             </div>
           </div>
-          {/* <div>
+          <div>
             <label htmlFor="status" className="form-label">
             Status
           </label>
@@ -165,11 +154,11 @@ export default function Updatetask(props) {
             onChange={(e) => setStatus(e.target.value)}
           >
             <option disabled>Choose any one</option>
-            <option value="pending">Pending</option>
-            <option value="running">Running</option>
-            <option value="completed">Completed</option>
+            <option value="Pending">Pending</option>
+            <option value="Running">Running</option>
+            <option value="Completed">Completed</option>
           </select>
-          </div> */}
+          </div>
 
           <div className="d-flex flex-row">
             <button

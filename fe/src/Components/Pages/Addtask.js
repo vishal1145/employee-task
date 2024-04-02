@@ -5,13 +5,13 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import JoditEditor from "jodit-react";
-import DOMPurify from "dompurify";
+// import DOMPurify from "dompurify";
 
 const Adddetails = ({ fetchUpdatedEmpDetails }) => {
   const [task, setTask] = useState("");
   const [time, setTime] = useState("2 hours");
   const [date, setDate] = useState("");
-  const [status, setStatus] = useState("pending");
+  // const [status, setStatus] = useState("Pending");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
     setLoading(true);
 
     const empid = params.id;
-    const sanitizedTask = DOMPurify.sanitize(task);
+    // const sanitizedTask = DOMPurify.sanitize(task);
 
     // console.log("Sanitized Content:", sanitizedTask);
 
@@ -31,9 +31,9 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
       let result = await fetch(`${process.env.REACT_APP_API_KEY}/adddetails`, {
         method: "post",
         body: JSON.stringify({
-          task: sanitizedTask,
+          task,
           time,
-          status,
+          // status,
           empid,
           date,
         }),
@@ -60,7 +60,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
     setTask("");
     setDate("");
     setTime("2 hours");
-    setStatus("pending");
+    // setStatus("pending");
   };
 
   // const handleCancel = () => {
