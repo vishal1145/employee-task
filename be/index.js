@@ -7,8 +7,8 @@ const nodemailer = require("nodemailer");
 const cors = require("cors");
 
 const Jwt = require("jsonwebtoken");
+const empdetails = require("./database/empdetails");
 const jwtKey = "algofolks";
-
 
 const app = express();
 // app.use(express.json());
@@ -110,7 +110,6 @@ app.post("/adddetails", async (req, resp) => {
 //   resp.send(result);
 // });
 
-
 app.post("/addemp", async (req, resp) => {
   try {
     const existingEmployee = await EmpAdd.findOne({ email: req.body.email });
@@ -125,10 +124,11 @@ app.post("/addemp", async (req, resp) => {
   } catch (error) {
     // Handle other errors
     console.error("An error occurred:", error);
-    return resp.status(500).send("An error occurred while adding the employee.");
+    return resp
+      .status(500)
+      .send("An error occurred while adding the employee.");
   }
 });
-
 
 app.get("/empprofile/:id", async (req, resp) => {
   const result = await EmpAdd.find({ _id: req.params.id });
@@ -168,10 +168,10 @@ app.delete("/deleteemp/:id", async (req, resp) => {
 
 app.put("/addstatus/:id", async (req, resp) => {
   const result = await EmpDetail.updateOne(
-    { _id: req.params.id},
+    { _id: req.params.id },
     { $set: req.body }
   );
-  resp.send(result)
+  resp.send(result);
 });
 
 app.put("/updateprofile/:id", async (req, resp) => {
@@ -193,7 +193,7 @@ app.get("/empsearch/:key", async (req, resp) => {
 });
 
 app.get("/messagebodyname/:id", async (req, resp) => {
-  const result = await EmpAdd.find({_id: req.params.id });
+  const result = await EmpAdd.find({ _id: req.params.id });
   if (result) {
     resp.send(result);
   } else {
@@ -221,6 +221,57 @@ app.delete("/deletechat/:id", async (req, resp) => {
   resp.send(result);
 });
 
+app.get("/statuscount/:id", async (req, resp) => {
+  try {
+    let result = await EmpDetail.findOne({ empid: req.params.id });
+
+    if (result) {
+      const pendingCount = await EmpDetail.countDocuments({
+        empid: req.params.id,
+        status: "Pending",
+      });
+      const runningCount = await EmpDetail.countDocuments({
+        empid: req.params.id,
+        status: "Running",
+      });
+      const completedCount = await EmpDetail.countDocuments({
+        empid: req.params.id,
+        status: "Completed",
+      });
+
+      resp.json({
+        pending: pendingCount,
+        running: runningCount,
+        completed: completedCount,
+      });
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    console.error(error);
+    resp.status(500).json({ message: "Internal server error" });
+  }
+});
+// app.get("/statuscount/:id", async (req, res) => {
+//   // let eid = req.params.id;
+//   try {
+//     let item = await EmpDetail.find(empid : req.params.id);
+
+//     const pendingCount = await item.countDocuments({ status: "Pending" });
+//     const runningCount = await item.countDocuments({ status: "Running" });
+//     const completedCount = await item.countDocuments({ status: "Completed" });
+
+//     res.json({
+//       pending: pendingCount,
+//       running: runningCount,
+//       completed: completedCount,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
 app.post("/forgotpassword", async (req, res) => {
   const { email } = req.body;
 
@@ -237,17 +288,19 @@ app.post("/forgotpassword", async (req, res) => {
     });
 
     // Configure Nodemailer transporter
-   const transporter = nodemailer.createTransport({
-     host: "smtp.ethereal.email",
-     port: 587,
-     auth: {
-       user: "lexus.smith16@ethereal.email",
-       pass: "rjg7r9F4vc6qBfCkVy",
-     },
-   });
+    const transporter = nodemailer.createTransport({
+      host: "smtp.ethereal.email",
+      port: 587,
+      auth: {
+        user: "lexus.smith16@ethereal.email",
+        pass: "rjg7r9F4vc6qBfCkVy",
+      },
+    });
 
     // Email options
-    const baseURL = process.env.BASE_URL || 'https://employee-backend.algofolks.com/resetpassword'; // Assuming BASE_URL is set in your environment variables
+    const baseURL =
+      process.env.BASE_URL ||
+      "https://employee-backend.algofolks.com/resetpassword"; // Assuming BASE_URL is set in your environment variables
 
     const resetLink = `${baseURL}?token=${resetToken}`; // Include the token in the reset link
 
@@ -293,6 +346,5 @@ app.post("/resetpassword", async (req, res) => {
     res.status(400).json({ message: "Invalid or expired token" });
   }
 });
-
 
 app.listen(5000);
