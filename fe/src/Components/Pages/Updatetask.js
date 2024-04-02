@@ -12,8 +12,8 @@ export default function Updatetask(props) {
   const { taskId, paramsId } = props;
   const [task, setTask] = useState("");
   const [time, setTime] = useState("");
-  const [status, setStatus] = useState("Pending");
-  const [date, setDate] = useState("");
+  // const [status, setStatus] = useState("Pending");
+  // const [date, setDate] = useState("");
 
   const navigate = useNavigate();
   const params = useParams();
@@ -45,21 +45,21 @@ export default function Updatetask(props) {
     // console.log(result);
     setTask(result.task);
     setTime(result.time);
-    setStatus(result.status || "Pending");
-    setDate(result.date || ""); // If date is not present, set it to an empty string
+    // setStatus(result.status || "Pending");
+    // setDate(result.date || ""); // If date is not present, set it to an empty string
   };
 
   const collectData = async () => {
-    if (!status || status === "Choose any one") {
-      setStatus("Pending");
-    }
+    // if (!status || status === "Choose any one") {
+    //   setStatus("Pending");
+    // }
     // const sanitizedContent = DOMPurify.sanitize(editor.current.value);
 
     let result = await fetch(
       `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
       {
         method: "put",
-        body: JSON.stringify({ task, time, status, date }), // Include date in the request body
+        body: JSON.stringify({ task, time }), // Include date in the request body
         headers: {
           "Content-Type": "application/json",
         },
@@ -90,7 +90,6 @@ export default function Updatetask(props) {
           <JoditEditor
             //ref={editor}
             value={task}
-            
             // config={config}
             // tabIndex={1} // tabIndex of textarea
             // onBlur={(newContent) => setContent(newContent)} // preferred to use only this option to update the content for performance reasons
@@ -107,7 +106,7 @@ export default function Updatetask(props) {
             placeholder="Add Task Here"
           /> */}
           <div className="d-flex justify-content-between pt-2">
-            <div className="wid-50 p-1">
+            <div className="wid-100">
               <label htmlFor="timeduration" className="form-label">
                 Time Duration
               </label>
@@ -123,14 +122,18 @@ export default function Updatetask(props) {
                 <option disabled selected>
                   Choose any one
                 </option>
+                <option value="1 hours">1 hours</option>
                 <option value="2 hours">2 hours</option>
+                <option value="3 hours">3 hours</option>
                 <option value="4 hours">4 hours</option>
+                <option value="5 hours">5 hours</option>
                 <option value="6 hours">6 hours</option>
+                <option value="7 hours">7 hours</option>
+                <option value="8 hours">8 hours</option>
               </select>
             </div>
-            
 
-            <div className="wid-50 p-1">
+            {/* <div className="wid-50 p-1">
               <label htmlFor="date" className="form-label">
                 Date
               </label>
@@ -141,9 +144,9 @@ export default function Updatetask(props) {
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
               />
-            </div>
+            </div> */}
           </div>
-          <div>
+          {/* <div>
             <label htmlFor="status" className="form-label">
             Status
           </label>
@@ -158,7 +161,7 @@ export default function Updatetask(props) {
             <option value="Running">Running</option>
             <option value="Completed">Completed</option>
           </select>
-          </div>
+          </div> */}
 
           <div className="d-flex flex-row">
             <button

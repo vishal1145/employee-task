@@ -74,8 +74,12 @@ export default function Navbar() {
                   >
                     All Details
                   </NavLink>
-                  <NavLink className="btn" to="/addemp">
+                  {/* <NavLink className="btn" to="/addemp">
                     Add Employee
+                  </NavLink> */}
+
+                  <NavLink className="btn" to="/allemployee">
+                    Employees
                   </NavLink>
                 </div>
               ) : null}

@@ -1,16 +1,24 @@
 import React, { useEffect } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { ClipLoader } from 'react-spinners';
+import axios from "axios";
 
 export default function Empnamemenu() {
   const [listname, setListname] = React.useState([]);
   const [loading, setLoading] = React.useState(true); // Add loading state
+  const [counts, setCounts] = React.useState({
+    pending: 0,
+    running: 0,
+    completed: 0,
+  });
 
   const params = useParams();
 
   useEffect(() => {
     getListname();
-  }, []);
+    getStatusCount();
+    
+  },[]);
 
   const getListname = async () => {
     try {
@@ -23,6 +31,29 @@ export default function Empnamemenu() {
       setLoading(false); // Set loading to false after data is fetched
     }
   };
+
+  const getStatusCount = async () => {
+    try {
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/statuscount/${params.id}`,
+        {
+          method: "get",
+        }
+      );
+
+      result = await result.json();
+      setCounts(result);
+      // return result;
+    } catch (error) {
+      console.error("Error fetching status counts:", error);
+      return {
+        pending: 0,
+        running: 0,
+        completed: 0,
+      };
+    }
+  };
+
 
   const searchuser = async (event) => {
     let key = event.target.value;
@@ -72,7 +103,7 @@ export default function Empnamemenu() {
               listname
                 .filter((item) => item.role !== "admin") // Filter out admins
                 .map((item, index) => (
-                  <div className="pe-0 allemp" key={index}>
+                  <div className="pe-0 allemp" key={item._id}>
                     <NavLink
                       to={"/alldetails/" + item._id}
                       className="navlink-custom btn"
@@ -95,7 +126,17 @@ export default function Empnamemenu() {
                             />
                           )}
                         </div>
-                        <div className="menuname">{item.name}</div>
+                        <div className="menuname">
+                          <div>{item.name}</div>
+                          <div className="mt-1" style={{ fontSize: "10px" }} key={item._id}>
+                            Completed: {counts.completed} | Running:
+                            {counts.running} | Pending:
+                            {counts.pending}
+                            {/* Completed: {item.completed} | Running:
+                            {item.running} | Pending:
+                            {item.pending} */}
+                          </div>
+                        </div>
                       </div>
                     </NavLink>
                   </div>

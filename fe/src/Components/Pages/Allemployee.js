@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Link, useParams } from "react-router-dom";
-import { ClipLoader } from 'react-spinners';
-import Swal from 'sweetalert2'; // Import SweetAlert
+import { ClipLoader } from "react-spinners";
+import Swal from "sweetalert2"; // Import SweetAlert
 
 export default function Allemployee() {
   const [listname, setListname] = useState([]);
@@ -29,13 +29,13 @@ export default function Allemployee() {
   const deleteemp = async (id) => {
     // Use SweetAlert to confirm deletion
     Swal.fire({
-      title: 'Are you sure?',
-      text: 'You won\'t be able to revert this!',
-      icon: 'warning',
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         let result = await fetch(
@@ -50,11 +50,7 @@ export default function Allemployee() {
         result = await result.json();
         if (result) {
           getListname();
-          Swal.fire(
-            'Deleted!',
-            'Your file has been deleted.',
-            'success'
-          );
+          Swal.fire("Deleted!", "Your file has been deleted.", "success");
         }
       }
     });
@@ -64,7 +60,17 @@ export default function Allemployee() {
     <>
       <div className="allemployee">
         <div className="container-xl">
-          <div className="row mt-4">
+          <div className="row mt-2">
+            <div className="d-flex align-items-center justify-content-between bg-white" style={{position:"sticky", top:"0", zIndex:"999"}}>
+              <div className="">
+                <h4>All Employee</h4>
+              </div>
+              <div>
+                <NavLink className="btn addempbtn" to="/addemp">
+                  Add Employee
+                </NavLink>
+              </div>
+            </div>
             {loading ? ( // Display loader if loading state is true
               <div className="loader-container2">
                 <ClipLoader size={35} color={"#36D7B7"} loading={loading} />

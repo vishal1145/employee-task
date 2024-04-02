@@ -124,8 +124,9 @@ export default function Updatetask() {
                   className="form-control"
                   id="addemail"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  // onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email"
+                  disabled
                 />
 
                 <label htmlFor="addpassword" className="form-label">

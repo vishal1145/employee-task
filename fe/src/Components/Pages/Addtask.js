@@ -9,7 +9,7 @@ import JoditEditor from "jodit-react";
 
 const Adddetails = ({ fetchUpdatedEmpDetails }) => {
   const [task, setTask] = useState("");
-  const [time, setTime] = useState("2 hours");
+  const [time, setTime] = useState("1 hours");
   const [date, setDate] = useState("");
   // const [status, setStatus] = useState("Pending");
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
           time,
           // status,
           empid,
-          date,
+          date: new Date(),
         }),
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +59,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
     }
     setTask("");
     setDate("");
-    setTime("2 hours");
+    setTime("1 hours");
     // setStatus("pending");
   };
 
@@ -89,7 +89,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
             ref={editor}
             value={task}
             // config={config}
-            tabIndex={1} // tabIndex of textarea
+            // tabIndex={1} // tabIndex of textarea
             // onBlur={(newTask) => setTask(newTask)} // preferred to use only this option to update the content for performance reasons
             onChange={(newTask) => {
               setTask(newTask);
@@ -98,7 +98,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
           />
 
           <div className="d-flex align-items-center justify-content-between">
-            <div className="wid-50 p-1">
+            <div className="wid-100 pt-2">
               <label htmlFor="timeduration" className="form-label">
                 Time Duration
               </label>
@@ -114,12 +114,17 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
                 <option disabled selected>
                   Choose any one
                 </option>
+                <option value="1 hours">1 hours</option>
                 <option value="2 hours">2 hours</option>
+                <option value="3 hours">3 hours</option>
                 <option value="4 hours">4 hours</option>
+                <option value="5 hours">5 hours</option>
                 <option value="6 hours">6 hours</option>
+                <option value="7 hours">7 hours</option>
+                <option value="8 hours">8 hours</option>
               </select>
             </div>
-            <div className="wid-50 p-1">
+            {/* <div className="wid-50 p-1">
               <label htmlFor="date" className="form-label pt-2">
                 Date
               </label>
@@ -132,7 +137,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
                 placeholder="Date"
                 required
               />
-            </div>
+            </div> */}
           </div>
           {/* <label htmlFor="status" className="form-label pt-2">
             Status

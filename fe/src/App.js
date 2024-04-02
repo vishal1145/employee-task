@@ -20,7 +20,7 @@ import Updatetask from "./Components/Pages/Updatetask";
 import Userdashboard from "./Components/Layouts/Userdashboard";
 import Empdashmenu from "./Components/Pages/Empdashmenu";
 import Updateprofile from "./Components/Pages/Updateprofile";
-// import Algofolkshome from "./Components/Pages/Algofolkshome";
+import Algofolkshome from "./Components/Pages/Algofolkshome";
 import Pagenotfound from "./Components/Pages/Pagenotfound";
 
 function App() {
@@ -57,7 +57,7 @@ function App() {
             path="/allemployee"
             element={
               <>
-                <Allemployee />
+                <Allemployee /> <Navbar />
               </>
             }
           />
@@ -133,7 +133,6 @@ function App() {
 
         <Route path="/loginpage" element={<Loginpage />} />
         <Route path="/resetpassword" element={<ResetPasswordPage />} />
-
       </Routes>
       {/* <Footer /> */}
     </Router>

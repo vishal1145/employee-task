@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ClipLoader } from "react-spinners";
@@ -7,7 +7,7 @@ import { ClipLoader } from "react-spinners";
 export default function Adddetails() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
+  // const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -18,7 +18,7 @@ export default function Adddetails() {
     try {
       let result = await fetch(`${process.env.REACT_APP_API_KEY}/addemp`, {
         method: "post",
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify({ name, email, password, role:"user"}),
         headers: {
           "Content-Type": "application/json",
         },
@@ -86,7 +86,7 @@ export default function Adddetails() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
           />
-          <label htmlFor="role" className="form-label">
+          {/* <label htmlFor="role" className="form-label">
             Role
           </label>
           <select
@@ -97,20 +97,23 @@ export default function Adddetails() {
           >
             <option value="user">User</option>
             <option value="admin">Admin</option>
-          </select>
+          </select> */}
+          <div className="d-flex align-items-center justify-content-between">
+            <button
+              className="btn mt-3 wid-50"
+              type="button"
+              onClick={collectData}
+              disabled={loading} // Disable button when loading is true
+            >
+              {loading ? (
+                <ClipLoader size={20} color={"#ffffff"} loading={loading} />
+              ) : (
+                "Submit"
+              )}
+            </button>
 
-          <button
-            className="btn mt-3"
-            type="button"
-            onClick={collectData}
-            disabled={loading} // Disable button when loading is true
-          >
-            {loading ? (
-              <ClipLoader size={20} color={"#ffffff"} loading={loading} />
-            ) : (
-              "Submit"
-            )}
-          </button>
+            <NavLink type="cancel" to={"/allemployee"} className="btn mt-3 wid-50">Cancel</NavLink>
+          </div>
         </form>
       </div>
       <ToastContainer />

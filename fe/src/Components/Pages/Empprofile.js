@@ -28,8 +28,7 @@ export default function Empprofile() {
         {/* <div className=""> */}
         {empprofile.length > 0
           ? empprofile.map((item, index) => (
-              <div
-                className="row mx-auto justify-content-center">
+              <div className="row mx-auto justify-content-center">
                 <div className="p-3 col-12 col-sm-5 col-md-5 col-lg-5">
                   <div className="card emppropic">
                     {item.profileimage === "" || item.profileimage == null ? (
@@ -46,12 +45,14 @@ export default function Empprofile() {
 
                 <div className="p-3 col-12 col-sm-5 col-md-5 col-lg-5">
                   <div className="card border-0">
-                    <h4>Name : {item.name}</h4>
-                    <h4>Email : {item.email}</h4>
-                    <h4>Mobile No : {item.mobile}</h4>
-                    <h4>Date of birth : {item.dob}</h4>
-                    <h4>Position : {item.position}</h4>
-                    <h4>Date of joining : {item.joining}</h4>
+                    <pre>
+                      <h4>Name                  : {item.name}</h4>
+                      <h4>Email                   : {item.email}</h4>
+                      <h4>Mobile No          : {item.mobile}</h4>
+                      <h4>Date of birth     : {item.dob}</h4>
+                      <h4>Position              : {item.position}</h4>
+                      <h4>Date of joining  : {item.joining}</h4>
+                    </pre>
                     {/* <h4>Completed Project : </h4>
                       <h4>Running Project : </h4>
                       <h4>Pending Project : </h4> */}

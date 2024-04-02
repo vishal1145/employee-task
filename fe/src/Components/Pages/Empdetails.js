@@ -3,6 +3,8 @@ import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import Adddetails from "./Addtask";
 import Updatetask from "./Updatetask";
+import moment from "moment";
+import parse from "html-react-parser";
 // import * as DOMPurify from 'dompurify';
 
 
@@ -241,12 +243,16 @@ export default function Empdetails() {
           <thead>
             <tr>
               <th className="wid-20 text-start">Task</th>
-              <th className="wid-7 text-center">Date</th>
-              <th className="wid-5 text-center">Estimate</th>
+              {JSON.parse(authData).role === "admin" ? (
+                <>
+                  <th className="wid-7 text-center">Date</th>
+                  <th className="wid-5 text-center">Estimate</th>
+                </>
+              ) : null}
               {JSON.parse(authData).role === "admin" ? (
                 <th className="wid-5 text-center">Status</th>
               ) : (
-                <th className="wid-7 text-center">Status</th>
+                <th className="wid-5 text-center">Status</th>
               )}
               {JSON.parse(authData).role === "admin" ? (
                 <th className="wid-5 text-center">Modify</th>
@@ -268,12 +274,19 @@ export default function Empdetails() {
                           : "rgba(239, 154, 154, 0.7)",
                     }}
                   >
-                    <td className="text-start">
-                      {htmlToText(item.task)}
+                    {/* <td className="text-start">{htmlToText(item.task)}</td> */}
+                    <td className="text-start lh-sm pb-0 pt-3">
+                      {parse(item.task)}
                     </td>
                     {/* <td className="text-start">{item.task}</td> */}
-                    <td className="text-center">{item.date}</td>
-                    <td className="text-center">{item.time}</td>
+                    {JSON.parse(authData).role === "admin" ? (
+                      <>
+                        <td className="text-center">
+                          {moment(item.date).format("DD-MM-YYYY")}
+                        </td>
+                        <td className="text-center">{item.time}</td>
+                      </>
+                    ) : null}
                     {/* <div>
 
                   dangerouslySetInnerHTML={{ __html: item.task }}
@@ -332,7 +345,8 @@ export default function Empdetails() {
             data-bs-target="#offcanvasRight"
             aria-controls="offcanvasRight"
           >
-            Message
+            {/* Message */}
+            <i class="bi bi-chat-square-text-fill"></i>
           </button>
 
           <div
@@ -488,7 +502,7 @@ export default function Empdetails() {
       </div>
       {showAddTaskModal && (
         <div className="modal" style={{ display: "block" }}>
-          <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-dialog modal-dialog-centered modal-xl">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Add New Task</h5>
@@ -509,7 +523,7 @@ export default function Empdetails() {
 
       {showUpdateTaskModal && (
         <div className="modal" style={{ display: "block" }}>
-          <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-dialog modal-dialog-centered modal-xl">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Update Task</h5>
