@@ -2,9 +2,17 @@ const express = require("express");
 require("./database/config");
 const EmpDetail = require("./database/empdetails");
 const EmpAdd = require("./database/empadd");
+const userdb = require("./database/user");
 const Message = require("./database/messages");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
+require("dotenv").config();
+
+
+const session = require("express-session");
+const passport = require("passport");
+const OAuth2Strategy = require("passport-google-oauth2").Strategy;
+
 
 const Jwt = require("jsonwebtoken");
 const empdetails = require("./database/empdetails");
@@ -12,7 +20,62 @@ const jwtKey = "algofolks";
 
 const app = express();
 // app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin:"http://localhost:3000",
+  methods:"GET,POST,PUT,DELETE",
+  credentials:true
+}));
+
+app.use(session({
+  resave:false,
+  saveUninitialized:true
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(
+  new OAuth2Strategy({
+    clientID:process.env.client_id,
+    clientSecret:process.env.client_secret,
+    callbackURL:"/auth/google/callback",
+    scope:["profile","email"]
+  },
+  async(accessToken,refreshToken,profile,done)=>{
+    try{
+      let user = await userdb.findOne({googleId:profile.id});
+      
+      if(!user){
+        const displayName = `${profile.name.givenName} ${profile.name.familyName}`;
+        user = new userdb({
+          googleId: profile.id,
+          displayName: displayName,
+          email: profile.emails[0].value,
+          image: profile.photos[0].value,
+        });
+        await user.save();
+      }
+      return done(null,user)
+    }catch(error){
+      return done(error,null)
+    }
+  }
+  )
+);
+
+passport.serializeUser((user,done)=>{
+  done(null,user);
+})
+
+passport.deserializeUser((user,done)=>{
+  done(null,user);
+})
+
+app.get("/auth/google",passport.authenticate("google",{scope:["profile","email"]}))
+app.get("/auth/google/callback",passport.authenticate("google",{
+  successRedirect:"http://localhost:3000",
+  failureRedirect:"http://localhost:3000/loginpage"
+}))
 
 app.use(express.json({ limit: 52428800 }));
 

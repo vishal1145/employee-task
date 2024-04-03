@@ -35,18 +35,6 @@ const empaddSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    completed:{
-      type: Number,
-      default: 0,
-    },
-    running:{
-      type: Number,
-      default: 0,
-    },
-    pending:{
-      type: Number,
-      default: 0,
-    },
   },
   { timestamps: true }
 );
