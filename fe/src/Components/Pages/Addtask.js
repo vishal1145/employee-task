@@ -23,10 +23,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
     setLoading(true);
 
     const empid = params.id;
-    // const sanitizedTask = DOMPurify.sanitize(task);
-
-    // console.log("Sanitized Content:", sanitizedTask);
-
+   
     try {
       let result = await fetch(`${process.env.REACT_APP_API_KEY}/adddetails`, {
         method: "post",

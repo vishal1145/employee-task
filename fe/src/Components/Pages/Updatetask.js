@@ -19,15 +19,6 @@ export default function Updatetask(props) {
   const params = useParams();
   console.log("dbchdhc", taskId);
 
-  // const config = useMemo(
-    
-  //   {
-  //     readonly: false, // all options from https://xdsoft.net/jodit/docs/,
-  //     placeholder: "Start typings...",
-  //   },
-  //   []
-  // );
-
 
   useEffect(() => {
     getUpdate();

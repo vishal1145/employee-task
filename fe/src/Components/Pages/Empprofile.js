@@ -43,9 +43,9 @@ export default function Empprofile() {
                   </div>
                 </div>
 
-                <div className="p-3 col-12 col-sm-5 col-md-5 col-lg-5">
-                  <div className="card border-0">
-                    <pre>
+                <div className="p-3 col-12 col-sm-6 col-md-6 col-lg-6">
+                  <div className="card border-0" >
+                    <pre style={{overflow:"hidden"}}>
                       <h4>Name                  : {item.name}</h4>
                       <h4>Email                   : {item.email}</h4>
                       <h4>Mobile No          : {item.mobile}</h4>

@@ -1,51 +1,66 @@
 import React, { useEffect } from "react";
 import { NavLink, useParams } from "react-router-dom";
-import { ClipLoader } from 'react-spinners';
+import { ClipLoader } from "react-spinners";
 import axios from "axios";
 
 export default function Empnamemenu() {
   const [listname, setListname] = React.useState([]);
   const [loading, setLoading] = React.useState(true); // Add loading state
-  const [counts, setCounts] = React.useState({
-    pending: 0,
-    running: 0,
-    completed: 0,
-  });
+  // const [statusCount, setStatusCount] = React.useState({
+  //   pending: 0,
+  //   running: 0,
+  //   completed: 0,
+  // });
+  // const [counts, setCounts] = React.useState({
+  //   pending: 0,
+  //   running: 0,
+  //   completed: 0,
+  // });
 
   const params = useParams();
 
   useEffect(() => {
     getListname();
-    getStatusCount();
-    
-  },[]);
+    // getStatusCount();
+  });
 
   const getListname = async () => {
     try {
       let result = await fetch(`${process.env.REACT_APP_API_KEY}/listname`);
       result = await result.json();
-      setListname(result);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
+
+      const updatedList = await Promise.all(
+        result.map(async (user) => {
+          const counts = await getStatusCount(user._id);
+          return { ...user, counts };
+        })
+      );
+      setListname(updatedList);
+      
+    } 
+    // catch (error) {
+    //   console.log("Error fetching data:", error);
+    // } 
+    finally {
       setLoading(false); // Set loading to false after data is fetched
     }
   };
 
-  const getStatusCount = async () => {
+  const getStatusCount = async (id) => {
     try {
       let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/statuscount/${params.id}`,
+        `${process.env.REACT_APP_API_KEY}/statuscount/${id}`,
         {
           method: "get",
         }
       );
 
       result = await result.json();
-      setCounts(result);
-      // return result;
-    } catch (error) {
-      console.error("Error fetching status counts:", error);
+      // setCounts(result);
+      return result;
+    } 
+    catch (error) {
+      // console.log("Error fetching status counts:", error);
       return {
         pending: 0,
         running: 0,
@@ -53,7 +68,6 @@ export default function Empnamemenu() {
       };
     }
   };
-
 
   const searchuser = async (event) => {
     let key = event.target.value;
@@ -107,7 +121,7 @@ export default function Empnamemenu() {
                     <NavLink
                       to={"/alldetails/" + item._id}
                       className="navlink-custom btn"
-                      activeClassName="active-link" // Add activeClassName for active state
+                      // activeclassname="active-link" // Add activeClassName for active state
                     >
                       <div className="menudiv">
                         <div className="menuimg">
@@ -128,13 +142,15 @@ export default function Empnamemenu() {
                         </div>
                         <div className="menuname">
                           <div>{item.name}</div>
-                          <div className="mt-1" style={{ fontSize: "10px" }} key={item._id}>
-                            Completed: {counts.completed} | Running:
-                            {counts.running} | Pending:
-                            {counts.pending}
-                            {/* Completed: {item.completed} | Running:
-                            {item.running} | Pending:
-                            {item.pending} */}
+                          <div
+                            className="mt-1"
+                            style={{ fontSize: "10px" }}
+                            // key={}
+                          >
+                            Completed: {item.counts.completed} | Running:{" "}
+                            {item.counts.running} | Pending:{" "}
+                            {item.counts.pending}
+                            
                           </div>
                         </div>
                       </div>
@@ -147,6 +163,7 @@ export default function Empnamemenu() {
           </>
         )}
       </div>
+     
     </>
   );
 }

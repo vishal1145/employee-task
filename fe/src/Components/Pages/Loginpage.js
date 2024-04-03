@@ -17,6 +17,10 @@ export default function Loginpage() {
     }
   }, []);
   
+  const loginwithgoogle = ()=>{
+    window.open(`${process.env.REACT_APP_API_KEY}/auth/google/callback`,"_self")
+  }
+
   const handlelogin = async () => {
     // console.log(email, password)
     let result = await fetch(`${process.env.REACT_APP_API_KEY}/login`, {
@@ -75,7 +79,10 @@ export default function Loginpage() {
   return (
     <>
       <div className="container-xl">
-        <div className="loginpage row" style={{ marginTop: "7%" }}>
+        <div
+          className="loginpage row"
+          style={{ marginTop: "7%", overflow: "hidden" }}
+        >
           <div className="col-12 col-sm-12 col-md-4 col-lg-4">
             <div className="card" style={{ marginLeft: "15%" }}>
               <div className="card-header ">
@@ -111,17 +118,28 @@ export default function Loginpage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyPress={handleKeyPress}
-
                 placeholder="Password"
                 required
               />
               <div className="resetpass text-end py-2">
-                <Link className="text-decoration-none" onClick={handleResetPassword}>Reset Password</Link>
+                <Link
+                  className="text-decoration-none"
+                  onClick={handleResetPassword}
+                >
+                  Reset Password
+                </Link>
               </div>
               {/* <div className="wid-100"> */}
-              <button className="btn mt-2" type="button" onClick={handlelogin
-              }>
+              <button className="btn mt-2" type="button" onClick={handlelogin}>
                 Login
+              </button>
+
+              <button
+                className="btn mt-2"
+                type="button"
+                onClick={loginwithgoogle}
+              >
+                <i class="bi bi-google"></i> Sign in with Google
               </button>
               {/* </div> */}
             </form>

@@ -28,14 +28,15 @@ export default function Empdetails() {
     getEmpdetails();
     getMessages();
     getListname();
-  }, [params.id, dataUploaded]);
+  }, [params.id]);
+  // [params.id, dataUploaded];
 
-  function htmlToText(html) {
-    const tempElement = document.createElement("div");
-    tempElement.innerHTML = html;
-    return tempElement.textContent || tempElement.innerText || "";
-    // return tempElement.innerHTML;
-  }
+  // function htmlToText(html) {
+  //   const tempElement = document.createElement("div");
+  //   tempElement.innerHTML = html;
+  //   return tempElement.textContent || tempElement.innerText || "";
+  //   // return tempElement.innerHTML;
+  // }
 
   const getEmpdetails = async () => {
     let result = await fetch(
@@ -46,10 +47,6 @@ export default function Empdetails() {
     );
 
     result = await result.json();
-    // let tasks = result.task
-    // let clean = DOMPurify.sanitize(tasks);
-    // console.log(clean);
-    // let textContent = htmlToText(result);
     setEmpdetails(result);
   };
 
@@ -106,7 +103,7 @@ export default function Empdetails() {
     result = await result.json();
     if (result) {
       getEmpdetails();
-      setStatus("");
+      setStatus("Pending");
     }
   };
 
@@ -154,7 +151,6 @@ export default function Empdetails() {
   };
 
   const addMessages = async () => {
-    // const empid = JSON.parse(localStorage.getItem('user'))._id;
     const name = JSON.parse(localStorage.getItem("user")).name;
     const empid = params.id;
     // var messages = message;
@@ -262,7 +258,7 @@ export default function Empdetails() {
           <tbody>
             {empdeatils.length > 0
               ? empdeatils.map((item, index) => (
-                  <tr
+                  <tr key={index}
                     style={{
                       backgroundColor:
                         item.status === "Pending"
@@ -287,10 +283,7 @@ export default function Empdetails() {
                         <td className="text-center">{item.time}</td>
                       </>
                     ) : null}
-                    {/* <div>
-
-                  dangerouslySetInnerHTML={{ __html: item.task }}
-                  </div> */}
+                    
                     {JSON.parse(authData).role === "admin" ? (
                       <td className="text-center">{item.status}</td>
                     ) : (
@@ -324,6 +317,7 @@ export default function Empdetails() {
                         <i
                           className="bi bi-pencil-square"
                           onClick={() => handleUpdateTaskClick(item._id)}
+                          style={{cursor:"pointer"}}
                         ></i>
 
                         <Link onClick={() => deletetask(item._id)}>
@@ -345,13 +339,13 @@ export default function Empdetails() {
             data-bs-target="#offcanvasRight"
             aria-controls="offcanvasRight"
           >
-            {/* Message */}
-            <i class="bi bi-chat-square-text-fill"></i>
+            
+            <i className="bi bi-chat-square-text-fill"></i>
           </button>
 
           <div
             className="offcanvas"
-            tabindex="-1"
+            tabIndex="-1"
             id="offcanvasRight"
             aria-labelledby="offcanvasRightLabel"
           >
@@ -433,7 +427,7 @@ export default function Empdetails() {
                           </h6>
 
                           <div className="chatdotmenu">
-                            <div class="dropdown">
+                            <div className="dropdown">
                               <button
                                 className="btn dropdown-toggl"
                                 type="button"
@@ -455,15 +449,11 @@ export default function Empdetails() {
                                     className="dropdown-item p-1"
                                     onClick={() => deletechat(item._id)}
                                   >
-                                    {/* <i class="bi bi-trash3-fill"></i> */}
+                                    
                                     Delete
                                   </Link>
                                 </li>
-                                {/* <li> */}
-                                {/* <Link className="p-1 dropdown-item" onClick={() => { if (item.role === 'user') { addadmin(item._id) } else { adduser(item._id) } }}>{item.role}</Link> */}
-                                {/* </li> */}
-                                {/* <li><a class="dropdown-item" href="#">Another action</a></li> */}
-                                {/* <li><a class="dropdown-item" href="#">Something else here</a></li> */}
+                               
                               </ul>
                             </div>
                           </div>
@@ -500,6 +490,7 @@ export default function Empdetails() {
           </div>
         </div>
       </div>
+
       {showAddTaskModal && (
         <div className="modal" style={{ display: "block" }}>
           <div className="modal-dialog modal-dialog-centered modal-xl">
@@ -514,7 +505,7 @@ export default function Empdetails() {
               </div>
               <div className="modal-body">
                 <Adddetails fetchUpdatedEmpDetails={fetchUpdatedEmpDetails} />
-                {/* Render AddDetails component within the modal */}
+                
               </div>
             </div>
           </div>

@@ -91,6 +91,10 @@ export default function Updatetask() {
     };
   };
 
+  const backstep=()=>{
+    navigate(-1);
+  }
+
   return (
     <>
       <div className="addform">
@@ -148,31 +152,31 @@ export default function Updatetask() {
                 </label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   id="addmobile"
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}
                   placeholder="Mobile No"
                 />
 
-                <label for="adddob" class="form-label">
+                <label for="adddob" className="form-label">
                   Date of birth
                 </label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   id="adddob"
                   value={dob}
                   onChange={(e) => setDob(e.target.value)}
                   placeholder="DD/MM/Year"
                 />
 
-                <label for="addposition" class="form-label">
+                <label for="addposition" className="form-label">
                   Position
                 </label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   id="addposition"
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
@@ -200,11 +204,25 @@ export default function Updatetask() {
                 </div>
               </div>
             </div>
-
-            <div className="" style={{ width: "71%" }}>
-              <button className="btn mt-3 w-100" type="button" onClick={collectData}>
-                Submit
-              </button>
+            <div className="d-flex pt-3">
+              <div className="pe-2" style={{ width: "50%" }}>
+                <button
+                  className="btn w-100"
+                  type="button"
+                  onClick={collectData}
+                >
+                  Submit
+                </button>
+              </div>
+              <div className="ps-2" style={{ width: "50%" }}>
+                <button
+                  className="btn w-100"
+                  type="button"
+                  onClick={backstep}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </form>
         )}
