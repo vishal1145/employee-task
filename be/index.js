@@ -21,15 +21,18 @@ const jwtKey = "algofolks";
 const app = express();
 // app.use(express.json());
 app.use(cors({
-  origin:"http://localhost:3000",
+  origin:"process.env.FRONTEND_URL",
   methods:"GET,POST,PUT,DELETE",
   credentials:true
 }));
 
-app.use(session({
-  resave:false,
-  saveUninitialized:true
-}));
+app.use(
+  session({
+    secret: "algofolks",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -73,8 +76,8 @@ passport.deserializeUser((user,done)=>{
 
 app.get("/auth/google",passport.authenticate("google",{scope:["profile","email"]}))
 app.get("/auth/google/callback",passport.authenticate("google",{
-  successRedirect:"http://localhost:3000",
-  failureRedirect:"http://localhost:3000/loginpage"
+  successRedirect:"process.env.FRONTEND_URL",
+  failureRedirect:"process.env.FRONTEND_URL/loginpage"
 }))
 
 app.use(express.json({ limit: 52428800 }));
