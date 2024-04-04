@@ -15,16 +15,12 @@ const OAuth2Strategy = require("passport-google-oauth2").Strategy;
 
 
 const Jwt = require("jsonwebtoken");
-const empdetails = require("./database/empdetails");
+// const empdetails = require("./database/empdetails");
 const jwtKey = "algofolks";
 
 const app = express();
 // app.use(express.json());
-app.use(cors({
-  origin:"process.env.FRONTEND_URL",
-  methods:"GET,POST,PUT,DELETE",
-  credentials:true
-}));
+app.use(cors());
 
 app.use(
   session({
@@ -39,8 +35,8 @@ app.use(passport.session());
 
 passport.use(
   new OAuth2Strategy({
-    clientID:process.env.client_id,
-    clientSecret:process.env.client_secret,
+    clientID:`${process.env.client_id}`,
+    clientSecret:`${process.env.client_secret}`,
     callbackURL:"/auth/google/callback",
     scope:["profile","email"]
   },
@@ -76,8 +72,8 @@ passport.deserializeUser((user,done)=>{
 
 app.get("/auth/google",passport.authenticate("google",{scope:["profile","email"]}))
 app.get("/auth/google/callback",passport.authenticate("google",{
-  successRedirect:"process.env.FRONTEND_URL",
-  failureRedirect:"process.env.FRONTEND_URL/loginpage"
+  successRedirect:`${process.env.FRONTEND_URL}`,
+  failureRedirect:`${process.env.FRONTEND_URL}/loginpage`
 }))
 
 app.use(express.json({ limit: 52428800 }));
