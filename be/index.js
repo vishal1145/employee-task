@@ -123,6 +123,59 @@ app.post("/login", async (req, resp) => {
 //     }
 // }
 //*************************************************************************************************************** */
+//**************************************************For Home Page*************************** */
+app.get("/alltask", async (req, resp) => {
+  const result = await EmpDetail.find();
+  if (result) {
+    resp.send(result);
+  } else {
+    resp.send("result not found");
+  }
+});
+
+app.get("/listnamess", async (req, resp) => {
+  const result = await EmpAdd.find();
+  if (result) {
+    resp.send(result);
+  } else {
+    resp.send("result not found");
+  }
+});
+
+ app.get("/listnamess/:id", async (req, resp) => {
+  const result = await EmpAdd.findOne({_id:req.params.id});
+  if (result) {
+    resp.send(result);
+  } else {
+    resp.send("result not found");
+  }
+});
+
+
+app.post("/adddetailss", async(req, resp)=>{
+  let details = new EmpDetail(req.body);
+  let result = await details.save();
+  resp.send(result);
+});
+
+app.put("/updatetaskss/:id", async (req, resp) => {
+  let result = await EmpDetail.updateOne(
+    { _id: req.params.id },
+    { $set: req.body }
+  );
+  resp.send(result);
+});
+
+app.get("/taskautofillss/:id", async (req, resp) => {
+  let result = await EmpDetail.findOne({_id:req.params.id});
+  if (result) {
+    resp.send(result);
+  } else {
+    resp.send("result not found");
+  }
+});
+
+//******************************************************************************************* */
 
 app.get("/empdetails/:id", async (req, resp) => {
   const result = await EmpDetail.find({ empid: req.params.id });
