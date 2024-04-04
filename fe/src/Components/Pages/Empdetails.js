@@ -238,17 +238,17 @@ export default function Empdetails() {
         <table className="wid-100">
           <thead>
             <tr>
-              <th className="wid-20 text-start">Task</th>
+              <th className="wid-40 text-start">Task</th>
               {JSON.parse(authData).role === "admin" ? (
                 <>
-                  <th className="wid-7 text-center">Date</th>
+                  {/* <th className="wid-7 text-center">Date</th> */}
                   <th className="wid-5 text-center">Estimate</th>
                 </>
               ) : null}
               {JSON.parse(authData).role === "admin" ? (
-                <th className="wid-5 text-center">Status</th>
+                null
               ) : (
-                <th className="wid-5 text-center">Status</th>
+                <th className=" text-center" style={{width:"8%"}}>Status</th>
               )}
               {JSON.parse(authData).role === "admin" ? (
                 <th className="wid-5 text-center">Modify</th>
@@ -277,15 +277,15 @@ export default function Empdetails() {
                     {/* <td className="text-start">{item.task}</td> */}
                     {JSON.parse(authData).role === "admin" ? (
                       <>
-                        <td className="text-center">
+                        {/* <td className="text-center">
                           {moment(item.date).format("DD-MM-YYYY")}
-                        </td>
+                        </td> */}
                         <td className="text-center">{item.time}</td>
                       </>
                     ) : null}
                     
                     {JSON.parse(authData).role === "admin" ? (
-                      <td className="text-center">{item.status}</td>
+                      null
                     ) : (
                       <td className="text-center" key={index}>
                         <NavLink

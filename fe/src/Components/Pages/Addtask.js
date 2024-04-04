@@ -1,4 +1,4 @@
-import React, { useState, useRef} from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,6 +10,7 @@ import JoditEditor from "jodit-react";
 const Adddetails = ({ fetchUpdatedEmpDetails }) => {
   const [task, setTask] = useState("");
   const [time, setTime] = useState("1 hours");
+  const [name, setName] = useState("");
   const [date, setDate] = useState("");
   // const [status, setStatus] = useState("Pending");
   const [loading, setLoading] = useState(false);
@@ -23,46 +24,68 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
     setLoading(true);
 
     const empid = params.id;
-   
+
     try {
-      let result = await fetch(`${process.env.REACT_APP_API_KEY}/adddetails`, {
+      // First API call to fetch employee details
+      let result1 = await fetch(
+        `${process.env.REACT_APP_API_KEY}/listnamess/${params.id}`,
+        {
+          method: "get",
+        }
+      );
+      result1 = await result1.json();
+
+      // Extract necessary data from the first API call
+      const name = result1.name;
+
+      // Second API call to add details
+      let result2 = await fetch(`${process.env.REACT_APP_API_KEY}/adddetails`, {
         method: "post",
         body: JSON.stringify({
           task,
           time,
-          // status,
           empid,
+          name,
           date: new Date(),
         }),
         headers: {
           "Content-Type": "application/json",
         },
       });
-      result = await result.json();
-      if (result) {
-        toast.success("Task added successfully");
+      result2 = await result2.json();
 
+      if (result2) {
+        toast.success("Task added successfully");
         // Call the fetchUpdatedEmpDetails callback function
         fetchUpdatedEmpDetails();
       }
-
-      // setTimeout(() => {
-      //   navigate("/alldetails/"+params.id);
-      // }, 2000);
     } catch (error) {
       toast.error("Failed to add task");
     } finally {
       setLoading(false);
     }
+
     setTask("");
     setDate("");
     setTime("1 hours");
-    // setStatus("pending");
   };
 
   // const handleCancel = () => {
   //   navigate("/alldetails/" + params.id);
   // };
+  // const editorStyle = {
+  //   width: "100%",
+  //   height: "200px",
+  // };
+  // let jodit.make("#editor", {
+  //   saveHeightInStorage: true,
+  //   height: "auto",
+  //   width: "100%",
+  //   minWidth: 1000,
+  //   minHeight: 400,
+  //   maxWidth: 1600,
+  //   maxHeight: 1200,
+  // });
 
   return (
     <>
@@ -81,10 +104,11 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
             placeholder="Add Task Here"
             required
           /> */}
-
+          {/* <div style={editorStyle}> */}
           <JoditEditor
             ref={editor}
             value={task}
+            // style={{height:"200px"}}
             // config={config}
             // tabIndex={1} // tabIndex of textarea
             // onBlur={(newTask) => setTask(newTask)} // preferred to use only this option to update the content for performance reasons
@@ -93,6 +117,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
             }}
             // placeholder="Add Task Here"
           />
+          {/* </div> */}
 
           <div className="d-flex align-items-center justify-content-between">
             <div className="wid-100 pt-2">
