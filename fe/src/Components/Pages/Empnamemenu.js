@@ -97,9 +97,9 @@ export default function Empnamemenu() {
         style={{ justifyContent: "start" }}
       >
         <div className=" menusearch">
-          <form className="px-2">
+          <form className="px-2 py-2">
             <input
-              className="p-1"
+              className="p-1 mb-0"
               type="text"
               placeholder="Search here"
               onChange={searchuser}

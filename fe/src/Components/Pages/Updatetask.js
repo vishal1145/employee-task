@@ -113,7 +113,7 @@ export default function Updatetask(props) {
                 <option disabled selected>
                   Choose any one
                 </option>
-                <option value="1 hours">1 hours</option>
+                <option value="1 hour">1 hours</option>
                 <option value="2 hours">2 hours</option>
                 <option value="3 hours">3 hours</option>
                 <option value="4 hours">4 hours</option>

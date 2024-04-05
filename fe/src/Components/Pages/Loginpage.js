@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 
 export default function Loginpage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  
 
   const navigate = useNavigate();
 
@@ -16,10 +14,13 @@ export default function Loginpage() {
       navigate("/");
     }
   }, []);
-  
-  const loginwithgoogle = ()=>{
-    window.open(`${process.env.REACT_APP_API_KEY}/auth/google/callback`,"_self")
-  }
+
+  const loginwithgoogle = () => {
+    window.open(
+      `${process.env.REACT_APP_API_KEY}/auth/google/callback`,
+      "_self"
+    );
+  };
 
   const handlelogin = async () => {
     // console.log(email, password)
@@ -31,16 +32,16 @@ export default function Loginpage() {
       },
     });
     result = await result.json();
-  
+
     if (result.auth) {
       localStorage.setItem("user", JSON.stringify(result.user));
       localStorage.setItem("token", JSON.stringify(result.auth));
 
       var authData = localStorage.getItem("user");
 
-      if(JSON.parse(authData).role === "admin"){
+      if (JSON.parse(authData).role === "admin") {
         navigate("/");
-      }else{
+      } else {
         navigate("/" + JSON.parse(authData)._id);
       }
     } else {
@@ -54,16 +55,18 @@ export default function Loginpage() {
     }
   };
 
-
   const handleResetPassword = async () => {
     try {
-      let result = await fetch(`${process.env.REACT_APP_API_KEY}/forgotpassword`, {
-        method: "POST",
-        body: JSON.stringify({ email }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/forgotpassword`,
+        {
+          method: "POST",
+          body: JSON.stringify({ email }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       result = await result.json();
       if (result.message === "Reset password email sent") {
         toast.success("Reset password email sent successfully.");
@@ -78,13 +81,13 @@ export default function Loginpage() {
 
   return (
     <>
-      <div className="container-xl">
+      <div className="loginpage">
         <div
-          className="loginpage row"
-          style={{ marginTop: "7%", overflow: "hidden" }}
+          className="row"
+          // style={{ marginTop: "7%", overflow: "hidden" }}
         >
           <div className="col-12 col-sm-12 col-md-4 col-lg-4">
-            <div className="card" style={{ marginLeft: "15%" }}>
+            <div className="loginpagecard card">
               <div className="card-header ">
                 <div className="login-logo mx-auto">
                   <img src="/algofolks-logo.png" alt="Logo" />
@@ -94,7 +97,7 @@ export default function Loginpage() {
                 <h3 className="my-3">Log in</h3>
               </div>
             </div>
-            <form className="pt-4" style={{ marginLeft: "10%" }}>
+            <form className="loginpagecard pt-4">
               <label for="addemail" className="form-label">
                 Email Id
               </label>
@@ -134,13 +137,13 @@ export default function Loginpage() {
                 Login
               </button>
 
-              <button
+              {/* <button
                 className="btn mt-2"
                 type="button"
                 onClick={loginwithgoogle}
               >
                 <i class="bi bi-google"></i> Sign in with Google
-              </button>
+              </button> */}
               {/* </div> */}
             </form>
           </div>
@@ -151,14 +154,10 @@ export default function Loginpage() {
             style={{ position: "relative" }}
           >
             <img
+              className="loginpagesvg"
               src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/6b8a0699093857.5eeafdd995e46.gif"
               alt="GIF"
-              style={{
-                width: "100%",
-                position: "absolute",
-                top: "10%",
-                right: "-7%",
-              }}
+              style={{}}
             />
           </div>
         </div>

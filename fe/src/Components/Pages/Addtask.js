@@ -9,7 +9,7 @@ import JoditEditor from "jodit-react";
 
 const Adddetails = ({ fetchUpdatedEmpDetails }) => {
   const [task, setTask] = useState("");
-  const [time, setTime] = useState("1 hours");
+  const [time, setTime] = useState("1 hour");
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
   // const [status, setStatus] = useState("Pending");
@@ -67,7 +67,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
 
     setTask("");
     setDate("");
-    setTime("1 hours");
+    setTime("1 hour");
   };
 
   // const handleCancel = () => {
@@ -136,7 +136,7 @@ const Adddetails = ({ fetchUpdatedEmpDetails }) => {
                 <option disabled selected>
                   Choose any one
                 </option>
-                <option value="1 hours">1 hours</option>
+                <option value="1 hour">1 hours</option>
                 <option value="2 hours">2 hours</option>
                 <option value="3 hours">3 hours</option>
                 <option value="4 hours">4 hours</option>

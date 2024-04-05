@@ -58,19 +58,22 @@ export default function Allemployee() {
 
   return (
     <>
-      <div className="allemployee">
-        <div className="container-xl">
-          <div className="row mt-2">
-            <div className="d-flex align-items-center justify-content-between bg-white" style={{position:"sticky", top:"0", zIndex:"999"}}>
-              <div className="">
-                <h4>All Employee</h4>
-              </div>
-              <div>
-                <NavLink className="btn addempbtn" to="/addemp">
-                  Add Employee
-                </NavLink>
-              </div>
+      <div className="allemployee flex-column">
+        {/* <div className="container-xl"> */}
+          <div
+            className="py-2 px-3 d-flex align-items-center justify-content-between bg-white wid-100"
+            style={{ position: "sticky", top: "0", zIndex: "999" }}
+          >
+            {/* <div className=""> */}
+            <h4 className="mb-0">All Employee</h4>
+            {/* </div> */}
+            <div>
+              <NavLink className="btn addempbtn" to="/addemp">
+                Add Employee
+              </NavLink>
             </div>
+          </div>
+          <div className="row px-5">
             {loading ? ( // Display loader if loading state is true
               <div className="loader-container2">
                 <ClipLoader size={35} color={"#36D7B7"} loading={loading} />
@@ -149,7 +152,7 @@ export default function Allemployee() {
               </>
             )}
           </div>
-        </div>
+        {/* </div> */}
       </div>
     </>
   );

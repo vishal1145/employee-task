@@ -1,42 +1,40 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import Adddetails from "./Addtask";
-import Updatetask from "./Updatetask";
+// import Adddetails from "./Addtask";
+// import Updatetask from "./Updatetask";
 import moment from "moment";
+import { ClipLoader } from "react-spinners";
+import JoditEditor from "jodit-react";
 import parse from "html-react-parser";
-// import * as DOMPurify from 'dompurify';
-
 
 export default function Empdetails() {
   var authData = localStorage.getItem("user");
 
   const [empdeatils, setEmpdetails] = useState("");
   const [status, setStatus] = useState("");
-  const [showAddTaskModal, setShowAddTaskModal] = useState(false);
-  const [showUpdateTaskModal, setShowUpdateTaskModal] = useState(false);
-  const [selectedTaskId, setSelectedTaskId] = useState(null);
-  const [dataUploaded, setDataUploaded] = useState(false);
   const [text, setText] = useState("");
   const [messages, setMessages] = useState("");
   const [listname, setListname] = useState("");
+  const [task, setTask] = useState("");
+  const [time, setTime] = useState("1 hour");
+  const [name, setName] = useState("");
+  const [date, setDate] = useState("");
+  const [taskId, setTaskId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const params = useParams();
   const navigate = useNavigate();
+  const editor = useRef(null);
+  const closeButtonRef = useRef();
 
   useEffect(() => {
     getEmpdetails();
     getMessages();
     getListname();
-  }, [params.id]);
+    getUpdate();
+  },[params.id]);
   // [params.id, dataUploaded];
-
-  // function htmlToText(html) {
-  //   const tempElement = document.createElement("div");
-  //   tempElement.innerHTML = html;
-  //   return tempElement.textContent || tempElement.innerText || "";
-  //   // return tempElement.innerHTML;
-  // }
 
   const getEmpdetails = async () => {
     let result = await fetch(
@@ -50,27 +48,77 @@ export default function Empdetails() {
     setEmpdetails(result);
   };
 
+  const collectData = async () => {
+    setLoading(true);
 
+    const empid = params.id;
 
-  // const searchuser = async (event) => {
-  //   let key = event.target.value;
-  //   if (key) {
-  //     let result = await fetch(
-  //       `http://localhost:5000/empdetailssearch/${key}`,
-  //       {
-  //         headers: {
-  //           // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
-  //         },
-  //       }
-  //     );
-  //     result = await result.json();
-  //     if (result) {
-  //       setEmpdetails(result);
-  //     }
-  //   } else {
-  //     getEmpdetails();
-  //   }
-  // };
+    try {
+      let result2 = await fetch(`${process.env.REACT_APP_API_KEY}/adddetails`, {
+        method: "post",
+        body: JSON.stringify({
+          task,
+          time,
+          empid,
+          name,
+          date: new Date(),
+          assign: "Assign",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      result2 = await result2.json();
+
+      if (result2) {
+        toast.success("Task added successfully");
+        getEmpdetails();
+      }
+    } catch (error) {
+      toast.error("Failed to add task");
+    } finally {
+      setLoading(false);
+    }
+    setTask("");
+    setDate("");
+    setTime("1 hour");
+  };
+
+  const getUpdate = async (id) => {
+    setTaskId(id);
+    if (!id) return;
+    let result = await fetch(
+      `${process.env.REACT_APP_API_KEY}/taskautofill/${id}`,
+      {
+        method: "get",
+      }
+    );
+
+    result = await result.json();
+    setTask(result.task);
+    setTime(result.time);
+  };
+
+  const updateCollectData = async (taskId) => {
+    let result = await fetch(
+      `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
+      {
+        method: "put",
+        body: JSON.stringify({ task, time }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    result = await result.json();
+    if (result) {
+      toast.success("Task updated successfully");
+      window.location.reload();
+      setTask("");
+      // closeButtonRef.current.click();
+      getEmpdetails();
+    }
+  };
 
   const deletetask = async (id) => {
     let result = await fetch(
@@ -107,26 +155,8 @@ export default function Empdetails() {
     }
   };
 
-  // const getUpdate = async () => {
-  //   let result = await fetch(
-  //     `http://localhost:5000/taskautofill/${params.id}`,
-  //     {
-  //       method: "get",
-  //       //   headers: {
-  //       //     // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
-  //       //   },
-  //     }
-  //   );
-
-  //   result = await result.json();
-  //   setStatus(result.status);
-  // };
-
   const getStatusColorClass = (status) => {
     switch (status) {
-      // case "In Development":
-      // case "In Testing":
-      //   return "textBlue";
       case "running":
         return "textYellow";
       case "pending":
@@ -136,18 +166,6 @@ export default function Empdetails() {
       default:
         return "textRed";
     }
-  };
-
-
-  const fetchUpdatedEmpDetails = async () => {
-    // Fetch the updated employee details
-    await getEmpdetails();
-  };
-
-  const handleUpdateTaskClick = (taskId) => {
-    setSelectedTaskId(taskId);
-    setShowUpdateTaskModal(true);
-    // getEmpdetails();
   };
 
   const addMessages = async () => {
@@ -216,22 +234,93 @@ export default function Empdetails() {
     <>
       <div className="empdeatils wid-80">
         <div className="headsec">
-          <h5 className="">Task</h5>
+          <h5 className="mb-0">Task</h5>
           {JSON.parse(authData).role === "admin" ? (
-            <div
-              className="addtaskbtn"
-              // style={{ position: "fixed", top: "10%", right: "1.5%" }}
-            >
+            <div className="addtaskbtn">
               <button
-                // to={"/alldetails/" + params.id}
-                className="btn"
                 type="button"
-                onClick={() => setShowAddTaskModal(true)}
-                // data-bs-toggle="modal"
-                // data-bs-target="#exampleModal"
+                class="btn"
+                data-bs-toggle="modal"
+                data-bs-target="#addTaskModal"
               >
                 Add Task
               </button>
+
+              <div
+                class="modal fade"
+                id="addTaskModal"
+                tabindex="-1"
+                aria-labelledby="addTaskModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-dialog-centered modal-xl">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addTaskModalLabel">
+                        Add Task
+                      </h5>
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div class="modal-body">
+                      <form>
+                        <label htmlFor="addtask" className="form-label shno">
+                          Task
+                        </label>
+
+                        <JoditEditor
+                          ref={editor}
+                          value={task}
+                          onChange={(newTask) => {
+                            setTask(newTask);
+                          }}
+                        />
+
+                        <div className="d-flex align-items-center justify-content-between">
+                          <div className="wid-100 pt-2">
+                            <label
+                              htmlFor="timeduration"
+                              className="form-label"
+                            >
+                              Time Duration
+                            </label>
+                            <select
+                              className="form-select"
+                              aria-label="Default select example"
+                              id="timeduration"
+                              value={time}
+                              onChange={(e) => setTime(e.target.value)}
+                            >
+                              <option value="1 hour">1 hour</option>
+                              <option value="2 hours">2 hours</option>
+                              <option value="3 hours">3 hours</option>
+                              <option value="4 hours">4 hours</option>
+                              <option value="5 hours">5 hours</option>
+                              <option value="6 hours">6 hours</option>
+                              <option value="7 hours">7 hours</option>
+                              <option value="8 hours">8 hours</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="d-flex flex-row">
+                          <button
+                            className="btn mt-3 me-2 wid-100"
+                            type="button"
+                            onClick={collectData}
+                          >
+                            Submit
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           ) : null}
         </div>
@@ -245,10 +334,10 @@ export default function Empdetails() {
                   <th className="wid-5 text-center">Estimate</th>
                 </>
               ) : null}
-              {JSON.parse(authData).role === "admin" ? (
-                null
-              ) : (
-                <th className=" text-center" style={{width:"8%"}}>Status</th>
+              {JSON.parse(authData).role === "admin" ? null : (
+                <th className=" text-center" style={{ width: "8%" }}>
+                  Status
+                </th>
               )}
               {JSON.parse(authData).role === "admin" ? (
                 <th className="wid-5 text-center">Modify</th>
@@ -258,7 +347,8 @@ export default function Empdetails() {
           <tbody>
             {empdeatils.length > 0
               ? empdeatils.map((item, index) => (
-                  <tr key={index}
+                  <tr
+                    key={index}
                     style={{
                       backgroundColor:
                         item.status === "Pending"
@@ -283,10 +373,8 @@ export default function Empdetails() {
                         <td className="text-center">{item.time}</td>
                       </>
                     ) : null}
-                    
-                    {JSON.parse(authData).role === "admin" ? (
-                      null
-                    ) : (
+
+                    {JSON.parse(authData).role === "admin" ? null : (
                       <td className="text-center" key={index}>
                         <NavLink
                           className="text-decoration-none"
@@ -314,11 +402,109 @@ export default function Empdetails() {
                     )}
                     {JSON.parse(authData).role === "admin" ? (
                       <td className="modifysec text-center">
-                        <i
-                          className="bi bi-pencil-square"
+                        {/* <i
+                          className="bi bi-pencil-square pe-3"
                           onClick={() => handleUpdateTaskClick(item._id)}
-                          style={{cursor:"pointer"}}
-                        ></i>
+                          style={{ cursor: "pointer" }}
+                        ></i> */}
+
+                        <Link
+                          type="button"
+                          data-bs-toggle="modal"
+                          data-bs-target="#updateTaskModal"
+                        >
+                          <i
+                            className="bi bi-pencil-square pe-3"
+                            // onClick={() => handleUpdateTaskClick(item._id)}
+                            onClick={() => getUpdate(item._id)}
+                            style={{ cursor: "pointer" }}
+                          ></i>
+                        </Link>
+
+                        <div
+                          class="modal fade"
+                          id="updateTaskModal"
+                          tabindex="-1"
+                          aria-labelledby="updateTaskModalLabel"
+                          aria-hidden="true"
+                        >
+                          <div class="modal-dialog modal-dialog-centered modal-xl">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5
+                                  class="modal-title"
+                                  id="updateTaskModalLabel"
+                                >
+                                  Update Task
+                                </h5>
+                                <button
+                                  ref={closeButtonRef}
+                                  type="button"
+                                  class="btn-close"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                ></button>
+                              </div>
+                              <div class="modal-body">
+                                <form className="text-start">
+                                  <label
+                                    htmlFor="addtask"
+                                    className="form-label shno"
+                                  >
+                                    Task
+                                  </label>
+
+                                  <JoditEditor
+                                    //ref={editor}
+                                    value={task}
+                                    onChange={(newTask) => {
+                                      setTask(newTask);
+                                    }}
+                                  />
+
+                                  <div className="d-flex justify-content-between pt-2">
+                                    <div className="wid-100">
+                                      <label
+                                        htmlFor="timeduration"
+                                        className="form-label"
+                                      >
+                                        Time Duration
+                                      </label>
+                                      <select
+                                        className="form-select"
+                                        aria-label="Default select example"
+                                        id="timeduration"
+                                        value={time}
+                                        onChange={(e) =>
+                                          setTime(e.target.value)
+                                        }
+                                      >
+                                        <option value="1 hour">1 hour</option>
+                                        <option value="2 hours">2 hours</option>
+                                        <option value="3 hours">3 hours</option>
+                                        <option value="4 hours">4 hours</option>
+                                        <option value="5 hours">5 hours</option>
+                                        <option value="6 hours">6 hours</option>
+                                        <option value="7 hours">7 hours</option>
+                                        <option value="8 hours">8 hours</option>
+                                      </select>
+                                    </div>
+                                  </div>
+
+                                  <div className="d-flex flex-row">
+                                    <button
+                                      className="btn mt-3 me-2 wid-100"
+                                      type="button"
+                                      onClick={() => updateCollectData(taskId)}
+                                    >
+                                      Update
+                                    </button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
                         <Link onClick={() => deletetask(item._id)}>
                           <i className="bi bi-trash3-fill"></i>
@@ -339,7 +525,6 @@ export default function Empdetails() {
             data-bs-target="#offcanvasRight"
             aria-controls="offcanvasRight"
           >
-            
             <i className="bi bi-chat-square-text-fill"></i>
           </button>
 
@@ -449,11 +634,9 @@ export default function Empdetails() {
                                     className="dropdown-item p-1"
                                     onClick={() => deletechat(item._id)}
                                   >
-                                    
                                     Delete
                                   </Link>
                                 </li>
-                               
                               </ul>
                             </div>
                           </div>
@@ -491,28 +674,7 @@ export default function Empdetails() {
         </div>
       </div>
 
-      {showAddTaskModal && (
-        <div className="modal" style={{ display: "block" }}>
-          <div className="modal-dialog modal-dialog-centered modal-xl">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Add New Task</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setShowAddTaskModal(false)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <Adddetails fetchUpdatedEmpDetails={fetchUpdatedEmpDetails} />
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showUpdateTaskModal && (
+      {/* {showUpdateTaskModal && (
         <div className="modal" style={{ display: "block" }}>
           <div className="modal-dialog modal-dialog-centered modal-xl">
             <div className="modal-content">
@@ -530,7 +692,7 @@ export default function Empdetails() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       <ToastContainer />
     </>

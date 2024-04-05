@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 export default function Navbar() {
   var authData = localStorage.getItem("user");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
-
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -63,26 +61,23 @@ export default function Navbar() {
         </button>
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           {authData ? (
-            <div className="navbar-nav">
+            <div className="navbar-nav d-flex align-items-center">
               {/* <div className="alignend"> */}
-              {JSON.parse(authData).role === "admin" ? (
-                <div>
-                  <NavLink
-                    className="btn"
-                    aria-current="page"
-                    to={"/alldetails/660ac3661e2437097f39c4ea"}
-                  >
-                    All Details
-                  </NavLink>
-                  {/* <NavLink className="btn" to="/addemp">
-                    Add Employee
-                  </NavLink> */}
+                {JSON.parse(authData).role === "admin" ? (
+                  <div>
+                    <NavLink
+                      className="btn"
+                      aria-current="page"
+                      to={"/alldetails/660ac3661e2437097f39c4ea"}
+                    >
+                      All Details
+                    </NavLink>
 
-                  <NavLink className="btn" to="/allemployee">
-                    Employees
-                  </NavLink>
-                </div>
-              ) : null}
+                    <NavLink className="btn" to="/allemployee">
+                      Employees
+                    </NavLink>
+                  </div>
+                ) : null}
               {/* </div> */}
               {/* <NavLink
                     className="btn"
