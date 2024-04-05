@@ -8,11 +8,9 @@ const nodemailer = require("nodemailer");
 const cors = require("cors");
 require("dotenv").config();
 
-
 const session = require("express-session");
 const passport = require("passport");
 const OAuth2Strategy = require("passport-google-oauth2").Strategy;
-
 
 const Jwt = require("jsonwebtoken");
 // const empdetails = require("./database/empdetails");
@@ -34,47 +32,54 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use(
-  new OAuth2Strategy({
-    clientID:`${process.env.client_id}`,
-    clientSecret:`${process.env.client_secret}`,
-    callbackURL:"/auth/google/callback",
-    scope:["profile","email"]
-  },
-  async(accessToken,refreshToken,profile,done)=>{
-    try{
-      let user = await userdb.findOne({googleId:profile.id});
-      
-      if(!user){
-        const displayName = `${profile.name.givenName} ${profile.name.familyName}`;
-        user = new userdb({
-          googleId: profile.id,
-          displayName: displayName,
-          email: profile.emails[0].value,
-          image: profile.photos[0].value,
-        });
-        await user.save();
+  new OAuth2Strategy(
+    {
+      clientID: `${process.env.client_id}`,
+      clientSecret: `${process.env.client_secret}`,
+      callbackURL: "/auth/google/callback",
+      scope: ["profile", "email"],
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        let user = await userdb.findOne({ googleId: profile.id });
+
+        if (!user) {
+          const displayName = `${profile.name.givenName} ${profile.name.familyName}`;
+          user = new userdb({
+            googleId: profile.id,
+            displayName: displayName,
+            email: profile.emails[0].value,
+            image: profile.photos[0].value,
+          });
+          await user.save();
+        }
+        return done(null, user);
+      } catch (error) {
+        return done(error, null);
       }
-      return done(null,user)
-    }catch(error){
-      return done(error,null)
     }
-  }
   )
 );
 
-passport.serializeUser((user,done)=>{
-  done(null,user);
-})
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
 
-passport.deserializeUser((user,done)=>{
-  done(null,user);
-})
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
 
-app.get("/auth/google",passport.authenticate("google",{scope:["profile","email"]}))
-app.get("/auth/google/callback",passport.authenticate("google",{
-  successRedirect:`${process.env.FRONTEND_URL}`,
-  failureRedirect:`${process.env.FRONTEND_URL}/loginpage`
-}))
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    successRedirect: `${process.env.FRONTEND_URL}`,
+    failureRedirect: `${process.env.FRONTEND_URL}/loginpage`,
+  })
+);
 
 app.use(express.json({ limit: 52428800 }));
 
@@ -124,8 +129,8 @@ app.post("/login", async (req, resp) => {
 // }
 //*************************************************************************************************************** */
 //**************************************************For Home Page*************************** */
-app.get("/alltask", async (req, resp) => {
-  const result = await EmpDetail.find();
+app.get("/alltasknotempid", async (req, resp) => {
+  const result = await EmpDetail.find({ empid: null });
   if (result) {
     resp.send(result);
   } else {
@@ -142,8 +147,8 @@ app.get("/listnamess", async (req, resp) => {
   }
 });
 
- app.get("/listnamess/:id", async (req, resp) => {
-  const result = await EmpAdd.findOne({_id:req.params.id});
+app.get("/listnamess/:id", async (req, resp) => {
+  const result = await EmpAdd.findOne({ _id: req.params.id });
   if (result) {
     resp.send(result);
   } else {
@@ -151,8 +156,7 @@ app.get("/listnamess", async (req, resp) => {
   }
 });
 
-
-app.post("/adddetailss", async(req, resp)=>{
+app.post("/adddetailss", async (req, resp) => {
   let details = new EmpDetail(req.body);
   let result = await details.save();
   resp.send(result);
@@ -167,7 +171,7 @@ app.put("/updatetaskss/:id", async (req, resp) => {
 });
 
 app.get("/taskautofillss/:id", async (req, resp) => {
-  let result = await EmpDetail.findOne({_id:req.params.id});
+  let result = await EmpDetail.findOne({ _id: req.params.id });
   if (result) {
     resp.send(result);
   } else {

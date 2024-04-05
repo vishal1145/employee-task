@@ -15,17 +15,17 @@ const empaddSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    mobile:{
+    mobile: {
       type: Number,
       default: null,
     },
-    dob:{
+    dob: {
       type: String,
       default: null,
     },
-    position:{
+    position: {
       type: String,
-      default:"Developer",
+      default: "Developer",
     },
     role: {
       type: String,
@@ -40,4 +40,3 @@ const empaddSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("empadd", empaddSchema);
-

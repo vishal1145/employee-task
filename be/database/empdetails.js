@@ -8,7 +8,7 @@ const empdetailsSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    date:{
+    date: {
       type: String,
     },
     time: {
@@ -18,7 +18,13 @@ const empdetailsSchema = new mongoose.Schema(
       type: String,
       default: "Pending",
     },
-    empid: String,
+    empid: {
+      type: String,
+      default: null,
+    },
+    assign: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
