@@ -9,21 +9,18 @@ export default function Algofolkshome() {
   const [listname, setListname] = useState([]);
   // const [employee, setEmployee] = useState("");
   const [task, setTask] = useState("");
-  const [editingTask, setEditingTask] = useState({
-    id: "",
-    task: "",
-    name: "",
-  });
-  const [displayedTask, setDisplayedTask] = useState("");
   const [name, setName] = useState("");
+  const [assign, setAssign] = useState("");
+  const [time, setTime] = useState("1 hour");
   const [alltask, setAllTask] = useState([]);
 
+  const closeButtonRef = useRef();
   const editor = useRef(null);
 
   useEffect(() => {
     getListname();
-    getUpdates();
-    getAllTask();
+    getUpdate();
+    getAllTaskNotId();
   }, []);
 
   const collectData = async () => {
@@ -45,8 +42,8 @@ export default function Algofolkshome() {
         {
           method: "post",
           body: JSON.stringify({
-            task: displayedTask,
-            name: "No Name",
+            task,
+            assign: "Not Assign",
             // empid,
           }),
           headers: {
@@ -66,34 +63,43 @@ export default function Algofolkshome() {
     } finally {
       // setLoading(false);
     }
-    setDisplayedTask("");
-    // setName("");
-    getAllTask();
+    setTask("");
+    // setAssign("Not Assign");
+    getAllTaskNotId();
   };
 
   const updateTask = async (id) => {
     try {
-      // Fetch the specific task details based on its ID
-      const response = await fetch(
-        `${process.env.REACT_APP_API_KEY}/taskautofillss/${id}`
-      );
-      const editingTask = await response.json();
+      let result1 = await fetch(`${process.env.REACT_APP_API_KEY}/listnamess`, {
+        method: "get",
+      });
+      result1 = await result1.json();
 
-      // Update the task using the fetched data
-      const result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/updatetaskss/${editingTask.id}`,
+      setListname(result1);
+      let empid = name;
+
+      let result2 = await fetch(
+        `${process.env.REACT_APP_API_KEY}/updatetaskss/${id}`,
         {
           method: "put",
-          body: JSON.stringify({ task: editingTask.task, name }),
+          body: JSON.stringify({
+            task,
+            empid,
+            time,
+            date: new Date(),
+            assign: "Assign",
+          }),
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
-      const data = await result.json();
-      if (data) {
+      result2 = await result2.json();
+      if (result2) {
         toast.success("Task updated successfully");
-        getAllTask(); // Refresh task list
+        // window.location.reload();
+        closeButtonRef.current.click();
+        getAllTaskNotId(); // Refresh task list
       }
     } catch (error) {
       toast.error("Failed to update task");
@@ -109,7 +115,7 @@ export default function Algofolkshome() {
     setListname(result);
   };
 
-  let getUpdates = async (id) => {
+  let getUpdate = async (id) => {
     if (!id) return;
 
     let result = await fetch(
@@ -124,11 +130,15 @@ export default function Algofolkshome() {
     setName(result.name);
   };
 
-  const getAllTask = async () => {
-    let result = await fetch(`${process.env.REACT_APP_API_KEY}/alltask`, {
-      method: "get",
-    });
+  const getAllTaskNotId = async () => {
+    let result = await fetch(
+      `${process.env.REACT_APP_API_KEY}/alltasknotempid`,
+      {
+        method: "get",
+      }
+    );
     result = await result.json();
+    console.log(result);
 
     setAllTask(result);
   };
@@ -146,7 +156,7 @@ export default function Algofolkshome() {
     result = await result.json();
     if (result) {
       toast("Task deleted Successfully");
-      getAllTask();
+      getAllTaskNotId();
     }
   };
 
@@ -165,7 +175,7 @@ export default function Algofolkshome() {
               <div>
                 <button
                   type="button"
-                  className="btn btn-primary me-0"
+                  className="btn me-0"
                   data-bs-toggle="modal"
                   data-bs-target="#addTaskModal"
                 >
@@ -186,6 +196,7 @@ export default function Algofolkshome() {
                           Add Task
                         </h5>
                         <button
+                          ref={closeButtonRef}
                           type="button"
                           class="btn-close"
                           data-bs-dismiss="modal"
@@ -204,13 +215,13 @@ export default function Algofolkshome() {
                             </label>
                             <JoditEditor
                               ref={editor}
-                              // value={task}
+                              value={task}
                               // style={{height:"200px"}}
                               // config={config}
                               // tabIndex={1} // tabIndex of textarea
                               // onBlur={(newTask) => setTask(newTask)} // preferred to use only this option to update the content for performance reasons
-                              value={displayedTask}
-                              onChange={(newTask) => setDisplayedTask(newTask)}
+                              // value={displayedTask}
+                              onChange={(newTask) => setTask(newTask)}
                             />
 
                             {/* <div className="d-flex align-items-center justify-content-between">
@@ -286,7 +297,7 @@ export default function Algofolkshome() {
                           {parse(item.task)}
                         </td>
 
-                        <td className="text-start">{item.name}</td>
+                        <td className="text-start">{item.assign}</td>
 
                         <td className="modifysec text-center">
                           {/* <div> */}
@@ -295,19 +306,19 @@ export default function Algofolkshome() {
                             class="pe-2"
                             data-bs-toggle="modal"
                             data-bs-target="#updateTaskModal"
-                            // onClick={() => getUpdates(item._id)}
-                            onClick={() =>
-                              setEditingTask({
-                                id: item._id,
-                                task: item.task,
-                                name: item.name,
-                              })
-                            }
+
+                            // onClick={() =>
+                            //   setEditingTask({
+                            //     id: item._id,
+                            //     task: item.task,
+                            //     name: item.name,
+                            //   })
+                            // }
                           >
                             <i
                               className="bi bi-pencil-square"
                               // onClick={updateCollectData(item._id)}
-
+                              onClick={() => getUpdate(item._id)}
                               style={{ cursor: "pointer" }}
                             ></i>
                           </Link>
@@ -347,21 +358,23 @@ export default function Algofolkshome() {
                                     </label>
                                     <JoditEditor
                                       ref={editor}
-                                      value={editingTask.task}
+                                      // value={editingTask.task}
+                                      value={task}
+                                      onChange={(newTask) => setTask(newTask)}
                                       // style={{height:"200px"}}
                                       // config={config}
                                       // tabIndex={1} // tabIndex of textarea
                                       // onBlur={(newTask) => setTask(newTask)} // preferred to use only this option to update the content for performance reasons
-                                      onChange={(newTask) =>
-                                        setEditingTask({
-                                          ...editingTask,
-                                          task: newTask,
-                                        })
-                                      }
+                                      // onChange={(newTask) =>
+                                      //   setEditingTask({
+                                      //     ...editingTask,
+                                      //     task: newTask,
+                                      //   })
+                                      // }
                                     />
 
-                                    <div className="d-flex align-items-center justify-content-between">
-                                      <div className="wid-100 pt-2">
+                                    <div className="d-flex align-items-center justify-content-between pt-2">
+                                      <div className="wid-50 pe-2">
                                         <label
                                           htmlFor="employeename"
                                           className="form-label"
@@ -369,31 +382,67 @@ export default function Algofolkshome() {
                                           Employee Name
                                         </label>
                                         <select
-                                          type="text"
-                                          className="form-control"
+                                          // type="text"
+                                          className="form-select"
+                                          aria-label="Default select example"
                                           id="employeename"
-                                          // value={name}
-                                          // onChange={(e) => setName(e.target.value)}
-                                          value={editingTask.name}
+                                          value={name}
                                           onChange={(e) =>
-                                            setEditingTask({
-                                              ...editingTask,
-                                              name: e.target.value,
-                                            })
+                                            setName(e.target.value)
                                           }
-                                          // placeholder="Time Duration"
-                                          // required
                                         >
                                           {listname.length > 0
                                             ? listname.map((item, index) => (
                                                 <option
-                                                  value={item.name}
+                                                  value={item._id}
                                                   key={item._id}
                                                 >
                                                   {item.name}
                                                 </option>
                                               ))
                                             : null}
+                                        </select>
+                                      </div>
+
+                                      <div className="wid-50">
+                                        <label
+                                          htmlFor="timeduration"
+                                          className="form-label"
+                                        >
+                                          Employee Name
+                                        </label>
+                                        <select
+                                          // type="text"
+                                          className="form-select"
+                                          aria-label="Default select example"
+                                          id="timeduration"
+                                          value={time}
+                                          onChange={(e) =>
+                                            setTime(e.target.value)
+                                          }
+                                        >
+                                          <option value="1 hour">1 hour</option>
+                                          <option value="2 hours">
+                                            2 hours
+                                          </option>
+                                          <option value="3 hours">
+                                            3 hours
+                                          </option>
+                                          <option value="4 hours">
+                                            4 hours
+                                          </option>
+                                          <option value="5 hours">
+                                            5 hours
+                                          </option>
+                                          <option value="6 hours">
+                                            6 hours
+                                          </option>
+                                          <option value="7 hours">
+                                            7 hours
+                                          </option>
+                                          <option value="8 hours">
+                                            8 hours
+                                          </option>
                                         </select>
                                       </div>
                                     </div>
@@ -405,7 +454,7 @@ export default function Algofolkshome() {
                                       <button
                                         className="btn mt-3 me-2 wid-100"
                                         type="button"
-                                        onClick={updateTask}
+                                        onClick={() => updateTask(item._id)}
                                       >
                                         Submit
                                       </button>
