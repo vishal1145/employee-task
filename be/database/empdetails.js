@@ -24,6 +24,7 @@ const empdetailsSchema = new mongoose.Schema(
     },
     assign: {
       type: String,
+      default:"Not Assign"
     },
   },
   { timestamps: true }
