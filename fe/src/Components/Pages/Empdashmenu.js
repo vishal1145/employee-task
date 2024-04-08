@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { NavLink, useParams } from "react-router-dom";
 
 export default function Empdashmenu() {
-  var authData = localStorage.getItem("user");
+  let authData = localStorage.getItem("user");
   if (authData) {
-    var authData = JSON.parse(authData);
+    authData = JSON.parse(authData);
   } else {
     <h6>No Record Found</h6>;
   }

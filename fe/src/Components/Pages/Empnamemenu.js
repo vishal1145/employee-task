@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink} from "react-router-dom";
 import { ClipLoader } from "react-spinners";
-import axios from "axios";
+// import axios from "axios";
 
 export default function Empnamemenu() {
   const [listname, setListname] = React.useState([]);
@@ -17,7 +17,7 @@ export default function Empnamemenu() {
   //   completed: 0,
   // });
 
-  const params = useParams();
+  // const params = useParams();
 
   useEffect(() => {
     getListname();

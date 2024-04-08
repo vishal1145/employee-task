@@ -1,21 +1,20 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import JoditEditor from "jodit-react";
 import { ToastContainer, toast } from "react-toastify";
-import moment from "moment";
+import { ClipLoader } from "react-spinners";
+// import moment from "moment";
 import parse from "html-react-parser";
 
 export default function Algofolkshome() {
   const [listname, setListname] = useState([]);
-  // const [employee, setEmployee] = useState("");
-  // const [addtask, setAddTask] = useState("");
-  // const [updatetask, setUpdateTask] = useState("");
   const [task, setTask] = useState("");
   const [name, setName] = useState("");
   // const [assign, setAssign] = useState("");
   const [time, setTime] = useState("1 hour");
   const [alltask, setAllTask] = useState([]);
   const [taskId, setTaskId] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const closeButtonRef = useRef();
   const editor = useRef(null);
@@ -26,52 +25,49 @@ export default function Algofolkshome() {
     getAllTaskNotId();
   }, []);
 
+  const idnull=()=>{
+    setTask("");
+  };
+
   const collectData = async () => {
     // setLoading(true);
-
-    // const empid = params.id;
-    try {
-      // let result1 = await fetch(`${process.env.REACT_APP_API_KEY}/listnamess`, {
-      //   method: "get",
-      // });
-      // result1 = await result1.json();
-
-      // setListname(result1);
-      // // const name = result1.name;
-      // const empid = result1._id;
-
-      let result2 = await fetch(
-        `${process.env.REACT_APP_API_KEY}/adddetailss`,
-        {
-          method: "post",
-          body: JSON.stringify({
-            task,
-            assign: "Not Assign",
-            // empid,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
+    if (task==="" || null) {
+      toast.info("Please fill the task");
+    } else {
+      try {
+        let result2 = await fetch(
+          `${process.env.REACT_APP_API_KEY}/adddetailss`,
+          {
+            method: "post",
+            body: JSON.stringify({
+              task,
+              assign: "Not Assign",
+              // empid,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        result2 = await result2.json();
+        if (result2) {
+          toast.success("Task added successfully");
+          setTask("");
+          // setAssign("Not Assign");
+          getAllTaskNotId();
         }
-      );
-      result2 = await result2.json();
-      if (result2) {
-        toast.success("Task added successfully");
-
-        // Call the fetchUpdatedEmpDetails callback function
-        // fetchUpdatedEmpDetails();
+      } catch (error) {
+        toast.error("Failed to add task");
       }
-    } catch (error) {
-      toast.error("Failed to add task");
-    } finally {
-      // setLoading(false);
+      // finally {
+      //   setLoading(false);
+      // }
+
     }
-    setTask("");
-    // setAssign("Not Assign");
-    getAllTaskNotId();
   };
 
   const updateTask = async (taskId) => {
+    // setLoading(true);
     try {
       let result1 = await fetch(`${process.env.REACT_APP_API_KEY}/listnamess`, {
         method: "get",
@@ -99,15 +95,21 @@ export default function Algofolkshome() {
       );
       result2 = await result2.json();
       if (result2) {
+        // closeButtonRef.current.click();
         toast.success("Task updated successfully");
-        // window.location.reload();
-        closeButtonRef.current.click();
         getAllTaskNotId(); // Refresh task list
         setTask("");
+        setTimeout(()=>{
+          window.location.reload();
+        },1000);
       }
+
     } catch (error) {
       toast.error("Failed to update task");
     }
+    // finally {
+    //   setLoading(false);
+    // }
   };
 
   const getListname = async () => {
@@ -136,16 +138,22 @@ export default function Algofolkshome() {
   };
 
   const getAllTaskNotId = async () => {
-    let result = await fetch(
-      `${process.env.REACT_APP_API_KEY}/alltasknotempid`,
-      {
-        method: "get",
-      }
-    );
-    result = await result.json();
-    console.log(result);
+    // setLoading(true);
+    try {
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/alltasknotempid`,
+        {
+          method: "get",
+        }
+      );
+      result = await result.json();
 
-    setAllTask(result);
+      setAllTask(result);
+    } catch (error) {
+      toast.error("Failed Data Loading");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const deletetask = async (id) => {
@@ -184,6 +192,7 @@ export default function Algofolkshome() {
                 className="btn me-0"
                 data-bs-toggle="modal"
                 data-bs-target="#addTaskModal"
+                onClick={idnull}
               >
                 Add Task
               </button>
@@ -202,6 +211,7 @@ export default function Algofolkshome() {
                         Add Task
                       </h5>
                       <button
+                        // ref={closeButtonRef}
                         type="button"
                         class="btn-close"
                         data-bs-dismiss="modal"
@@ -218,7 +228,6 @@ export default function Algofolkshome() {
                           <JoditEditor
                             ref={editor}
                             value={task}
-                            // style={{height:"200px"}}
                             // config={config}
                             // tabIndex={1} // tabIndex of textarea
                             // onBlur={(newTask) => setTask(newTask)} // preferred to use only this option to update the content for performance reasons
@@ -272,6 +281,7 @@ export default function Algofolkshome() {
             </div>
           </div>
 
+
           <table className="wid-100">
             <thead>
               <tr>
@@ -280,110 +290,115 @@ export default function Algofolkshome() {
                 <th className="text-center wid-5">Modify</th>
               </tr>
             </thead>
-            <tbody>
-              {alltask.length > 0 ? (
-                alltask.map((item, index) => (
-                  <>
-                    <tr
-                      key={item._id}
-                      style={{
-                        backgroundColor:
-                          item.status === "Pending"
-                            ? "rgba(239, 154, 154, 0.7)"
-                            : item.status === "Running"
-                            ? "rgba(255, 235, 59, 0.6)"
-                            : item.status === "Completed"
-                            ? "rgba(0, 137, 123, 0.8)"
-                            : "rgba(239, 154, 154, 0.7)",
-                      }}
-                    >
-                      <td className="text-start lh-sm pb-0 pt-3">
-                        {parse(item.task)}
-                      </td>
+            {loading ? ( // Display loader if loading state is true
+              <div className="loader-container">
+                <ClipLoader size={35} color={"#36D7B7"} loading={loading} />
+              </div>
+            ) : (
+              <tbody>
+                {alltask.length > 0 ? (
+                  alltask.map((item, index) => (
+                    <>
+                      <tr
+                        key={item._id}
+                        style={{
+                          backgroundColor:
+                            item.status === "Pending"
+                              ? "rgba(239, 154, 154, 0.7)"
+                              : item.status === "Running"
+                                ? "rgba(255, 235, 59, 0.6)"
+                                : item.status === "Completed"
+                                  ? "rgba(0, 137, 123, 0.8)"
+                                  : "rgba(239, 154, 154, 0.7)",
+                        }}
+                      >
+                        <td className="text-start lh-sm pb-0 pt-3">
+                          {parse(item.task)}
+                        </td>
 
-                      <td className="text-center">{item.assign}</td>
+                        <td className="text-center">{item.assign}</td>
 
-                      <td className="modifysec text-center">
-                        <Link
-                          // to={item._id}
-                          // let taskid={item._id}
-                          type="button"
-                          class="pe-3"
-                          data-bs-toggle="modal"
-                          data-bs-target="#updateTaskModal"
-                        >
-                          <i
-                            className="bi bi-pencil-square"
-                            // onClick={updateCollectData(item._id)}
-                            onClick={() => getUpdate(item._id)}
-                            style={{ cursor: "pointer" }}
-                          ></i>
-                        </Link>
+                        <td className="modifysec text-center">
+                          <Link
+                            // to={item._id}
+                            // let taskid={item._id}
+                            type="button"
+                            class="pe-3"
+                            data-bs-toggle="modal"
+                            data-bs-target="#updateTaskModal"
+                          >
+                            <i
+                              className="bi bi-pencil-square"
+                              // onClick={updateCollectData(item._id)}
+                              onClick={() => getUpdate(item._id)}
+                              style={{ cursor: "pointer" }}
+                            ></i>
+                          </Link>
 
-                        <div
-                          class="modal fade"
-                          id="updateTaskModal"
-                          tabindex="-1"
-                          aria-labelledby="updateTaskModalLabel"
-                          aria-hidden="true"
-                        >
-                          <div class="modal-dialog modal-dialog-centered modal-xl">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5
-                                  class="modal-title"
-                                  id="updateTaskModalLabel"
-                                >
-                                  Update Task
-                                </h5>
-                                <button
-                                  ref={closeButtonRef}
-                                  type="button"
-                                  class="btn-close"
-                                  data-bs-dismiss="modal"
-                                  aria-label="Close"
-                                ></button>
-                              </div>
-
-                              <div class="modal-body text-start">
-                                {/* <div className=""> */}
-                                <form id="updateform">
-                                  <label
-                                    htmlFor="updatetask"
-                                    className="form-label shno"
+                          <div
+                            class="modal fade"
+                            id="updateTaskModal"
+                            tabindex="-1"
+                            aria-labelledby="updateTaskModalLabel"
+                            aria-hidden="true"
+                          >
+                            <div class="modal-dialog modal-dialog-centered modal-xl">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5
+                                    class="modal-title"
+                                    id="updateTaskModalLabel"
                                   >
-                                    Task
-                                  </label>
-                                  <JoditEditor
-                                    ref={editor}
-                                    // value={editingTask.task}
-                                    value={task}
-                                    onChange={(newTask) => setTask(newTask)}
-                                  />
+                                    Update Task
+                                  </h5>
+                                  <button
+                                    ref={closeButtonRef}
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                  ></button>
+                                </div>
 
-                                  <div className="d-flex align-items-center justify-content-between pt-2">
-                                    <div className="wid-50 pe-2">
-                                      <label
-                                        htmlFor="employeename"
-                                        className="form-label"
-                                      >
-                                        Employee Name
-                                      </label>
-                                      <select
-                                        // type="text"
-                                        className="form-select"
-                                        aria-label="Default select example"
-                                        id="employeename"
-                                        value={name}
-                                        onChange={(e) =>
-                                          setName(e.target.value)
-                                        }
-                                      >
-                                        <option value="" disabled>
-                                          Choose any one
-                                        </option>
-                                        {listname.length > 0
-                                          ? listname.map((item, index) => (
+                                <div class="modal-body text-start">
+                                  {/* <div className=""> */}
+                                  <form id="updateform">
+                                    <label
+                                      htmlFor="updatetask"
+                                      className="form-label shno"
+                                    >
+                                      Task
+                                    </label>
+                                    <JoditEditor
+                                      ref={editor}
+                                      // value={editingTask.task}
+                                      value={task}
+                                      onChange={(newTask) => setTask(newTask)}
+                                    />
+
+                                    <div className="d-flex align-items-center justify-content-between pt-2">
+                                      <div className="wid-50 pe-2">
+                                        <label
+                                          htmlFor="employeename"
+                                          className="form-label"
+                                        >
+                                          Employee Name
+                                        </label>
+                                        <select
+                                          // type="text"
+                                          className="form-select"
+                                          aria-label="Default select example"
+                                          id="employeename"
+                                          value={name}
+                                          onChange={(e) =>
+                                            setName(e.target.value)
+                                          }
+                                        >
+                                          <option value="" disabled>
+                                            Choose any one
+                                          </option>
+                                          {listname.length > 0
+                                            ?(listname.filter((item) => item.role !== "admin").map((item, index) => (
                                               <option
                                                 value={item._id}
                                                 key={item._id}
@@ -391,76 +406,89 @@ export default function Algofolkshome() {
                                                 {item.name}
                                               </option>
                                             ))
-                                          : null}
-                                      </select>
+                                            ): null}
+                                        </select>
+                                      </div>
+
+                                      <div className="wid-50">
+                                        <label
+                                          htmlFor="timeduration"
+                                          className="form-label"
+                                        >
+                                          Time Duration
+                                        </label>
+                                        <select
+                                          // type="text"
+                                          className="form-select"
+                                          aria-label="Default select example"
+                                          id="timeduration"
+                                          value={time}
+                                          onChange={(e) =>
+                                            setTime(e.target.value)
+                                          }
+                                        >
+                                          <option value="1 hour">1 hour</option>
+                                          <option value="2 hours">2 hours</option>
+                                          <option value="3 hours">3 hours</option>
+                                          <option value="4 hours">4 hours</option>
+                                          <option value="5 hours">5 hours</option>
+                                          <option value="6 hours">6 hours</option>
+                                          <option value="7 hours">7 hours</option>
+                                          <option value="8 hours">8 hours</option>
+                                        </select>
+                                      </div>
                                     </div>
 
-                                    <div className="wid-50">
-                                      <label
-                                        htmlFor="timeduration"
-                                        className="form-label"
+                                    <div className="d-flex flex-row" id="update">
+                                      <button
+                                        className="btn mt-3 me-2 wid-100"
+                                        type="button"
+                                        onClick={() => updateTask(taskId)}
                                       >
-                                        Time Duration
-                                      </label>
-                                      <select
-                                        // type="text"
-                                        className="form-select"
-                                        aria-label="Default select example"
-                                        id="timeduration"
-                                        value={time}
-                                        onChange={(e) =>
-                                          setTime(e.target.value)
-                                        }
-                                      >
-                                        <option value="1 hour">1 hour</option>
-                                        <option value="2 hours">2 hours</option>
-                                        <option value="3 hours">3 hours</option>
-                                        <option value="4 hours">4 hours</option>
-                                        <option value="5 hours">5 hours</option>
-                                        <option value="6 hours">6 hours</option>
-                                        <option value="7 hours">7 hours</option>
-                                        <option value="8 hours">8 hours</option>
-                                      </select>
+                                        Update
+                                      </button>
                                     </div>
-                                  </div>
-
-                                  <div className="d-flex flex-row" id="update">
-                                    <button
-                                      className="btn mt-3 me-2 wid-100"
-                                      type="button"
-                                      onClick={() => updateTask(taskId)}
-                                    >
-                                      Update
-                                    </button>
-                                  </div>
-                                </form>
-                                {/* </div> */}
+                                  </form>
+                                  {/* </div> */}
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
 
-                        <Link onClick={() => deletetask(item._id)}>
-                          <i className="bi bi-trash3-fill"></i>
-                        </Link>
-                      </td>
-                    </tr>
-                  </>
-                ))
-              ) : (
-                <h4
-                  className="text-center mb-0"
-                  style={{ marginLeft: "20%", color: "rgba(0, 137, 123, 0.3)" }}
-                >
-                  No Record
-                </h4>
-              )}
-            </tbody>
+                          <Link onClick={() => deletetask(item._id)}>
+                            <i className="bi bi-trash3-fill"></i>
+                          </Link>
+                        </td>
+                      </tr>
+                    </>
+                  ))
+                ) : (
+                  <h4
+                    className="text-center mb-0"
+                    style={{ marginLeft: "20%", color: "rgba(0, 137, 123, 0.3)" }}
+                  >
+                    No Record
+                  </h4>
+                )}
+              </tbody>
+            )}
           </table>
         </div>
       </div>
       {/* </div> */}
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        // transition:Bounce
+      />
     </>
   );
 }

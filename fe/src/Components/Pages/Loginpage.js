@@ -15,12 +15,12 @@ export default function Loginpage() {
     }
   }, []);
 
-  const loginwithgoogle = () => {
-    window.open(
-      `${process.env.REACT_APP_API_KEY}/auth/google/callback`,
-      "_self"
-    );
-  };
+  // const loginwithgoogle = () => {
+  //   window.open(
+  //     `${process.env.REACT_APP_API_KEY}/auth/google/callback`,
+  //     "_self"
+  //   );
+  // };
 
   const handlelogin = async () => {
     // console.log(email, password)
@@ -71,7 +71,7 @@ export default function Loginpage() {
       if (result.message === "Reset password email sent") {
         toast.success("Reset password email sent successfully.");
       } else {
-        toast.error("Failed to send reset password email.");
+        toast.error("Failed to send email to reset password.");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -82,10 +82,7 @@ export default function Loginpage() {
   return (
     <>
       <div className="loginpage">
-        <div
-          className="row"
-          // style={{ marginTop: "7%", overflow: "hidden" }}
-        >
+        <div className="row">
           <div className="col-12 col-sm-12 col-md-4 col-lg-4">
             <div className="loginpagecard card">
               <div className="card-header ">
@@ -162,7 +159,19 @@ export default function Loginpage() {
           </div>
         </div>
       </div>
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        // transition:Bounce
+      />
     </>
   );
 }

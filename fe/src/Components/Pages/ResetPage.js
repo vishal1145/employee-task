@@ -58,7 +58,6 @@ const ResetPasswordPage = () => {
       <div className="container">
         <h2>Reset Password</h2>
         <form>
-  
           <div className="form-group">
             <label>New Password:</label>
             <input
@@ -68,7 +67,11 @@ const ResetPasswordPage = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type="button" className="btn btn-primary" onClick={handleResetPassword}>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleResetPassword}
+          >
             Reset Password
           </button>
         </form>
@@ -76,7 +79,19 @@ const ResetPasswordPage = () => {
           <Link to="/login">Back to Login</Link>
         </div>
       </div>
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        // transition:Bounce
+      />
     </>
   );
 };

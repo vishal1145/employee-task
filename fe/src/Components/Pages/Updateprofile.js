@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ClipLoader } from 'react-spinners';
 
-export default function Updatetask() {
+export default function Updateprofile() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,17 +12,19 @@ export default function Updatetask() {
   const [dob, setDob] = useState("");
   const [position, setPosition] = useState("");
   const [profileimage, setProfileImage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const params = useParams();
+
+  var authData = localStorage.getItem("user");
 
   useEffect(() => {
     getUpdate();
   }, []);
 
   const getUpdate = async () => {
-    setLoading(true); // Set loading to true when data submission starts
+    // setLoading(true); // Set loading to true when data submission starts
     try {
       let result = await fetch(
         `${process.env.REACT_APP_API_KEY}/profileautofill/${params.id}`,
@@ -40,43 +42,52 @@ export default function Updatetask() {
       setProfileImage(result.profileimage);
     } catch (error) {
       console.error("Error fetching update:", error);
-    } finally {
+    } 
+    finally {
       setLoading(false); // Set loading to false after data is fetched
     }
   };
 
   const collectData = async () => {
-    setLoading(true); // Set loading to true when data submission starts
-    try {
-      let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/updateprofile/${params.id}`,
-        {
-          method: "put",
-          body: JSON.stringify({
-            name,
-            email,
-            password,
-            mobile,
-            dob,
-            position,
-            profileimage,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
+    // setLoading(true); // Set loading to true when data submission starts
+    if (name === "" || null) {
+      toast.info("Please fill Employee Name");
+    } else if (password === "" || null) {
+      toast.info("Please fill Employee Password");
+    } else {
+      try {
+        let result = await fetch(
+          `${process.env.REACT_APP_API_KEY}/updateprofile/${params.id}`,
+          {
+            method: "put",
+            body: JSON.stringify({
+              name,
+              email,
+              password,
+              mobile,
+              dob,
+              position,
+              profileimage,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        result = await result.json();
+        if (result) {
+          toast.success("Profile updated successfully");
         }
-      );
-      result = await result.json();
-      // if (result) {
-      //   toast("Profile updated successfully");
-      // }
-      navigate(-1);
-      // setTimeout(() => {
-      // }, 1000);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    } finally {
-      setLoading(false); // Set loading to false after data submission
+        setTimeout(() => {
+          navigate(-1);
+        }, 1000);
+      } catch (error) {
+        // console.error("Error updating profile:", error);
+        toast.error("Failed Update Employee Details");
+      }
+      finally {
+        setLoading(false); // Set loading to false after data submission
+      }
     }
   };
 
@@ -91,14 +102,14 @@ export default function Updatetask() {
     };
   };
 
-  const backstep=()=>{
-    navigate(-1);
+  const backstep = () => {
+    navigate("/" + JSON.parse(authData)._id);
   }
 
   return (
     <>
       <div className="addform">
-        <h3 className="mb-2">Update Task</h3>
+        <h3 className="mb-2">Update Profile</h3>
         {loading ? ( // Display loader if loading state is true
           <div className="loader-container">
             <ClipLoader size={35} color={"#36D7B7"} loading={loading} />
@@ -143,6 +154,7 @@ export default function Updatetask() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
+                  required
                 />
               </div>
 
@@ -210,11 +222,16 @@ export default function Updatetask() {
                   className="btn w-100"
                   type="button"
                   onClick={collectData}
+                  disabled={loading}
                 >
-                  Submit
+                  {loading ? (
+                    <ClipLoader size={18} color={"#ffffff"} loading={loading} />
+                  ) : (
+                    "Update"
+                  )}
                 </button>
               </div>
-              <div className="ps-2" style={{ width: "50%" }}>
+              <div className="" style={{ width: "50%" }}>
                 <button
                   className="btn w-100"
                   type="button"
@@ -227,7 +244,19 @@ export default function Updatetask() {
           </form>
         )}
       </div>
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={1500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        // transition:Bounce
+      />
     </>
   );
 }
