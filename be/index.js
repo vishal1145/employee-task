@@ -2,15 +2,11 @@ const express = require("express");
 require("./database/config");
 const EmpDetail = require("./database/empdetails");
 const EmpAdd = require("./database/empadd");
-const userdb = require("./database/user");
+// const userdb = require("./database/user");
 const Message = require("./database/messages");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 require("dotenv").config();
-
-const session = require("express-session");
-const passport = require("passport");
-const OAuth2Strategy = require("passport-google-oauth2").Strategy;
 
 const Jwt = require("jsonwebtoken");
 // const empdetails = require("./database/empdetails");
@@ -20,69 +16,7 @@ const app = express();
 // app.use(express.json());
 app.use(cors());
 
-app.use(
-  session({
-    secret: "algofolks",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.use(
-  new OAuth2Strategy(
-    {
-      clientID: `${process.env.client_id}`,
-      clientSecret: `${process.env.client_secret}`,
-      callbackURL: "/auth/google/callback",
-      scope: ["profile", "email"],
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        let user = await userdb.findOne({ googleId: profile.id });
-
-        if (!user) {
-          const displayName = `${profile.name.givenName} ${profile.name.familyName}`;
-          user = new userdb({
-            googleId: profile.id,
-            displayName: displayName,
-            email: profile.emails[0].value,
-            image: profile.photos[0].value,
-          });
-          await user.save();
-        }
-        return done(null, user);
-      } catch (error) {
-        return done(error, null);
-      }
-    }
-  )
-);
-
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
-
-app.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-app.get(
-  "/auth/google/callback",
-  passport.authenticate("google", {
-    successRedirect: `${process.env.FRONTEND_URL}`,
-    failureRedirect: `${process.env.FRONTEND_URL}/loginpage`,
-  })
-);
-
 app.use(express.json({ limit: 52428800 }));
-
 app.use(
   express.urlencoded({
     extended: true,
@@ -90,6 +24,66 @@ app.use(
     parameterLimit: 52428800,
   })
 );
+
+//************************************For Google Login*********************************** */
+// const session = require("express-session");
+// const passport = require("passport");
+// const OAuth2Strategy = require("passport-google-oauth2").Strategy;
+
+// app.use(
+//   session({
+//     secret: "algofolks",
+//     resave: false,
+//     saveUninitialized: true,
+//   })
+// );
+
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+// passport.use(
+//   new OAuth2Strategy({
+//     clientID: `${process.env.client_id}`,
+//     clientSecret: `${process.env.client_secret}`,
+//     callbackURL: "/auth/google/callback",
+//     scope: ["profile", "email"]
+//   },
+//     async (accessToken, refreshToken, profile, done) => {
+//       try {
+//         let user = await userdb.findOne({ googleId: profile.id });
+
+//         if (!user) {
+//           const displayName = `${profile.name.givenName} ${profile.name.familyName}`;
+//           user = new userdb({
+//             googleId: profile.id,
+//             displayName: displayName,
+//             email: profile.emails[0].value,
+//             image: profile.photos[0].value,
+//           });
+//           await user.save();
+//         }
+//         return done(null, user)
+//       } catch (error) {
+//         return done(error, null)
+//       }
+//     }
+//   )
+// );
+
+// passport.serializeUser((user, done) => {
+//   done(null, user);
+// })
+
+// passport.deserializeUser((user, done) => {
+//   done(null, user);
+// })
+
+// app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }))
+// app.get("/auth/google/callback", passport.authenticate("google", {
+//   successRedirect: `${process.env.FRONTEND_URL}`,
+//   failureRedirect: `${process.env.FRONTEND_URL}/loginpage`
+// }))
+
 
 // **********************************************For Login page**********************************************************
 app.post("/login", async (req, resp) => {
@@ -155,6 +149,7 @@ app.get("/listnamess/:id", async (req, resp) => {
     resp.send("result not found");
   }
 });
+
 
 app.post("/adddetailss", async (req, resp) => {
   let details = new EmpDetail(req.body);
@@ -223,31 +218,36 @@ app.post("/adddetails", async (req, resp) => {
   resp.send(result);
 });
 
-// app.post("/addemp", async (req, resp) => {
-//   let details = new EmpAdd(req.body);
-//   let result = await details.save();
-//   resp.send(result);
-// });
-
 app.post("/addemp", async (req, resp) => {
-  try {
-    const existingEmployee = await EmpAdd.findOne({ email: req.body.email });
-
-    if (existingEmployee) {
-      return resp.status(400).send("Email already exists");
-    }
-
+  const existingEmployee = await EmpAdd.findOne({ email: req.body.email });
+  if (existingEmployee) {
+    return resp.status(400).send("Email Id already exists");
+  } else {
     let details = new EmpAdd(req.body);
     let result = await details.save();
     resp.send(result);
-  } catch (error) {
-    // Handle other errors
-    console.error("An error occurred:", error);
-    return resp
-      .status(500)
-      .send("An error occurred while adding the employee.");
   }
 });
+
+// app.post("/addemp", async (req, resp) => {
+//   try {
+//     const existingEmployee = await EmpAdd.findOne({ email: req.body.email });
+
+//     if (existingEmployee) {
+//       return resp.status(400).send("Email already exists");
+//     }
+
+//     let details = new EmpAdd(req.body);
+//     let result = await details.save();
+//     resp.send(result);
+//   } catch (error) {
+//     // Handle other errors
+//     console.error("An error occurred:", error);
+//     return resp
+//       .status(500)
+//       .send("An error occurred while adding the employee.");
+//   }
+// });
 
 app.get("/empprofile/:id", async (req, resp) => {
   const result = await EmpAdd.find({ _id: req.params.id });

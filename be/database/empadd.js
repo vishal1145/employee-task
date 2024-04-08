@@ -4,7 +4,8 @@ const empaddSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      default: null,
+      // default: null,
+      required:true,
     },
     email: {
       type: String,
