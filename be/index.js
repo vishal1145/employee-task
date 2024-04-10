@@ -1,19 +1,30 @@
 const express = require("express");
 require("./database/config");
+// const User = require("./database/config2");
 const EmpDetail = require("./database/empdetails");
 const EmpAdd = require("./database/empadd");
 // const userdb = require("./database/user");
 const Message = require("./database/messages");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
+// const io = require("socket.io")(8080,{
+//   cors:{
+//     origin: "http://localhost:3000",
+//   }
+// });
 require("dotenv").config();
+
+// import { initializeApp } from "firebase/app";
+// import { getAnalytics } from "firebase/analytics";
+
+// const app = initializeApp(firebaseConfig);
+// const analytics = getAnalytics(app);
 
 const Jwt = require("jsonwebtoken");
 // const empdetails = require("./database/empdetails");
 const jwtKey = "algofolks";
 
 const app = express();
-// app.use(express.json());
 app.use(cors());
 
 app.use(express.json({ limit: 52428800 }));
@@ -25,6 +36,9 @@ app.use(
   })
 );
 
+// io.on("connection", socket=>{
+
+// });
 //************************************For Google Login*********************************** */
 // const session = require("express-session");
 // const passport = require("passport");
@@ -204,7 +218,7 @@ app.get("/profileautofill/:id", async (req, resp) => {
 });
 
 app.get("/listname", async (req, resp) => {
-  const result = await EmpAdd.find();
+  const result = await EmpAdd.find({});
   if (result) {
     resp.send(result);
   } else {
@@ -371,6 +385,45 @@ app.get("/statuscount/:id", async (req, resp) => {
     resp.status(500).json({ message: "Internal server error" });
   }
 });
+
+app.get("/searchusers/:key", async (req, res) => {
+  try {
+    const keyword = req.params.key//.toLowerCase();
+    const users = await EmpAdd.find({
+      name: { $regex: keyword },
+    }); // Filter users based on name
+    const userListWithCounts = await Promise.all(
+      users.map(async (user) => {
+        const { _id } = user;
+        const pendingCount = await EmpDetail.countDocuments({
+          empid: _id,
+          status: "Pending",
+        });
+        const runningCount = await EmpDetail.countDocuments({
+          empid: _id,
+          status: "Running",
+        });
+        const completedCount = await EmpDetail.countDocuments({
+          empid: _id,
+          status: "Completed",
+        });
+        return {
+          ...user.toObject(), // Convert Mongoose document to plain JavaScript object
+          counts: {
+            pending: pendingCount,
+            running: runningCount,
+            completed: completedCount,
+          },
+        };
+      })
+    );
+    res.json(userListWithCounts);
+  } catch (error) {
+    console.error("Error searching users:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // app.get("/statuscount/:id", async (req, res) => {
 //   // let eid = req.params.id;
 //   try {

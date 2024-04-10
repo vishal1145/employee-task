@@ -12,6 +12,7 @@ const messagesSchema = new mongoose.Schema(
         // default: "sender"
     },
     empid: String,
+    role: String,
   },
   { timestamps: true }
 );
