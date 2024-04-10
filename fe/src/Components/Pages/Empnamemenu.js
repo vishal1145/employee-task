@@ -21,7 +21,6 @@ export default function Empnamemenu() {
 
   useEffect(() => {
     getListname();
-    // getStatusCount();
   });
 
   const getListname = async () => {
@@ -29,13 +28,13 @@ export default function Empnamemenu() {
       let result = await fetch(`${process.env.REACT_APP_API_KEY}/listname`);
       result = await result.json();
 
-      const updatedList = await Promise.all(
+      const updatedList1 = await Promise.all(
         result.map(async (user) => {
           const counts = await getStatusCount(user._id);
           return { ...user, counts };
         })
       );
-      setListname(updatedList);
+      setListname(updatedList1);
       
     } 
     // catch (error) {
@@ -69,26 +68,58 @@ export default function Empnamemenu() {
     }
   };
 
-  const searchuser = async (event) => {
-    let key = event.target.value;
+  // const searchuser = async (event) => {
+  //   let key = event.target.value;
+  //   if (key) {
+  //     let result = await fetch(
+  //       `${process.env.REACT_APP_API_KEY}/empsearch/${key}`,
+  //       {
+  //         headers: {
+  //           // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
+  //         },
+  //       }
+  //     );
+  //     result = await result.json();
+  //     // var input=result.toLowerCase();
+  //     if (result) {
+  //       setListname(result);
+  //     }
+  //   } else {
+  //     getListname();
+  //   }
+  // };
+
+  const searchusers = async (event) => {
+    let key = event.target.value//.toLowerCase();
     if (key) {
-      let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/empsearch/${key}`,
-        {
-          headers: {
-            // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
-          },
+      try {
+        let result = await fetch(
+          `${process.env.REACT_APP_API_KEY}/searchusers/${key}`
+        );
+        result = await result.json();
+        if (result) {
+          const updatedList2 = await Promise.all(
+            result.map(async (user) => {
+              const statusCounts = await getStatusCount(user._id);
+              return { ...user, counts: statusCounts };
+            })
+          );
+          setListname(updatedList2);
+        } 
+        else {
+          setListname([]);
         }
-      );
-      result = await result.json();
-      // var input=result.toLowerCase();
-      if (result) {
-        setListname(result);
+      } catch (error) {
+        console.error("Error searching users:", error);
+        // Handle error
       }
     } else {
       getListname();
     }
   };
+
+
+
 
   return (
     <>
@@ -102,7 +133,7 @@ export default function Empnamemenu() {
               className="p-1 mb-0"
               type="text"
               placeholder="Search here"
-              onChange={searchuser}
+              onChange={searchusers}
               // style={{ width: "100%" }}
             />
           </form>

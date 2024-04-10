@@ -4,33 +4,38 @@ import { ToastContainer, toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import JoditEditor from "jodit-react";
 import parse from "html-react-parser";
+// import {io} from "socket.io-client";
 
 export default function Empdetails() {
   var authData = localStorage.getItem("user");
 
-  const [empdeatils, setEmpdetails] = useState("");
+  const [empdeatils, setEmpdetails] = useState([]);
   const [status, setStatus] = useState("");
   const [text, setText] = useState("");
-  const [messages, setMessages] = useState("");
-  const [listname, setListname] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [listname, setListname] = useState([]);
   const [task, setTask] = useState("");
   const [time, setTime] = useState("1 hour");
   // const [name, setName] = useState("");
   // const [date, setDate] = useState("");
   const [taskId, setTaskId] = useState("");
   const [loading, setLoading] = useState(false);
+  // const [socket, setSocket] = useState(null);
 
   const params = useParams();
   // const navigate = useNavigate();
   const editor = useRef(null);
   const closeButtonRef = useRef();
 
+  useEffect(()=>{
+    getMessages();
+  });
+
   useEffect(() => {
     getEmpdetails();
-    getMessages();
     getListname();
     getUpdate();
-  }, [params.id]);
+  },[params.id]);
   // [params.id, dataUploaded];
 
   const idnull=()=>{
@@ -49,6 +54,8 @@ export default function Empdetails() {
     result = await result.json();
     setEmpdetails(result);
   };
+
+  
 
   const collectData = async () => {
     setLoading(true);
@@ -186,12 +193,13 @@ export default function Empdetails() {
 
   const addMessages = async () => {
     const name = JSON.parse(localStorage.getItem("user")).name;
+    const role = JSON.parse(localStorage.getItem("user")).role;
     const empid = params.id;
     // var messages = message;
 
     let result = await fetch(`${process.env.REACT_APP_API_KEY}/addmessages`, {
       method: "post",
-      body: JSON.stringify({ empid, name, text, sender: "sender" }),
+      body: JSON.stringify({ empid, name, text, role, sender: "sender" }),
       headers: {
         "Content-Type": "application/json",
       },
@@ -212,7 +220,7 @@ export default function Empdetails() {
     );
     result = await result.json();
     setMessages(result);
-    // setEmpdetails(result);
+    
   };
 
   const getListname = async () => {
@@ -620,12 +628,12 @@ export default function Empdetails() {
                   <div
                     className="getmessage"
                     style={{
-                      textAlign: item.name === "Admin" ? "left" : "left",
+                      textAlign: item.role === "admin" ? "left" : "left",
                       backgroundColor:
-                        item.name === "Rishi Ranjan"
+                        item.role === "admin"
                           ? "rgba(9, 185, 129, 0.4)"
                           : "rgba(0, 137, 123, 0.4)",
-                      alignSelf: item.name === "Admin" ? "start" : "end",
+                      alignSelf: item.role === "admin" ? "start" : "end",
                     }}
                   >
                     <div className="">
@@ -687,6 +695,7 @@ export default function Empdetails() {
                   placeholder="Message here"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
+                  // style={{width:"85%"}}
                 // onKeyPress={handleKeyPress}
                 />
                 <button
@@ -694,6 +703,7 @@ export default function Empdetails() {
                   className=""
                   type="button"
                   onClick={addMessages}
+                  // style={{width:"15%"}}
                 >
                   <i className="bi bi-send"></i>
                 </button>
