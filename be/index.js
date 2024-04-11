@@ -386,43 +386,43 @@ app.get("/statuscount/:id", async (req, resp) => {
   }
 });
 
-app.get("/searchusers/:key", async (req, res) => {
-  try {
-    const keyword = req.params.key//.toLowerCase();
-    const users = await EmpAdd.find({
-      name: { $regex: keyword },
-    }); // Filter users based on name
-    const userListWithCounts = await Promise.all(
-      users.map(async (user) => {
-        const { _id } = user;
-        const pendingCount = await EmpDetail.countDocuments({
-          empid: _id,
-          status: "Pending",
-        });
-        const runningCount = await EmpDetail.countDocuments({
-          empid: _id,
-          status: "Running",
-        });
-        const completedCount = await EmpDetail.countDocuments({
-          empid: _id,
-          status: "Completed",
-        });
-        return {
-          ...user.toObject(), // Convert Mongoose document to plain JavaScript object
-          counts: {
-            pending: pendingCount,
-            running: runningCount,
-            completed: completedCount,
-          },
-        };
-      })
-    );
-    res.json(userListWithCounts);
-  } catch (error) {
-    console.error("Error searching users:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
+// app.get("/searchusers/:key", async (req, res) => {
+//   try {
+//     const keyword = req.params.key//.toLowerCase();
+//     const users = await EmpAdd.find({
+//       name: { $regex: keyword },
+//     }); // Filter users based on name
+//     const userListWithCounts = await Promise.all(
+//       users.map(async (user) => {
+//         const { _id } = user;
+//         const pendingCount = await EmpDetail.countDocuments({
+//           empid: _id,
+//           status: "Pending",
+//         });
+//         const runningCount = await EmpDetail.countDocuments({
+//           empid: _id,
+//           status: "Running",
+//         });
+//         const completedCount = await EmpDetail.countDocuments({
+//           empid: _id,
+//           status: "Completed",
+//         });
+//         return {
+//           ...user.toObject(), // Convert Mongoose document to plain JavaScript object
+//           counts: {
+//             pending: pendingCount,
+//             running: runningCount,
+//             completed: completedCount,
+//           },
+//         };
+//       })
+//     );
+//     res.json(userListWithCounts);
+//   } catch (error) {
+//     console.error("Error searching users:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
 
 // app.get("/statuscount/:id", async (req, res) => {
 //   // let eid = req.params.id;
