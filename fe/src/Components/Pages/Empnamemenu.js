@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
-import { NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 // import axios from "axios";
 
 export default function Empnamemenu() {
   const [listname, setListname] = React.useState([]);
   const [loading, setLoading] = React.useState(true); // Add loading state
+  const [stopInterval, setStopInterval] = React.useState("run");
+  // const [dataLoad, setDataLoad] = React.useState(false);
   // const [statusCount, setStatusCount] = React.useState({
   //   pending: 0,
   //   running: 0,
@@ -21,7 +23,14 @@ export default function Empnamemenu() {
 
   useEffect(() => {
     getListname();
-  });
+
+    if (stopInterval === "run") {
+      const interval = setInterval(async () => {
+        await getListname();
+      }, 7000);
+      return () => clearInterval(interval);
+    }
+  }, [stopInterval]);
 
   const getListname = async () => {
     try {
@@ -34,13 +43,13 @@ export default function Empnamemenu() {
           return { ...user, counts };
         })
       );
-      setListname(updatedList1);
-      
-    } 
-    // catch (error) {
-    //   console.log("Error fetching data:", error);
-    // } 
-    finally {
+      if (updatedList1) {
+        setListname(updatedList1);
+      }
+    } finally {
+      // catch (error) {
+      //   console.log("Error fetching data:", error);
+      // }
       setLoading(false); // Set loading to false after data is fetched
     }
   };
@@ -57,8 +66,7 @@ export default function Empnamemenu() {
       result = await result.json();
       // setCounts(result);
       return result;
-    } 
-    catch (error) {
+    } catch (error) {
       // console.log("Error fetching status counts:", error);
       return {
         pending: 0,
@@ -89,37 +97,55 @@ export default function Empnamemenu() {
   //   }
   // };
 
-  const searchusers = async (event) => {
-    let key = event.target.value//.toLowerCase();
+  // const searchusers = async (event) => {
+  //   let key = event.target.value//.toLowerCase();
+  //   if (key) {
+  //     try {
+  //       let result = await fetch(
+  //         `${process.env.REACT_APP_API_KEY}/searchusers/${key}`
+  //       );
+  //       result = await result.json();
+  //       if (result) {
+  //         const updatedList2 = await Promise.all(
+  //           result.map(async (user) => {
+  //             const statusCounts = await getStatusCount(user._id);
+  //             return { ...user, counts: statusCounts };
+  //           })
+  //         );
+  //         setListname(updatedList2);
+  //       }
+  //       else {
+  //         setListname([]);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error searching users:", error);
+  //       // Handle error
+  //     }
+  //   } else {
+  //     getListname();
+  //   }
+  // };
+
+  const searchuser = (event) => {
+    let key = event.target.value.toLowerCase(); // Convert search key to lowercase
     if (key) {
-      try {
-        let result = await fetch(
-          `${process.env.REACT_APP_API_KEY}/searchusers/${key}`
-        );
-        result = await result.json();
-        if (result) {
-          const updatedList2 = await Promise.all(
-            result.map(async (user) => {
-              const statusCounts = await getStatusCount(user._id);
-              return { ...user, counts: statusCounts };
-            })
-          );
-          setListname(updatedList2);
-        } 
-        else {
-          setListname([]);
-        }
-      } catch (error) {
-        console.error("Error searching users:", error);
-        // Handle error
-      }
+      setStopInterval("stop");
+      const filteredList = listname.filter((item) =>
+        item.name.toLowerCase().includes(key)
+      );
+      setListname(filteredList);
     } else {
-      getListname();
+      setStopInterval("run");
+      getListname(); // If search key is empty, reset the list
     }
   };
 
-
-
+  // const start =()=>{
+  //   setStopInterval("run");
+  // }
+  // setTimeout(() => {
+  //   setStopInterval("stop");
+  // }, 10000);
 
   return (
     <>
@@ -133,7 +159,7 @@ export default function Empnamemenu() {
               className="p-1 mb-0"
               type="text"
               placeholder="Search here"
-              onChange={searchusers}
+              onChange={searchuser}
               // style={{ width: "100%" }}
             />
           </form>
@@ -181,7 +207,6 @@ export default function Empnamemenu() {
                             Completed: {item.counts.completed} | Running:{" "}
                             {item.counts.running} | Pending:{" "}
                             {item.counts.pending}
-                            
                           </div>
                         </div>
                       </div>
@@ -189,12 +214,16 @@ export default function Empnamemenu() {
                   </div>
                 ))
             ) : (
-              <h6>Record not found..</h6>
+              <h4
+                className="text-center mb-0"
+                style={{ marginLeft: "0%", color: "rgba(0, 137, 123, 0.3)" }}
+              >
+                No Record
+              </h4>
             )}
           </>
         )}
       </div>
-     
     </>
   );
 }

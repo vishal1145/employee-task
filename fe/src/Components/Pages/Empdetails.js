@@ -4,6 +4,11 @@ import { ToastContainer, toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import JoditEditor from "jodit-react";
 import parse from "html-react-parser";
+import Swal from "sweetalert2";
+// import { css } from "emotion";
+
+// import { useScrollToBottom } from "react-scroll-to-bottom";
+
 // import {io} from "socket.io-client";
 
 export default function Empdetails() {
@@ -20,25 +25,39 @@ export default function Empdetails() {
   // const [date, setDate] = useState("");
   const [taskId, setTaskId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [stopInterval2, setStopInterval2] = React.useState("stop");
+  // const [dataLoad, setDataLoad] = useState(false);
   // const [socket, setSocket] = useState(null);
 
   const params = useParams();
   // const navigate = useNavigate();
   const editor = useRef(null);
   const closeButtonRef = useRef();
+  const inputRef = useRef(null);
 
-  useEffect(()=>{
-    getMessages();
-  });
+  const handleKeyPress = (event) => {
+    
+    if (event.key === "Enter") {
+     
+      event.preventDefault();
+     
+      document.getElementById("messageButton").click();
+    }
+  };
 
   useEffect(() => {
+    getMessages();
     getEmpdetails();
     getListname();
     getUpdate();
-  },[params.id]);
-  // [params.id, dataUploaded];
 
-  const idnull=()=>{
+    if (stopInterval2 === "run") {
+      const interval = setInterval(getMessages, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [params.id, stopInterval2]);
+
+  const idnull = () => {
     setTask("");
     setTime("1 hour");
   };
@@ -55,8 +74,6 @@ export default function Empdetails() {
     setEmpdetails(result);
   };
 
-  
-
   const collectData = async () => {
     setLoading(true);
     if (task === "" || null) {
@@ -66,20 +83,23 @@ export default function Empdetails() {
       const empid = params.id;
 
       try {
-        let result2 = await fetch(`${process.env.REACT_APP_API_KEY}/adddetails`, {
-          method: "post",
-          body: JSON.stringify({
-            task,
-            time,
-            empid,
-            // name,
-            date: new Date(),
-            assign: "Assign",
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        let result2 = await fetch(
+          `${process.env.REACT_APP_API_KEY}/adddetails`,
+          {
+            method: "post",
+            body: JSON.stringify({
+              task,
+              time,
+              empid,
+              // name,
+              date: new Date(),
+              assign: "Assign",
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         result2 = await result2.json();
 
         if (result2) {
@@ -137,27 +157,55 @@ export default function Empdetails() {
         }, 1000);
       }
     } catch {
-      toast.error("Failed Update Data")
+      toast.error("Failed Update Data");
     } finally {
       setLoading(false);
     }
   };
 
   const deletetask = async (id) => {
-    let result = await fetch(
-      `${process.env.REACT_APP_API_KEY}/deletetask/${id}`,
-      {
-        method: "Delete",
-        headers: {
-          // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
-        },
+    //   let result = await fetch(
+    //     `${process.env.REACT_APP_API_KEY}/deletetask/${id}`,
+    //     {
+    //       method: "Delete",
+    //       headers: {
+    //         // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
+    //       },
+    //     }
+    //   );
+    //   result = await result.json();
+    //   if (result) {
+    //     toast("Task deleted Successfully");
+    //     getEmpdetails();
+    //   }
+    // };
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let result = await fetch(
+          `${process.env.REACT_APP_API_KEY}/deletetask/${id}`,
+          {
+            method: "Delete",
+            headers: {
+              // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
+            },
+          }
+        );
+        result = await result.json();
+        if (result) {
+          Swal.fire("Deleted!", "Your Task has been deleted.", "success");
+          getEmpdetails();
+        }
       }
-    );
-    result = await result.json();
-    if (result) {
-      toast("Task deleted Successfully");
-      getEmpdetails();
-    }
+    });
   };
 
   const addstatus = async (id) => {
@@ -195,20 +243,26 @@ export default function Empdetails() {
     const name = JSON.parse(localStorage.getItem("user")).name;
     const role = JSON.parse(localStorage.getItem("user")).role;
     const empid = params.id;
-    // var messages = message;
 
-    let result = await fetch(`${process.env.REACT_APP_API_KEY}/addmessages`, {
-      method: "post",
-      body: JSON.stringify({ empid, name, text, role, sender: "sender" }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    result = await result.json();
-    if (result) {
-      setText("");
-      getMessages();
+    try {
+      let result = await fetch(`${process.env.REACT_APP_API_KEY}/addmessages`, {
+        method: "post",
+        body: JSON.stringify({ empid, name, text, role, sender: "sender" }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      result = await result.json();
+      if (result) {
+        setText("");
+        getMessages();
+      }
+    } catch {
+      toast.error("Failed to send messages");
     }
+    // finally {
+    //   setStopInterval2("stop");
+    // }
   };
 
   const getMessages = async () => {
@@ -219,8 +273,10 @@ export default function Empdetails() {
       }
     );
     result = await result.json();
-    setMessages(result);
-    
+    if (result) {
+      setMessages(result);
+      // setStopInterval("run");
+    }
   };
 
   const getListname = async () => {
@@ -256,11 +312,51 @@ export default function Empdetails() {
   //   }
   // };
 
+  const stop = () => {
+    setStopInterval2("stop");
+  };
+
+  const start = () => {
+    setStopInterval2("run");
+  };
+
+  const referesh = () => {
+    setLoading(true);
+    try {
+      getEmpdetails();
+    } finally {
+      setLoading(false);
+    }
+  };
+  const chatBodyRef = useRef(null);
+  const scrollToBottom = () => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(()=>{
+    scrollToBottom();
+  },[getMessages])
+
+
   return (
     <>
       <div className="empdeatils wid-80">
         <div className="headsec">
-          <h5 className="mb-0">Task</h5>
+          <div className="d-flex align-items-center">
+            <h5 className="mb-0 me-3">Task</h5>
+            <Link onClick={referesh}>
+              {loading ? (
+                <ClipLoader size={18} color={"#36D7B7"} loading={loading} />
+              ) : (
+                <i
+                  className="bi bi-arrow-clockwise"
+                  style={{ fontSize: "18px", color: "rgb(0, 137, 123)" }}
+                ></i>
+              )}
+            </Link>
+          </div>
           {JSON.parse(authData).role === "admin" ? (
             <div className="addtaskbtn">
               <button
@@ -342,7 +438,11 @@ export default function Empdetails() {
                             disabled={loading}
                           >
                             {loading ? (
-                              <ClipLoader size={18} color={"#ffffff"} loading={loading} />
+                              <ClipLoader
+                                size={18}
+                                color={"#ffffff"}
+                                loading={loading}
+                              />
                             ) : (
                               "Submit"
                             )}
@@ -377,8 +477,8 @@ export default function Empdetails() {
             </tr>
           </thead>
           <tbody>
-            {empdeatils.length > 0
-              ? empdeatils.map((item, index) => (
+            {empdeatils.length > 0 ? (
+              empdeatils.map((item, index) => (
                 <tr
                   key={index}
                   style={{
@@ -386,10 +486,10 @@ export default function Empdetails() {
                       item.status === "Pending"
                         ? "rgba(239, 154, 154, 0.7)"
                         : item.status === "Running"
-                          ? "rgba(255, 235, 59, 0.6)"
-                          : item.status === "Completed"
-                            ? "rgba(0, 137, 123, 0.8)"
-                            : "rgba(239, 154, 154, 0.7)",
+                        ? "rgba(255, 235, 59, 0.6)"
+                        : item.status === "Completed"
+                        ? "rgba(0, 137, 123, 0.8)"
+                        : "rgba(239, 154, 154, 0.7)",
                   }}
                 >
                   {/* <td className="text-start">{htmlToText(item.task)}</td> */}
@@ -463,10 +563,7 @@ export default function Empdetails() {
                         <div class="modal-dialog modal-dialog-centered modal-xl">
                           <div class="modal-content">
                             <div class="modal-header">
-                              <h5
-                                class="modal-title"
-                                id="updateTaskModalLabel"
-                              >
+                              <h5 class="modal-title" id="updateTaskModalLabel">
                                 Update Task
                               </h5>
                               <button
@@ -507,9 +604,7 @@ export default function Empdetails() {
                                       aria-label="Default select example"
                                       id="timeduration"
                                       value={time}
-                                      onChange={(e) =>
-                                        setTime(e.target.value)
-                                      }
+                                      onChange={(e) => setTime(e.target.value)}
                                     >
                                       <option value="1 hour">1 hour</option>
                                       <option value="2 hours">2 hours</option>
@@ -531,7 +626,11 @@ export default function Empdetails() {
                                     disabled={loading}
                                   >
                                     {loading ? (
-                                      <ClipLoader size={18} color={"#ffffff"} loading={loading} />
+                                      <ClipLoader
+                                        size={18}
+                                        color={"#ffffff"}
+                                        loading={loading}
+                                      />
                                     ) : (
                                       "Update"
                                     )}
@@ -550,7 +649,14 @@ export default function Empdetails() {
                   ) : null}
                 </tr>
               ))
-              : null}
+            ) : (
+              <h4
+                className="text-center mb-0"
+                style={{ marginLeft: "25%", color: "rgba(0, 137, 123, 0.3)" }}
+              >
+                No Record
+              </h4>
+            )}
           </tbody>
         </table>
 
@@ -561,6 +667,7 @@ export default function Empdetails() {
             data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasRight"
             aria-controls="offcanvasRight"
+            onClick={start}
           >
             <i className="bi bi-chat-square-text-fill"></i>
           </button>
@@ -573,58 +680,60 @@ export default function Empdetails() {
           >
             {listname.length > 0
               ? listname.map((item, index) => (
-                <div className="offcanvas-header">
-                  <div className="menudiv d-flex align-items-center">
-                    <div
-                      className="menuimg"
-                      style={{
-                        backgroundColor:
-                          item.online === true ? "yellow" : "white",
-                        width: "35px",
-                        height: "35px",
-                        borderRadius: "100px",
-                      }}
-                    >
-                      {item.profileimage === "" ||
+                  <div className="offcanvas-header">
+                    <div className="menudiv d-flex align-items-center">
+                      <div
+                        className="menuimg"
+                        style={{
+                          backgroundColor:
+                            item.online === true ? "yellow" : "white",
+                          width: "35px",
+                          height: "35px",
+                          borderRadius: "100px",
+                        }}
+                      >
+                        {item.profileimage === "" ||
                         item.profileimage == null ? (
-                        <img
-                          className="profimage"
-                          src={"/empimg.jpg"}
-                          alt=""
-                          style={{
-                            width: "35px",
-                            height: "35px",
-                            borderRadius: "100px",
-                          }}
-                        />
-                      ) : (
-                        <img
-                          className="profimage"
-                          src={item.profileimage}
-                          alt=""
-                          style={{
-                            width: "35px",
-                            height: "35px",
-                            borderRadius: "100px",
-                          }}
-                        />
-                      )}
+                          <img
+                            className="profimage"
+                            src={"/empimg.jpg"}
+                            alt=""
+                            style={{
+                              width: "35px",
+                              height: "35px",
+                              borderRadius: "100px",
+                            }}
+                          />
+                        ) : (
+                          <img
+                            className="profimage"
+                            src={item.profileimage}
+                            alt=""
+                            style={{
+                              width: "35px",
+                              height: "35px",
+                              borderRadius: "100px",
+                            }}
+                          />
+                        )}
+                      </div>
+                      <div className="ps-2">{item.name}</div>
                     </div>
-                    <div className="ps-2">{item.name}</div>
+                    <button
+                      type="button"
+                      className="btn-close text-reset"
+                      data-bs-dismiss="offcanvas"
+                      aria-label="Close"
+                      onClick={stop}
+                    ></button>
                   </div>
-                  <button
-                    type="button"
-                    className="btn-close text-reset"
-                    data-bs-dismiss="offcanvas"
-                    aria-label="Close"
-                  ></button>
-                </div>
-              ))
+                ))
               : null}
 
-            <div className="offcanvas-bodys">
-              {messages.length > 0
-                ? messages.map((item, index) => (
+            <div className="offcanvas-body" ref={chatBodyRef}>
+              {/* <scrollToBottom> */}
+              {messages.length > 0 ? (
+                messages.map((item, index) => (
                   <div
                     className="getmessage"
                     style={{
@@ -681,24 +790,35 @@ export default function Empdetails() {
                       <div className="msgbody">
                         <h6>{item.text}</h6>
                       </div>
-                      <h6>{ }</h6>
+                      <h6>{}</h6>
                     </div>
                   </div>
                 ))
-                : null}
+              ) : (
+                <h4
+                  className="text-center mb-0"
+                  style={{ marginLeft: "2%", color: "rgba(0, 137, 123, 0.3)" }}
+                >
+                  No Message
+                </h4>
+              )}
+              {/* </scrollToBottom> */}
             </div>
 
             <div className="offcanvas-footer">
               <form>
                 <input
+                  ref={inputRef}
+                  onKeyPress={handleKeyPress}
                   type="text"
                   placeholder="Message here"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   // style={{width:"85%"}}
-                // onKeyPress={handleKeyPress}
+                  // onKeyPress={handleKeyPress}
                 />
                 <button
+                  id="messageButton"
                   // ref={buttonRef}
                   className=""
                   type="button"
@@ -723,7 +843,7 @@ export default function Empdetails() {
         draggable
         pauseOnHover
         theme="light"
-      // transition:Bounce
+        // transition:Bounce
       />
     </>
   );

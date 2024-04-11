@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 // import moment from "moment";
 import parse from "html-react-parser";
+import Swal from "sweetalert2";
 
 export default function Algofolkshome() {
   const [listname, setListname] = useState([]);
@@ -157,20 +158,47 @@ export default function Algofolkshome() {
   };
 
   const deletetask = async (id) => {
-    let result = await fetch(
-      `${process.env.REACT_APP_API_KEY}/deletetask/${id}`,
-      {
-        method: "Delete",
-        headers: {
-          // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
-        },
+    //   let result = await fetch(
+    //     `${process.env.REACT_APP_API_KEY}/deletetask/${id}`,
+    //     {
+    //       method: "Delete",
+    //       headers: {
+    //         // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
+    //       },
+    //     }
+    //   );
+    //   result = await result.json();
+    //   if (result) {
+    //     toast("Task deleted Successfully");
+    //     getAllTaskNotId();
+    //   }
+    // };
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let result = await fetch(
+          `${process.env.REACT_APP_API_KEY}/deletetask/${id}`,
+          {
+            method: "Delete",
+            headers: {
+              // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
+            },
+          }
+        );
+        result = await result.json();
+        if (result) {
+          Swal.fire("Deleted!", "Your Task has been deleted.", "success");
+          getAllTaskNotId();
+        }
       }
-    );
-    result = await result.json();
-    if (result) {
-      toast("Task deleted Successfully");
-      getAllTaskNotId();
-    }
+    });
   };
 
   return (
@@ -465,7 +493,7 @@ export default function Algofolkshome() {
                 ) : (
                   <h4
                     className="text-center mb-0"
-                    style={{ marginLeft: "20%", color: "rgba(0, 137, 123, 0.3)" }}
+                    style={{ marginLeft: "25%", color: "rgba(0, 137, 123, 0.3)" }}
                   >
                     No Record
                   </h4>
