@@ -5,11 +5,6 @@ import { ClipLoader } from "react-spinners";
 import JoditEditor from "jodit-react";
 import parse from "html-react-parser";
 import Swal from "sweetalert2";
-// import { css } from "emotion";
-
-// import { useScrollToBottom } from "react-scroll-to-bottom";
-
-// import {io} from "socket.io-client";
 
 export default function Empdetails() {
   var authData = localStorage.getItem("user");
@@ -36,11 +31,8 @@ export default function Empdetails() {
   const inputRef = useRef(null);
 
   const handleKeyPress = (event) => {
-    
     if (event.key === "Enter") {
-     
       event.preventDefault();
-     
       document.getElementById("messageButton").click();
     }
   };
@@ -335,9 +327,9 @@ export default function Empdetails() {
     }
   };
 
-  useEffect(()=>{
-    scrollToBottom();
-  },[getMessages])
+  // useEffect(()=>{
+  //   scrollToBottom();
+  // },[getMessages]);
 
 
   return (
