@@ -418,6 +418,7 @@ export default function Empdetails() {
                               <option value="6 hours">6 hours</option>
                               <option value="7 hours">7 hours</option>
                               <option value="8 hours">8 hours</option>
+                              <option value="8 hours">On Going</option>
                             </select>
                           </div>
                         </div>
@@ -605,7 +606,8 @@ export default function Empdetails() {
                                       <option value="5 hours">5 hours</option>
                                       <option value="6 hours">6 hours</option>
                                       <option value="7 hours">7 hours</option>
-                                      <option value="8 hours">8 hours</option>
+                                      <option value="On Going">On Going</option>
+
                                     </select>
                                   </div>
                                 </div>

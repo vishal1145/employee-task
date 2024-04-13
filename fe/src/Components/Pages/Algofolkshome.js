@@ -314,7 +314,7 @@ export default function Algofolkshome() {
             <thead>
               <tr>
                 <th className="text-start wid-60">Task</th>
-                <th className="text-center wid-10">Assign</th>
+                {/* <th className="text-center wid-10">Assign</th> */}
                 <th className="text-center wid-5">Modify</th>
               </tr>
             </thead>
@@ -340,18 +340,20 @@ export default function Algofolkshome() {
                                   : "rgba(239, 154, 154, 0.7)",
                         }}
                       >
-                        <td className="text-start lh-sm pb-0 pt-3">
-                          {parse(item.task)}
-                        </td>
+                   <td className="text-start lh-sm pb-0 pt-3">
+                   <div style={{ marginBottom: '0' }}>
+    <div className="remove-margin remove-marginol" dangerouslySetInnerHTML={{ __html: item.task }} />
+</div>
+</td>
 
-                        <td className="text-center">{item.assign}</td>
+                        {/* <td className="text-center">{item.assign}</td> */}
 
                         <td className="modifysec text-center">
                           <Link
                             // to={item._id}
                             // let taskid={item._id}
                             type="button"
-                            class="pe-3"
+                            class="pe-3 pb-0"
                             data-bs-toggle="modal"
                             data-bs-target="#updateTaskModal"
                           >
@@ -402,6 +404,7 @@ export default function Algofolkshome() {
                                       // value={editingTask.task}
                                       value={task}
                                       onChange={(newTask) => setTask(newTask)}
+                                      className="m"
                                     />
 
                                     <div className="d-flex align-items-center justify-content-between pt-2">
@@ -463,6 +466,8 @@ export default function Algofolkshome() {
                                           <option value="6 hours">6 hours</option>
                                           <option value="7 hours">7 hours</option>
                                           <option value="8 hours">8 hours</option>
+                                          <option value="On Going">On Going</option>
+
                                         </select>
                                       </div>
                                     </div>
@@ -515,6 +520,7 @@ export default function Algofolkshome() {
         draggable
         pauseOnHover
         theme="light"
+        class="m-0"
         // transition:Bounce
       />
     </>

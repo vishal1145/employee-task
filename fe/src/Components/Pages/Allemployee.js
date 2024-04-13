@@ -8,13 +8,14 @@ export default function Allemployee() {
   const [listname, setListname] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  // const [role, setRole] = useState("");
+  const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
-  // const [loading, setLoading] = useState(false);
-  const [loading, setLoading] = useState(true); // Add loading state
+  // const [newpassword, setNewPassword] = useState("");
 
-  // const params = useParams();
-  // const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  // const [updatePassword, setUpdatePassword] = useState("");
+  // const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+
   const closeButtonRef = useRef();
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export default function Allemployee() {
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
-      setLoading(false); // Set loading to false after data is fetched
+      setLoading(false);
     }
   };
 
@@ -75,14 +76,14 @@ export default function Allemployee() {
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
       toast.warning("Invalid email address");
       return;
-    }else if (password === "" || null) {
+    } else if (password === "" || null) {
       toast.info("Please fill Employee Password");
       setLoading(false);
-    }else {
+    } else {
       try {
         let result = await fetch(`${process.env.REACT_APP_API_KEY}/addemp`, {
           method: "post",
-          body: JSON.stringify({ name, email, password, role: "user" }),
+          body: JSON.stringify({ name, email, password, role, }),
           headers: {
             "Content-Type": "application/json",
           },
@@ -92,7 +93,6 @@ export default function Allemployee() {
         //   throw new Error("Email Id is already in database");
         // }
         const data = await result.json();
-
         if (data) {
           toast.success("Employee added successfully");
           closeButtonRef.current.click();
@@ -103,35 +103,62 @@ export default function Allemployee() {
           getListname();
           setName("");
           setEmail("");
+          setRole("");
           setPassword("");
         }
         // else {
         //   throw new Error("Email Id is already in database");
         // }
       } catch (error) {
-        toast.warning("Email Id already exist");
-      } 
-      // finally {
-      //   setLoading(false); // Set loading to false after data submission completes
-      // }
+        toast.warning("Email Id already exists");
+      }
     }
   };
+
+  // const updateEmployeePassword = async (employeeId) => {
+  //   try {
+  //     let result = await fetch(
+  //       `${"http://localhost:5000"}/addemp/${employeeId}`,
+  //       {
+  //         method: "PUT",
+  //         body: JSON.stringify({ password: updatePassword }),
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     result = await result.json();
+  //     if (result) {
+  //       toast.success("Password updated successfully");
+  //       closeButtonRef.current.click();
+  //       getListname();
+  //       setUpdatePassword("");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating password:", error);
+  //     toast.error("Failed to update password");
+  //   }
+  // };
+  
+  // const [showUpdatePasswordModal, setShowUpdatePasswordModal] = useState(false);
+
+  // const openUpdatePasswordModal = () => {
+  //   setShowUpdatePasswordModal(true);
+  // };
+  
+  // const closeUpdatePasswordModal = () => {
+  //   setShowUpdatePasswordModal(false);
+  // };
 
   return (
     <>
       <div className="allemployee flex-column">
-        {/* <div className="container-xl"> */}
         <div
           className="py-2 px-3 d-flex align-items-center justify-content-between bg-white wid-100"
           style={{ position: "sticky", top: "0", zIndex: "999" }}
         >
-          {/* <div className=""> */}
           <h4 className="mb-0">All Employee</h4>
-          {/* </div> */}
           <div>
-            {/* <NavLink className="btn addempbtn" to="/addemp">
-                Add Employee
-              </NavLink> */}
             <button
               type="button"
               className="btn me-0"
@@ -140,30 +167,28 @@ export default function Allemployee() {
             >
               Add Employee
             </button>
-
             <div
-              class="modal fade"
+              className="modal fade"
               id="addEmpModal"
-              tabindex="-1"
+              tabIndex="-1"
               aria-labelledby="addEmpModalLabel"
               aria-hidden="true"
             >
-              <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="addEmpModalLabel">
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title" id="addEmpModalLabel">
                       Add Employee
                     </h5>
                     <button
                       ref={closeButtonRef}
                       type="button"
-                      class="btn-close"
+                      className="btn-close"
                       data-bs-dismiss="modal"
                       aria-label="Close"
                     ></button>
                   </div>
-
-                  <div class="modal-body">
+                  <div className="modal-body">
                     <form>
                       <label htmlFor="addname" className="form-label shno">
                         Name
@@ -177,7 +202,6 @@ export default function Allemployee() {
                         placeholder="Name"
                         required
                       />
-
                       <label htmlFor="addemail" className="form-label">
                         Email Id
                       </label>
@@ -190,8 +214,21 @@ export default function Allemployee() {
                         placeholder="Email"
                         required
                       />
-
-                      <label htmlFor="addpassword" className="form-label">
+                      <label htmlFor="addrole" className="form-label">
+                        Role
+                      </label>
+                      <select
+                        className="form-select"
+                        id="addrole"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        required
+                      >
+                        <option value="">Select Position</option>
+                        <option value="Developer">Developer</option>
+                        <option value="Team Lead">Team Lead</option>
+                      </select>
+                      <label htmlFor="addpassword" className="form-label pt-2">
                         Password
                       </label>
                       <input
@@ -203,46 +240,24 @@ export default function Allemployee() {
                         placeholder="Password"
                         required
                       />
-                      {/* <label htmlFor="role" className="form-label">
-            Role
-          </label>
-          <select
-            className="form-select"
-            id="role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select> */}
                       <div className="d-flex align-items-center justify-content-between">
                         <button
                           className="btn mt-3 wid-100"
                           type="button"
                           onClick={collectData}
-                          // disabled={loading} // Disable button when loading is true
                         >
-                           {/* {loading ? (
-                            <ClipLoader size={18} color={"#ffffff"} loading={loading} />
-                          ) : (
-                            "Submit"
-                          )}  */}
                           Submit
                         </button>
-
-                        {/* <NavLink type="cancel" to={"/allemployee"} className="btn mt-3 wid-50">Cancel</NavLink> */}
                       </div>
                     </form>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
-
         </div>
         <div className="row px-5">
-          {loading ? ( // Display loader if loading state is true
+          {loading ? (
             <div className="loader-container2">
               <ClipLoader size={35} color={"#36D7B7"} loading={loading} />
             </div>
@@ -250,7 +265,7 @@ export default function Allemployee() {
             <>
               {listname.length > 0 ? (
                 listname
-                  .filter((item) => item.role !== "admin") // Filter out admins
+                  .filter((item) => item.role !== "admin")
                   .map((item, index) => (
                     <div
                       className="p-3 col-6 col-sm-4 col-md-3 col-lg-3"
@@ -267,7 +282,7 @@ export default function Allemployee() {
                                 <button
                                   className="btn btn-secondary dropdown-toggl"
                                   type="button"
-                                  id="dropdownMenuButton1"
+                                  id={`dropdownMenuButton${index}`}
                                   data-bs-toggle="dropdown"
                                   aria-expanded="false"
                                 >
@@ -275,7 +290,7 @@ export default function Allemployee() {
                                 </button>
                                 <ul
                                   className="dropdown-menu p-0"
-                                  aria-labelledby="dropdownMenuButton1"
+                                  aria-labelledby={`dropdownMenuButton${index}`}
                                 >
                                   <li>
                                     <Link
@@ -285,6 +300,42 @@ export default function Allemployee() {
                                       Delete
                                     </Link>
                                   </li>
+                                  <li>
+
+                                  {/* <Link>
+  <div className="modal-body">
+    <label htmlFor={`updatePassword_${item._id}`} className="form-label">
+      New Password
+    </label>
+    <input
+      type="password"
+      className="form-control"
+      id={`updatePassword_${item._id}`}
+      value={updatePassword}
+      onChange={(e) => setUpdatePassword(e.target.value)}
+      placeholder="Enter New Password"
+      required
+    />
+  </div>
+  <div className="modal-footer d-flex flex-row"><button
+  type="button"
+  className="btn btn-primary"
+  onClick={() => updateEmployeePassword(item._id)}
+>
+  Save changes
+</button>
+
+    <button
+      type="button"
+      className="btn btn-secondary"
+      onClick={() => setUpdatePassword("")}
+    >
+      Close
+    </button>
+    
+  </div>
+</Link> */}
+          </li>
                                 </ul>
                               </div>
                               <Link></Link>
@@ -308,7 +359,7 @@ export default function Allemployee() {
                           </div>
                           <div className="card-body text-center pb-0">
                             <h6>{item.name}</h6>
-                            <h6>Developer</h6>
+                            <h6>{item.role}</h6>
                           </div>
                         </div>
                       </NavLink>
@@ -320,7 +371,6 @@ export default function Allemployee() {
             </>
           )}
         </div>
-        {/* </div> */}
       </div>
       <ToastContainer
         position="top-right"
@@ -333,8 +383,69 @@ export default function Allemployee() {
         draggable
         pauseOnHover
         theme="light"
-      // transition:Bounce
       />
+      {/* {showUpdatePasswordModal && (
+        <div
+          className="modal fade"
+          id="updatePasswordModal"
+          tabIndex="-1"
+          aria-labelledby="updatePasswordModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="updatePasswordModalLabel">
+                  Update Password
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => {
+                    setSelectedEmployeeId(null);
+                    setUpdatePassword("");
+                  }}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <label htmlFor="updatePassword" className="form-label">
+                  New Password
+                </label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="updatePassword"
+                  value={updatePassword}
+                  onChange={(e) => setUpdatePassword(e.target.value)}
+                  placeholder="Enter New Password"
+                  required
+                />
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    setSelectedEmployeeId(null);
+                    setUpdatePassword("");
+                  }}
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={updateEmployeePassword}
+                >
+                  Save changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )} */}
     </>
   );
 }

@@ -605,6 +605,19 @@ button {
 .chatdotmenu .btn:focus {
   box-shadow: none;
 }
+/* Apply CSS to <p> tags with class "remove-margin" */
+.remove-margin p {
+  margin-bottom: 0;
+
+}
+.remove-marginol ol {
+  margin-bottom: 0;
+  
+}
+.ButtonText
+{
+  font-size: 13px;
+}
 
 @media only screen and (max-width: 768px) {
   .loginpagecard {

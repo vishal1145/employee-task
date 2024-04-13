@@ -66,14 +66,14 @@ export default function Navbar() {
               {JSON.parse(authData).role === "admin" ? (
                 <div>
                   <NavLink
-                    className="btn"
+                    className="btn ButtonText"
                     aria-current="page"
                     to={"/alldetails/" + JSON.parse(authData)._id}
                   >
                     All Details
                   </NavLink>
 
-                  <NavLink className="btn" to="/allemployee">
+                  <NavLink className="btn ButtonText" to="/allemployee">
                     Employees
                   </NavLink>
                 </div>
