@@ -243,6 +243,20 @@ app.post("/addemp", async (req, resp) => {
   }
 });
 
+app.put("/addemp/:id", async (req, resp) => {
+  try {
+    const result = await EmpDetail.updateOne(
+      { _id: req.params.id },
+      { $set: { password: req.body.password } }
+    );
+    resp.send(result);
+  } catch (error) {
+    console.error("Error updating password:", error);
+    resp.status(500).send("Internal Server Error");
+  }
+});
+
+
 // app.post("/addemp", async (req, resp) => {
 //   try {
 //     const existingEmployee = await EmpAdd.findOne({ email: req.body.email });

@@ -13,14 +13,14 @@ export default function Allemployee() {
   // const [newpassword, setNewPassword] = useState("");
 
   const [loading, setLoading] = useState(true);
-  // const [updatePassword, setUpdatePassword] = useState("");
-  // const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+  const [updatePassword, setUpdatePassword] = useState("");
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
 
   const closeButtonRef = useRef();
 
   useEffect(() => {
     getListname();
-  },[]);
+  }, []);
 
   const getListname = async () => {
     try {
@@ -83,7 +83,7 @@ export default function Allemployee() {
       try {
         let result = await fetch(`${process.env.REACT_APP_API_KEY}/addemp`, {
           method: "post",
-          body: JSON.stringify({ name, email, password, role, }),
+          body: JSON.stringify({ name, email, password, role }),
           headers: {
             "Content-Type": "application/json",
           },
@@ -115,40 +115,40 @@ export default function Allemployee() {
     }
   };
 
-  // const updateEmployeePassword = async (employeeId) => {
-  //   try {
-  //     let result = await fetch(
-  //       `${"http://localhost:5000"}/addemp/${employeeId}`,
-  //       {
-  //         method: "PUT",
-  //         body: JSON.stringify({ password: updatePassword }),
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-  //     result = await result.json();
-  //     if (result) {
-  //       toast.success("Password updated successfully");
-  //       closeButtonRef.current.click();
-  //       getListname();
-  //       setUpdatePassword("");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error updating password:", error);
-  //     toast.error("Failed to update password");
-  //   }
-  // };
-  
-  // const [showUpdatePasswordModal, setShowUpdatePasswordModal] = useState(false);
+  const [showUpdatePasswordModal, setShowUpdatePasswordModal] = useState(false);
+  const openUpdatePasswordModal = (employeeId) => {
+    setSelectedEmployeeId(employeeId);
+    setShowUpdatePasswordModal(true); // Set the state to true to open the modal
+  };
 
-  // const openUpdatePasswordModal = () => {
-  //   setShowUpdatePasswordModal(true);
-  // };
-  
-  // const closeUpdatePasswordModal = () => {
-  //   setShowUpdatePasswordModal(false);
-  // };
+  const closeUpdatePasswordModal = () => {
+    setShowUpdatePasswordModal(false); // Set the state to false to close the modal
+  };
+
+  const updateEmployeePassword = async () => {
+    try {
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/addemp/${selectedEmployeeId}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({ password: updatePassword }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      result = await result.json();
+      if (result) {
+        toast.success("Password updated successfully");
+        closeUpdatePasswordModal(); // Close the modal
+        getListname(); // Refresh the list of employees
+        setUpdatePassword(""); // Clear the updatePassword state
+      }
+    } catch (error) {
+      console.error("Error updating password:", error);
+      toast.error("Failed to update password");
+    }
+  };
 
   return (
     <>
@@ -232,7 +232,7 @@ export default function Allemployee() {
                         Password
                       </label>
                       <input
-                        type="password"
+                        type="text"
                         className="form-control"
                         id="addpassword"
                         value={password}
@@ -294,55 +294,43 @@ export default function Allemployee() {
                                 >
                                   <li>
                                     <Link
-                                      className="dropdown-item p-1"
+                                      className="dropdown-item p-1 px-3 py-2"
                                       onClick={() => deleteemp(item._id)}
                                     >
                                       Delete
                                     </Link>
                                   </li>
+
                                   <li>
-
-                                  {/* <Link>
-  <div className="modal-body">
-    <label htmlFor={`updatePassword_${item._id}`} className="form-label">
-      New Password
-    </label>
-    <input
-      type="password"
-      className="form-control"
-      id={`updatePassword_${item._id}`}
-      value={updatePassword}
-      onChange={(e) => setUpdatePassword(e.target.value)}
-      placeholder="Enter New Password"
-      required
-    />
-  </div>
-  <div className="modal-footer d-flex flex-row"><button
-  type="button"
-  className="btn btn-primary"
-  onClick={() => updateEmployeePassword(item._id)}
->
-  Save changes
-</button>
-
-    <button
-      type="button"
-      className="btn btn-secondary"
-      onClick={() => setUpdatePassword("")}
-    >
-      Close
-    </button>
-    
-  </div>
-</Link> */}
-          </li>
+                                    <Link
+                                      to="#" // Add this to prevent navigation
+                                      onClick={(e) => {
+                                        e.preventDefault(); // Prevent default behavior
+                                        openUpdatePasswordModal(item._id);
+                                      }}
+                                      className="dropdown-item p-1"
+                                    >
+                                      <button
+                                        to="#" // Add this to prevent navigation
+                                        onClick={(e) => {
+                                          e.preventDefault(); // Prevent default behavior
+                                          openUpdatePasswordModal(item._id);
+                                        }}
+                                        className="dropdown-item p-1"
+                                        data-bs-toggle="modal" // Add this attribute to trigger modal opening
+                                        data-bs-target="#updatePasswordModal" // Correct the target to match the modal's id
+                                      >
+                                        Update Password
+                                      </button>
+                                    </Link>
+                                  </li>
                                 </ul>
                               </div>
                               <Link></Link>
                             </div>
                             <div className="emppic">
                               {item.profileimage === "" ||
-                                item.profileimage == null ? (
+                              item.profileimage == null ? (
                                 <img
                                   src={"/empimg.jpg"}
                                   alt=""
@@ -384,7 +372,7 @@ export default function Allemployee() {
         pauseOnHover
         theme="light"
       />
-      {/* {showUpdatePasswordModal && (
+      {showUpdatePasswordModal && (
         <div
           className="modal fade"
           id="updatePasswordModal"
@@ -414,7 +402,7 @@ export default function Allemployee() {
                   New Password
                 </label>
                 <input
-                  type="password"
+                  type="text"
                   className="form-control"
                   id="updatePassword"
                   value={updatePassword}
@@ -424,7 +412,7 @@ export default function Allemployee() {
                 />
               </div>
               <div className="modal-footer">
-                <button
+                {/* <button
                   type="button"
                   className="btn btn-secondary"
                   onClick={() => {
@@ -433,7 +421,7 @@ export default function Allemployee() {
                   }}
                 >
                   Close
-                </button>
+                </button> */}
                 <button
                   type="button"
                   className="btn btn-primary"
@@ -445,7 +433,7 @@ export default function Allemployee() {
             </div>
           </div>
         </div>
-      )} */}
+      )}
     </>
   );
 }
