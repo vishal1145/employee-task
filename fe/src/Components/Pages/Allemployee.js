@@ -225,18 +225,33 @@ export default function Allemployee() {
   };
 
   const sortByPosition = (role) => {
-    const sortedList = [...originalList].sort((a, b) =>
-      a.role.localeCompare(b.role)
-    );
-    if (role === "Developer") {
-      setListname(sortedList.filter((item) => item.role === "Developer"));
-    } else if (role === "Team Lead") {
-      setListname(sortedList.filter((item) => item.role === "Team Lead"));
+    let sortedList;
+    if (role === "All") {
+      sortedList = [...originalList].sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
     } else {
-      setListname(originalList);
+      sortedList = [...originalList].sort((a, b) =>
+        a.role.localeCompare(b.role)
+      );
+      if (role === "Developer") {
+        sortedList = sortedList.filter((item) => item.role === "Developer");
+      } else if (role === "Team Lead") {
+        sortedList = sortedList.filter((item) => item.role === "Team Lead");
+      }
     }
+    setListname(sortedList);
   };
+  
 
+  const handleSearch = (searchQuery) => {
+    const filteredList = originalList.filter((item) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setListname(filteredList);
+  };
+  
+  
 
   return (
     <>
@@ -247,6 +262,16 @@ export default function Allemployee() {
         >
           <h4 className="mb-0">All Employee</h4>
           <div className="d-flex flex-row gap-3">
+          <div>
+  <input
+    type="text"
+    placeholder="Search by name..."
+    onChange={(e) => handleSearch(e.target.value)}
+    className="searchInput"
+
+/>
+</div>
+
           <div>
             <button
               type="button"
@@ -345,20 +370,24 @@ export default function Allemployee() {
             </div>
           </div>
           <div className="dropdown">
-            <button
-              className="btn me-0 dropdown-toggle ButtonText"
-              type="button"
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Sort by Position
-            </button>
-            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li><button className="dropdown-item" onClick={() => sortByPosition("Developer")}>Developer</button></li>
-              <li><button className="dropdown-item" onClick={() => sortByPosition("Team Lead")}>Team Lead</button></li>
-            </ul>
-          </div>
+  <button
+    className="btn me-0 dropdown-toggle ButtonText"
+    type="button"
+    id="dropdownMenuButton"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+  >
+    Sort by Position
+  </button>
+  <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+  <li><button className="dropdown-item" onClick={() => sortByPosition("All")}>All</button></li> 
+    <li><button className="dropdown-item" onClick={() => sortByPosition("Developer")}>Developer</button></li>
+    <li><button className="dropdown-item" onClick={() => sortByPosition("Team Lead")}>Team Lead</button></li>
+    {/* <li><button className="dropdown-item" onClick={() => getListname()}>Alphabetical</button></li>  */}
+  </ul>
+</div>
+
+
         </div>
 
 
@@ -376,7 +405,7 @@ export default function Allemployee() {
                   .filter((item) => item.role !== "admin")
                   .map((item, index) => (
                     <div
-                      className="p-3 col-6 col-sm-4 col-md-3 col-lg-3"
+                      className="p-3 col-6 col-sm-6 col-md-3 col-lg-2"
                       key={index}
                     >
                       <NavLink

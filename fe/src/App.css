@@ -411,7 +411,7 @@ button {
 .menuname {
   width: 85%;
   border-bottom: 1px solid #6c757d29;
-  padding: 17px 0;
+  padding: 13px 0;
   text-align: start;
   color: rgba(0, 0, 0, 0.852);
 }
@@ -619,6 +619,14 @@ button {
   font-size: 13px;
 }
 
+
+.searchInput
+{
+    border: 1px solid #80808057;
+    border-radius: 5px;
+    padding: 2.3px;
+
+}
 @media only screen and (max-width: 768px) {
   .loginpagecard {
     width: 100%;
