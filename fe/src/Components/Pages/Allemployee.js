@@ -15,6 +15,7 @@ export default function Allemployee() {
   const [loading, setLoading] = useState(true);
   const [updatePassword, setUpdatePassword] = useState("");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+  const [originalList, setOriginalList] = useState([]);
 
   const closeButtonRef = useRef();
 
@@ -26,17 +27,14 @@ export default function Allemployee() {
     try {
       let result = await fetch(`${process.env.REACT_APP_API_KEY}/listname`);
       result = await result.json();
-      
-      // Sort the result array alphabetically by the 'name' property
-      result.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
-      
+      result.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
+      setOriginalList(result);
       setListname(result);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
-    }
-  };
+    }};
   
 
   const deleteemp = async (id) => {
@@ -226,6 +224,20 @@ export default function Allemployee() {
     }
   };
 
+  const sortByPosition = (role) => {
+    const sortedList = [...originalList].sort((a, b) =>
+      a.role.localeCompare(b.role)
+    );
+    if (role === "Developer") {
+      setListname(sortedList.filter((item) => item.role === "Developer"));
+    } else if (role === "Team Lead") {
+      setListname(sortedList.filter((item) => item.role === "Team Lead"));
+    } else {
+      setListname(originalList);
+    }
+  };
+
+
   return (
     <>
       <div className="allemployee flex-column">
@@ -234,10 +246,11 @@ export default function Allemployee() {
           style={{ position: "sticky", top: "0", zIndex: "999" }}
         >
           <h4 className="mb-0">All Employee</h4>
+          <div className="d-flex flex-row gap-3">
           <div>
             <button
               type="button"
-              className="btn me-0"
+              className="btn me-0 ButtonText"
               data-bs-toggle="modal"
               data-bs-target="#addEmpModal"
             >
@@ -331,6 +344,25 @@ export default function Allemployee() {
               </div>
             </div>
           </div>
+          <div className="dropdown">
+            <button
+              className="btn me-0 dropdown-toggle ButtonText"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Sort by Position
+            </button>
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li><button className="dropdown-item" onClick={() => sortByPosition("Developer")}>Developer</button></li>
+              <li><button className="dropdown-item" onClick={() => sortByPosition("Team Lead")}>Team Lead</button></li>
+            </ul>
+          </div>
+        </div>
+
+
+
         </div>
         <div className="row px-5">
           {loading ? (
