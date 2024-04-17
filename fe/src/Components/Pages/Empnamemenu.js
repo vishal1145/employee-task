@@ -32,27 +32,52 @@ export default function Empnamemenu() {
     }
   }, [stopInterval]);
 
+  // const getListname = async () => {
+  //   try {
+  //     let result = await fetch(`${process.env.REACT_APP_API_KEY}/listname`);
+  //     result = await result.json();
+
+  //     const updatedList1 = await Promise.all(
+  //       result.map(async (user) => {
+  //         const counts = await getStatusCount(user._id);
+  //         return { ...user, counts };
+  //       })
+  //     );
+  //     if (updatedList1) {
+  //       setListname(updatedList1);
+  //     }
+  //   } finally {
+  //     // catch (error) {
+  //     //   console.log("Error fetching data:", error);
+  //     // }
+  //     setLoading(false); // Set loading to false after data is fetched
+  //   }
+  // };
+
   const getListname = async () => {
     try {
       let result = await fetch(`${process.env.REACT_APP_API_KEY}/listname`);
       result = await result.json();
-
+  
       const updatedList1 = await Promise.all(
         result.map(async (user) => {
           const counts = await getStatusCount(user._id);
           return { ...user, counts };
         })
       );
+  
+      // Sort the updatedList1 alphabetically by the 'name' property
+      updatedList1.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+      console.log("hiuhx",updatedList1)
+      
       if (updatedList1) {
         setListname(updatedList1);
       }
     } finally {
-      // catch (error) {
-      //   console.log("Error fetching data:", error);
-      // }
       setLoading(false); // Set loading to false after data is fetched
     }
   };
+  
 
   const getStatusCount = async (id) => {
     try {

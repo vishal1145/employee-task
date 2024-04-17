@@ -118,10 +118,15 @@ export default function Algofolkshome() {
       method: "get",
     });
     result = await result.json();
-
+  
+    // Sort the list alphabetically
+   
+    result.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+  
     setListname(result);
   };
-
+  
+  
   let getUpdate = async (id) => {
     setTaskId(id);
     if (!id) return;

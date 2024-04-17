@@ -24,9 +24,12 @@ export default function Allemployee() {
 
   const getListname = async () => {
     try {
-      // setLoading(true); // Set loading to true before fetching data
       let result = await fetch(`${process.env.REACT_APP_API_KEY}/listname`);
       result = await result.json();
+      
+      // Sort the result array alphabetically by the 'name' property
+      result.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+      
       setListname(result);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -34,6 +37,7 @@ export default function Allemployee() {
       setLoading(false);
     }
   };
+  
 
   const deleteemp = async (id) => {
     // Use SweetAlert to confirm deletion
@@ -115,10 +119,82 @@ export default function Allemployee() {
     }
   };
 
+
+  const collectData2 = async () => {
+    if (name === "" || !name) {
+      toast.info("Please fill Employee Name");
+      return;
+    } else if (email === "" || !email) {
+      toast.info("Please fill Employee Email");
+      return;
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
+      toast.warning("Invalid email address");
+      return;
+    } else if (password === "" || !password) {
+      toast.info("Please fill Employee Password");
+      return;
+    }
+  
+    try {
+      const result = await fetch(`${process.env.REACT_APP_API_KEY}/updateprofile/${selectedEmployeeId}`, {
+        method: "PUT",
+        body: JSON.stringify({ name, email, password, role }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (result.ok) {
+        toast.success("Employee updated successfully");
+        closeButtonRef.current.click();
+        getListname();
+        setName("");
+        setEmail("");
+        setRole("");
+        setPassword("");
+      } else {
+        const errorMessage = await result.text();
+        throw new Error(errorMessage);
+      }
+    } catch (error) {
+      toast.error("Failed to update employee: " + error.message);
+    }
+  };
+  
   const [showUpdatePasswordModal, setShowUpdatePasswordModal] = useState(false);
+  const [showUpdatePasswordModalEdit, setShowUpdatePasswordModalEdit] = useState(false);
+
   const openUpdatePasswordModal = (employeeId) => {
     setSelectedEmployeeId(employeeId);
     setShowUpdatePasswordModal(true); // Set the state to true to open the modal
+  };
+
+
+
+  // const openUpdatePasswordModalEdit = (employeeId) => {
+  //   setSelectedEmployeeId(employeeId);
+  //   setShowUpdatePasswordModalEdit(true); // Set the state to true to open the modal
+  // };
+
+  const openUpdatePasswordModalEdit = async (employeeId) => {
+    setSelectedEmployeeId(employeeId);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_KEY}/listnamess/${employeeId}`);
+      const data = await response.json();
+      // Populate modal fields with fetched data
+      setName(data.name);
+      setEmail(data.email);
+      setRole(data.role);
+      setPassword(data.password);
+      setShowUpdatePasswordModalEdit(true); // Open the modal
+    } catch (error) {
+      console.error('Error fetching employee data:', error);
+    }
+  };
+  
+
+  const closeUpdatePasswordModalEdit = () => {
+    setShowUpdatePasswordModalEdit(false); // Set the state to false to close the modal
   };
 
   const closeUpdatePasswordModal = () => {
@@ -324,6 +400,29 @@ export default function Allemployee() {
                                       </button>
                                     </Link>
                                   </li>
+                                  <li>
+                                    <Link
+                                      to="#" // Add this to prevent navigation
+                                      onClick={(e) => {
+                                        e.preventDefault(); // Prevent default behavior
+                                        openUpdatePasswordModalEdit(item._id);
+                                      }}
+                                      className="dropdown-item p-1"
+                                    >
+                                      <button
+                                        to="#" // Add this to prevent navigation
+                                        onClick={(e) => {
+                                          e.preventDefault(); // Prevent default behavior
+                                          openUpdatePasswordModalEdit(item._id);
+                                        }}
+                                        className="dropdown-item p-1"
+                                        data-bs-toggle="modal" // Add this attribute to trigger modal opening
+                                        data-bs-target="#updateEmpModal" // Correct the target to match the modal's id
+                                      >
+                                       Edit Employee
+                                      </button>
+                                    </Link>
+                                  </li>
                                 </ul>
                               </div>
                               <Link></Link>
@@ -433,6 +532,95 @@ export default function Allemployee() {
             </div>
           </div>
         </div>
+      )}
+        {showUpdatePasswordModalEdit && (
+      <div
+      className="modal fade"
+      id="updateEmpModal"
+      tabIndex="-1"
+      aria-labelledby="updateEmpModalLabel"
+      aria-hidden="true"
+    >
+      <div className="modal-dialog modal-dialog-centered">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="updateEmpModalLabel">
+              Update Employee
+            </h5>
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div className="modal-body">
+            <form>
+              <label htmlFor="addname" className="form-label shno">
+                Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="addname"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Name"
+                required
+              />
+              <label htmlFor="addemail" className="form-label">
+                Email Id
+              </label>
+              <input
+                type="email"
+                className="form-control"
+                id="addemail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                required
+              />
+              <label htmlFor="addrole" className="form-label">
+                Role
+              </label>
+              <select
+                className="form-select"
+                id="addrole"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                required
+              >
+                <option value="">Select Position</option>
+                <option value="Developer">Developer</option>
+                <option value="Team Lead">Team Lead</option>
+              </select>
+              <label htmlFor="addpassword" className="form-label pt-2">
+                Password
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="addpassword"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                required
+              />
+              <div className="d-flex align-items-center justify-content-between">
+                <button
+                  className="btn mt-3 wid-100"
+                  type="button"
+                  onClick={collectData2}
+                >
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
       )}
     </>
   );
