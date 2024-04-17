@@ -261,7 +261,7 @@ export default function Allemployee() {
           style={{ position: "sticky", top: "0", zIndex: "999" }}
         >
           <h4 className="mb-0">All Employee</h4>
-          <div className="d-flex flex-row gap-3">
+          <div className="d-flex flex-row gap-2">
           <div>
   <input
     type="text"
