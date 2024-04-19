@@ -8,44 +8,41 @@ import parse from "html-react-parser";
 import Swal from "sweetalert2";
 
 export default function Algofolkshome() {
-  const [listname, setListname] = useState([]);
-  const [task, setTask] = useState("");
-  const [name, setName] = useState("");
-  // const [assign, setAssign] = useState("");
-  const [time, setTime] = useState("1 hour");
-  const [alltask, setAllTask] = useState([]);
-  const [taskId, setTaskId] = useState("");
+//   const [listname, setListname] = useState([]);
   const [project, setProject] = useState("");
-  const [listproject, setListProject] = useState([]);
+//   const [name, setName] = useState("");
+  // const [assign, setAssign] = useState("");
+//   const [time, setTime] = useState("1 hour");
+  const [allprojects, setAllProjects] = useState([]);
+  const [projectId, setProjectId] = useState("");
   const [loading, setLoading] = useState(true);
 
   const closeButtonRef = useRef();
   const editor = useRef(null);
 
   useEffect(() => {
-    getListname();
-    getListProject();
+    // getListname();
     getUpdate();
-    getAllTaskNotId();
+    getAllProjects();
   }, []);
 
   const idnull = () => {
-    setTask("");
+    setProject("");
   };
 
   const collectData = async () => {
     // setLoading(true);
-    if (task === "" || null) {
-      toast.info("Please fill the task");
+    if (project === "" || null) {
+      toast.info("Please fill the project Name");
     } else {
       try {
         let result2 = await fetch(
-          `${process.env.REACT_APP_API_KEY}/adddetailss`,
+          `${process.env.REACT_APP_API_KEY}/addprojects`,
           {
             method: "post",
             body: JSON.stringify({
-              task,
-              assign: "Not Assign",
+              project,
+            //   assign: "Not Assign",
               // empid,
             }),
             headers: {
@@ -55,13 +52,13 @@ export default function Algofolkshome() {
         );
         result2 = await result2.json();
         if (result2) {
-          toast.success("Task added successfully");
-          setTask("");
+          toast.success("Project added successfully");
+          setProject("");
           // setAssign("Not Assign");
-          getAllTaskNotId();
+          getAllProjects();
         }
       } catch (error) {
-        toast.error("Failed to add task");
+        toast.error("Failed to add project");
       }
       // finally {
       //   setLoading(false);
@@ -69,35 +66,26 @@ export default function Algofolkshome() {
     }
   };
 
-  const updateTask = async (taskId) => {
+  const updateProjects = async (taskId) => {
     // setLoading(true);
     try {
-      let result1 = await fetch(`${process.env.REACT_APP_API_KEY}/listnamess`, {
-        method: "get",
-      });
-      result1 = await result1.json();
-      setListname(result1);
-      let empid = name;
+    //   let result1 = await fetch(`${process.env.REACT_APP_API_KEY}/listnamess`, {
+    //     method: "get",
+    //   });
+    //   result1 = await result1.json();
+
+    //   setListname(result1);
+    //   let empid = name;
 
       let result2 = await fetch(
-        `${process.env.REACT_APP_API_KEY}/listprojects`,
-        {
-          method: "get",
-        }
-      );
-      result2 = await result2.json();
-      setListProject(result2);
-
-      let result3 = await fetch(
-        `${process.env.REACT_APP_API_KEY}/updatetaskss/${taskId}`,
+        `${process.env.REACT_APP_API_KEY}/updateprojects/${taskId}`,
         {
           method: "put",
           body: JSON.stringify({
-            task,
-            empid,
-            time,
             project,
-            date: new Date(),
+            // empid,
+            // time,
+            // date: new Date(),
             // assign,
           }),
           headers: {
@@ -105,78 +93,65 @@ export default function Algofolkshome() {
           },
         }
       );
-      result3 = await result3.json();
-      if (result3) {
+      result2 = await result2.json();
+      if (result2) {
         // closeButtonRef.current.click();
-        toast.success("Task updated successfully");
-        getAllTaskNotId(); // Refresh task list
-        setTask("");
+        toast.success("Project updated successfully");
+        getAllProjects(); // Refresh task list
+        setProject("");
         setTimeout(() => {
           window.location.reload();
         }, 1000);
       }
     } catch (error) {
-      toast.error("Failed to update task");
+      toast.error("Failed to update Project");
     }
     // finally {
     //   setLoading(false);
     // }
   };
 
-  const getListname = async () => {
-    let result = await fetch(`${process.env.REACT_APP_API_KEY}/listnamess`, {
-      method: "get",
-    });
-    result = await result.json();
+//   const getListname = async () => {
+//     let result = await fetch(`${process.env.REACT_APP_API_KEY}/listnamess`, {
+//       method: "get",
+//     });
+//     result = await result.json();
 
-    // Sort the list alphabetically
+//     // Sort the list alphabetically
 
-    result.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
+//     result.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
 
-    setListname(result);
-  };
-
-  const getListProject = async () => {
-    let result = await fetch(`${process.env.REACT_APP_API_KEY}/listprojects`, {
-      method: "get",
-    });
-    result = await result.json();
-
-    // Sort the list alphabetically
-
-    result.sort((a, b) => (a.project > b.project ? 1 : b.project > a.project ? -1 : 0));
-
-    setListProject(result);
-  };
+//     setListname(result);
+//   };
 
   let getUpdate = async (id) => {
-    setTaskId(id);
+    setProjectId(id);
     if (!id) return;
 
     let result = await fetch(
-      `${process.env.REACT_APP_API_KEY}/taskautofillss/${id}`,
+      `${process.env.REACT_APP_API_KEY}/projectsautofillss/${id}`,
       {
         method: "get",
       }
     );
 
     result = await result.json();
-    setTask(result.task);
-    setName(result.name);
+    setProject(result.project);
+    // setName(result.name);
   };
 
-  const getAllTaskNotId = async () => {
+  const getAllProjects = async () => {
     // setLoading(true);
     try {
       let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/alltasknotempid`,
+        `${process.env.REACT_APP_API_KEY}/allprojects`,
         {
           method: "get",
         }
       );
       result = await result.json();
 
-      setAllTask(result);
+      setAllProjects(result);
     } catch (error) {
       toast.error("Failed Data Loading");
     } finally {
@@ -184,7 +159,7 @@ export default function Algofolkshome() {
     }
   };
 
-  const deletetask = async (id) => {
+  const deleteproject = async (id) => {
     //   let result = await fetch(
     //     `${process.env.REACT_APP_API_KEY}/deletetask/${id}`,
     //     {
@@ -211,7 +186,7 @@ export default function Algofolkshome() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         let result = await fetch(
-          `${process.env.REACT_APP_API_KEY}/deletetask/${id}`,
+          `${process.env.REACT_APP_API_KEY}/deleteproject/${id}`,
           {
             method: "Delete",
             headers: {
@@ -221,8 +196,8 @@ export default function Algofolkshome() {
         );
         result = await result.json();
         if (result) {
-          Swal.fire("Deleted!", "Your Task has been deleted.", "success");
-          getAllTaskNotId();
+          Swal.fire("Deleted!", "Your Project has been deleted.", "success");
+          getAllProjects();
         }
       }
     });
@@ -238,7 +213,7 @@ export default function Algofolkshome() {
             style={{ position: "sticky", top: "0", zIndex: "999" }}
           >
             {/* <div className=""> */}
-            <h4 className="mb-0">Not Assigned Task</h4>
+            <h4 className="mb-0">All Projects</h4>
             {/* </div> */}
 
             <div>
@@ -246,24 +221,24 @@ export default function Algofolkshome() {
                 type="button"
                 className="btn me-0"
                 data-bs-toggle="modal"
-                data-bs-target="#addTaskModal"
+                data-bs-target="#addProjectModal"
                 onClick={idnull}
               >
-                Add Task
+                Add Project
               </button>
 
               <div
                 class="modal fade"
-                id="addTaskModal"
+                id="addProjectModal"
                 tabindex="-1"
-                aria-labelledby="addTaskModalLabel"
+                aria-labelledby="addProjectModalLabel"
                 aria-hidden="true"
               >
                 <div class="modal-dialog modal-dialog-centered modal-xl">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="addTaskModalLabel">
-                        Add Task
+                      <h5 class="modal-title" id="addProjectModalLabel">
+                        Add Project
                       </h5>
                       <button
                         // ref={closeButtonRef}
@@ -277,17 +252,20 @@ export default function Algofolkshome() {
                     <div class="modal-body">
                       <div className="">
                         <form id="addform">
-                          <label htmlFor="addtask" className="form-label shno">
-                            Task
+                          <label
+                            htmlFor="addproject"
+                            className="form-label shno"
+                          >
+                            Project
                           </label>
                           <JoditEditor
                             ref={editor}
-                            value={task}
+                            value={project}
                             // config={config}
                             // tabIndex={1} // tabIndex of textarea
                             // onBlur={(newTask) => setTask(newTask)} // preferred to use only this option to update the content for performance reasons
                             // value={displayedTask}
-                            onChange={(newTask) => setTask(newTask)}
+                            onChange={(newProject) => setProject(newProject)}
                           />
 
                           {/* <div className="d-flex align-items-center justify-content-between">
@@ -339,7 +317,7 @@ export default function Algofolkshome() {
           <table className="wid-100">
             <thead>
               <tr>
-                <th className="text-start wid-60">Task</th>
+                <th className="text-start wid-60">Project</th>
                 {/* <th className="text-center wid-10">Assign</th> */}
                 <th className="text-center wid-5">Modify</th>
               </tr>
@@ -350,28 +328,28 @@ export default function Algofolkshome() {
               </div>
             ) : (
               <tbody>
-                {alltask.length > 0 ? (
-                  alltask.map((item, index) => (
+                {allprojects.length > 0 ? (
+                  allprojects.map((item, index) => (
                     <>
                       <tr
                         key={item._id}
-                        style={{
-                          backgroundColor:
-                            item.status === "Pending"
-                              ? "rgba(239, 154, 154, 0.7)"
-                              : item.status === "Running"
-                              ? "rgba(255, 235, 59, 0.6)"
-                              : item.status === "Completed"
-                              ? "rgba(0, 137, 123, 0.8)"
-                              : "rgba(239, 154, 154, 0.7)",
-                        }}
+                        // style={{
+                        //   backgroundColor:
+                        //     item.status === "Pending"
+                        //       ? "rgba(239, 154, 154, 0.7)"
+                        //       : item.status === "Running"
+                        //       ? "rgba(255, 235, 59, 0.6)"
+                        //       : item.status === "Completed"
+                        //       ? "rgba(0, 137, 123, 0.8)"
+                        //       : "rgba(239, 154, 154, 0.7)",
+                        // }}
                       >
                         <td className="text-start lh-sm pb-0 pt-3">
-                          {parse(item.task)}
-                          {/* <div>
+                          {parse(item.project)}
+                          {/* <div style={{ marginBottom: "0" }}>
                             <div
                               className="remove-margin remove-marginol"
-                              dangerouslySetInnerHTML={{ __html: item.task }}
+                              dangerouslySetInnerHTML={{ __html: item.project }}
                             />
                           </div> */}
                         </td>
@@ -385,7 +363,7 @@ export default function Algofolkshome() {
                             type="button"
                             class="pe-3 pb-0"
                             data-bs-toggle="modal"
-                            data-bs-target="#updateTaskModal"
+                            data-bs-target="#updateProjectModal"
                           >
                             <i
                               className="bi bi-pencil-square"
@@ -397,9 +375,9 @@ export default function Algofolkshome() {
 
                           <div
                             class="modal fade"
-                            id="updateTaskModal"
+                            id="updateProjectModal"
                             tabindex="-1"
-                            aria-labelledby="updateTaskModalLabel"
+                            aria-labelledby="updateProjectModalLabel"
                             aria-hidden="true"
                           >
                             <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -407,7 +385,7 @@ export default function Algofolkshome() {
                                 <div class="modal-header">
                                   <h5
                                     class="modal-title"
-                                    id="updateTaskModalLabel"
+                                    id="updateProjectModalLabel"
                                   >
                                     Update Task
                                   </h5>
@@ -424,21 +402,23 @@ export default function Algofolkshome() {
                                   {/* <div className=""> */}
                                   <form id="updateform">
                                     <label
-                                      htmlFor="updatetask"
+                                      htmlFor="updateproject"
                                       className="form-label shno"
                                     >
-                                      Task
+                                      Project
                                     </label>
                                     <JoditEditor
                                       ref={editor}
                                       // value={editingTask.task}
-                                      value={task}
-                                      onChange={(newTask) => setTask(newTask)}
+                                      value={project}
+                                      onChange={(newProject) =>
+                                        setProject(newProject)
+                                      }
                                       className="m"
                                     />
 
-                                    <div className="d-flex align-items-center justify-content-between pt-2">
-                                      <div className="wid-100 pe-2">
+                                    {/* <div className="d-flex align-items-center justify-content-between pt-2">
+                                      <div className="wid-50 pe-2">
                                         <label
                                           htmlFor="employeename"
                                           className="form-label"
@@ -476,38 +456,7 @@ export default function Algofolkshome() {
                                         </select>
                                       </div>
 
-                                      <div className="wid-100 pe-2">
-                                        <label
-                                          htmlFor="projectname"
-                                          className="form-label"
-                                        >
-                                          Project Name
-                                        </label>
-                                        <select
-                                          // type="text"
-                                          className="form-select"
-                                          aria-label="Default select example"
-                                          id="projectname"
-                                          value={project}
-                                          // value={item._id}
-                                          onChange={(e) =>
-                                            setProject(e.target.value)
-                                          }
-                                        >
-                                          <option value="" disabled>
-                                            Choose any one
-                                          </option>
-                                          { listproject.length > 0
-                                            ? listproject.map((item, index) => (
-                                                <option key={item._id} value={item.project}>
-                                                  {parse(item.project)}
-                                                </option>
-                                              ))
-                                            : null}
-                                        </select>
-                                      </div>
-
-                                      <div className="wid-100">
+                                      <div className="wid-50">
                                         <label
                                           htmlFor="timeduration"
                                           className="form-label"
@@ -551,7 +500,7 @@ export default function Algofolkshome() {
                                           </option>
                                         </select>
                                       </div>
-                                    </div>
+                                    </div> */}
 
                                     <div
                                       className="d-flex flex-row"
@@ -560,7 +509,9 @@ export default function Algofolkshome() {
                                       <button
                                         className="btn mt-3 me-2 wid-100"
                                         type="button"
-                                        onClick={() => updateTask(taskId)}
+                                        onClick={() =>
+                                          updateProjects(projectId)
+                                        }
                                       >
                                         Update
                                       </button>
@@ -572,7 +523,7 @@ export default function Algofolkshome() {
                             </div>
                           </div>
 
-                          <Link onClick={() => deletetask(item._id)}>
+                          <Link onClick={() => deleteproject(item._id)}>
                             <i className="bi bi-trash3-fill"></i>
                           </Link>
                         </td>

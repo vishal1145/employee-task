@@ -34,8 +34,8 @@ export default function Allemployee() {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
-    }};
-  
+    }
+  };
 
   const deleteemp = async (id) => {
     // Use SweetAlert to confirm deletion
@@ -117,7 +117,6 @@ export default function Allemployee() {
     }
   };
 
-
   const collectData2 = async () => {
     if (name === "" || !name) {
       toast.info("Please fill Employee Name");
@@ -132,16 +131,19 @@ export default function Allemployee() {
       toast.info("Please fill Employee Password");
       return;
     }
-  
+
     try {
-      const result = await fetch(`${process.env.REACT_APP_API_KEY}/updateprofile/${selectedEmployeeId}`, {
-        method: "PUT",
-        body: JSON.stringify({ name, email, password, role }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-  
+      const result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/updateprofile/${selectedEmployeeId}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({ name, email, password, role }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       if (result.ok) {
         toast.success("Employee updated successfully");
         closeButtonRef.current.click();
@@ -158,16 +160,15 @@ export default function Allemployee() {
       toast.error("Failed to update employee: " + error.message);
     }
   };
-  
+
   const [showUpdatePasswordModal, setShowUpdatePasswordModal] = useState(false);
-  const [showUpdatePasswordModalEdit, setShowUpdatePasswordModalEdit] = useState(false);
+  const [showUpdatePasswordModalEdit, setShowUpdatePasswordModalEdit] =
+    useState(false);
 
   const openUpdatePasswordModal = (employeeId) => {
     setSelectedEmployeeId(employeeId);
     setShowUpdatePasswordModal(true); // Set the state to true to open the modal
   };
-
-
 
   // const openUpdatePasswordModalEdit = (employeeId) => {
   //   setSelectedEmployeeId(employeeId);
@@ -177,7 +178,9 @@ export default function Allemployee() {
   const openUpdatePasswordModalEdit = async (employeeId) => {
     setSelectedEmployeeId(employeeId);
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_KEY}/listnamess/${employeeId}`);
+      const response = await fetch(
+        `${process.env.REACT_APP_API_KEY}/listnamess/${employeeId}`
+      );
       const data = await response.json();
       // Populate modal fields with fetched data
       setName(data.name);
@@ -186,10 +189,9 @@ export default function Allemployee() {
       setPassword(data.password);
       setShowUpdatePasswordModalEdit(true); // Open the modal
     } catch (error) {
-      console.error('Error fetching employee data:', error);
+      console.error("Error fetching employee data:", error);
     }
   };
-  
 
   const closeUpdatePasswordModalEdit = () => {
     setShowUpdatePasswordModalEdit(false); // Set the state to false to close the modal
@@ -242,7 +244,6 @@ export default function Allemployee() {
     }
     setListname(sortedList);
   };
-  
 
   const handleSearch = (searchQuery) => {
     const filteredList = originalList.filter((item) =>
@@ -250,8 +251,6 @@ export default function Allemployee() {
     );
     setListname(filteredList);
   };
-  
-  
 
   return (
     <>
@@ -262,136 +261,157 @@ export default function Allemployee() {
         >
           <h4 className="mb-0">All Employee</h4>
           <div className="d-flex flex-row gap-2">
-          <div>
-  <input
-    type="text"
-    placeholder="Search by name..."
-    onChange={(e) => handleSearch(e.target.value)}
-    className="searchInput"
+            <div>
+              <input
+                type="text"
+                placeholder="Search by name..."
+                onChange={(e) => handleSearch(e.target.value)}
+                className="searchInput px-2"
+              />
+            </div>
 
-/>
-</div>
-
-          <div>
-            <button
-              type="button"
-              className="btn me-0 ButtonText"
-              data-bs-toggle="modal"
-              data-bs-target="#addEmpModal"
-            >
-              Add Employee
-            </button>
-            <div
-              className="modal fade"
-              id="addEmpModal"
-              tabIndex="-1"
-              aria-labelledby="addEmpModalLabel"
-              aria-hidden="true"
-            >
-              <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title" id="addEmpModalLabel">
-                      Add Employee
-                    </h5>
-                    <button
-                      ref={closeButtonRef}
-                      type="button"
-                      className="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div className="modal-body">
-                    <form>
-                      <label htmlFor="addname" className="form-label shno">
-                        Name
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="addname"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Name"
-                        required
-                      />
-                      <label htmlFor="addemail" className="form-label">
-                        Email Id
-                      </label>
-                      <input
-                        type="email"
-                        className="form-control"
-                        id="addemail"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email"
-                        required
-                      />
-                      <label htmlFor="addrole" className="form-label">
-                        Role
-                      </label>
-                      <select
-                        className="form-select"
-                        id="addrole"
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                        required
-                      >
-                        <option value="">Select Position</option>
-                        <option value="Developer">Developer</option>
-                        <option value="Team Lead">Team Lead</option>
-                      </select>
-                      <label htmlFor="addpassword" className="form-label pt-2">
-                        Password
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="addpassword"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Password"
-                        required
-                      />
-                      <div className="d-flex align-items-center justify-content-between">
-                        <button
-                          className="btn mt-3 wid-100"
-                          type="button"
-                          onClick={collectData}
+            <div>
+              <button
+                type="button"
+                className="btn me-0 ButtonText"
+                data-bs-toggle="modal"
+                data-bs-target="#addEmpModal"
+              >
+                Add Employee
+              </button>
+              <div
+                className="modal fade"
+                id="addEmpModal"
+                tabIndex="-1"
+                aria-labelledby="addEmpModalLabel"
+                aria-hidden="true"
+              >
+                <div className="modal-dialog modal-dialog-centered">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title" id="addEmpModalLabel">
+                        Add Employee
+                      </h5>
+                      <button
+                        ref={closeButtonRef}
+                        type="button"
+                        className="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                    <div className="modal-body">
+                      <form>
+                        <label htmlFor="addname" className="form-label shno">
+                          Name
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="addname"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="Name"
+                          required
+                        />
+                        <label htmlFor="addemail" className="form-label">
+                          Email Id
+                        </label>
+                        <input
+                          type="email"
+                          className="form-control"
+                          id="addemail"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="Email"
+                          required
+                        />
+                        <label htmlFor="addrole" className="form-label">
+                          Role
+                        </label>
+                        <select
+                          className="form-select"
+                          id="addrole"
+                          value={role}
+                          onChange={(e) => setRole(e.target.value)}
+                          required
                         >
-                          Submit
-                        </button>
-                      </div>
-                    </form>
+                          <option value="">Select Position</option>
+                          <option value="Developer">Developer</option>
+                          <option value="Team Lead">Team Lead</option>
+                        </select>
+                        <label
+                          htmlFor="addpassword"
+                          className="form-label pt-2"
+                        >
+                          Password
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="addpassword"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="Password"
+                          required
+                        />
+                        <div className="d-flex align-items-center justify-content-between">
+                          <button
+                            className="btn mt-3 wid-100"
+                            type="button"
+                            onClick={collectData}
+                          >
+                            Submit
+                          </button>
+                        </div>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+            <div className="dropdown">
+              <button
+                className="btn me-0 dropdown-toggle ButtonText"
+                type="button"
+                id="dropdownMenuButton"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Sort by Position
+              </button>
+              <ul
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuButton"
+              >
+                <li>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => sortByPosition("All")}
+                  >
+                    All
+                  </button>
+                </li>
+                <li>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => sortByPosition("Developer")}
+                  >
+                    Developer
+                  </button>
+                </li>
+                <li>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => sortByPosition("Team Lead")}
+                  >
+                    Team Lead
+                  </button>
+                </li>
+                {/* <li><button className="dropdown-item" onClick={() => getListname()}>Alphabetical</button></li>  */}
+              </ul>
+            </div>
           </div>
-          <div className="dropdown">
-  <button
-    className="btn me-0 dropdown-toggle ButtonText"
-    type="button"
-    id="dropdownMenuButton"
-    data-bs-toggle="dropdown"
-    aria-expanded="false"
-  >
-    Sort by Position
-  </button>
-  <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-  <li><button className="dropdown-item" onClick={() => sortByPosition("All")}>All</button></li> 
-    <li><button className="dropdown-item" onClick={() => sortByPosition("Developer")}>Developer</button></li>
-    <li><button className="dropdown-item" onClick={() => sortByPosition("Team Lead")}>Team Lead</button></li>
-    {/* <li><button className="dropdown-item" onClick={() => getListname()}>Alphabetical</button></li>  */}
-  </ul>
-</div>
-
-
-        </div>
-
-
-
         </div>
         <div className="row px-5">
           {loading ? (
@@ -480,7 +500,7 @@ export default function Allemployee() {
                                         data-bs-toggle="modal" // Add this attribute to trigger modal opening
                                         data-bs-target="#updateEmpModal" // Correct the target to match the modal's id
                                       >
-                                       Edit Employee
+                                        Edit Employee
                                       </button>
                                     </Link>
                                   </li>
@@ -594,94 +614,94 @@ export default function Allemployee() {
           </div>
         </div>
       )}
-        {showUpdatePasswordModalEdit && (
-      <div
-      className="modal fade"
-      id="updateEmpModal"
-      tabIndex="-1"
-      aria-labelledby="updateEmpModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="updateEmpModalLabel">
-              Update Employee
-            </h5>
-            <button
-              ref={closeButtonRef}
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            <form>
-              <label htmlFor="addname" className="form-label shno">
-                Name
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="addname"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Name"
-                required
-              />
-              <label htmlFor="addemail" className="form-label">
-                Email Id
-              </label>
-              <input
-                type="email"
-                className="form-control"
-                id="addemail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                required
-              />
-              <label htmlFor="addrole" className="form-label">
-                Role
-              </label>
-              <select
-                className="form-select"
-                id="addrole"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                required
-              >
-                <option value="">Select Position</option>
-                <option value="Developer">Developer</option>
-                <option value="Team Lead">Team Lead</option>
-              </select>
-              <label htmlFor="addpassword" className="form-label pt-2">
-                Password
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="addpassword"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                required
-              />
-              <div className="d-flex align-items-center justify-content-between">
+      {showUpdatePasswordModalEdit && (
+        <div
+          className="modal fade"
+          id="updateEmpModal"
+          tabIndex="-1"
+          aria-labelledby="updateEmpModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="updateEmpModalLabel">
+                  Update Employee
+                </h5>
                 <button
-                  className="btn mt-3 wid-100"
+                  ref={closeButtonRef}
                   type="button"
-                  onClick={collectData2}
-                >
-                  Update
-                </button>
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
               </div>
-            </form>
+              <div className="modal-body">
+                <form>
+                  <label htmlFor="addname" className="form-label shno">
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="addname"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Name"
+                    required
+                  />
+                  <label htmlFor="addemail" className="form-label">
+                    Email Id
+                  </label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    id="addemail"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email"
+                    required
+                  />
+                  <label htmlFor="addrole" className="form-label">
+                    Role
+                  </label>
+                  <select
+                    className="form-select"
+                    id="addrole"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    required
+                  >
+                    <option value="">Select Position</option>
+                    <option value="Developer">Developer</option>
+                    <option value="Team Lead">Team Lead</option>
+                  </select>
+                  <label htmlFor="addpassword" className="form-label pt-2">
+                    Password
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="addpassword"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                    required
+                  />
+                  <div className="d-flex align-items-center justify-content-between">
+                    <button
+                      className="btn mt-3 wid-100"
+                      type="button"
+                      onClick={collectData2}
+                    >
+                      Update
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
       )}
     </>
   );

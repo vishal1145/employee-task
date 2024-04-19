@@ -331,7 +331,6 @@ export default function Empdetails() {
   //   scrollToBottom();
   // },[getMessages]);
 
-
   return (
     <>
       <div className="empdeatils wid-80">
@@ -418,7 +417,7 @@ export default function Empdetails() {
                               <option value="6 hours">6 hours</option>
                               <option value="7 hours">7 hours</option>
                               <option value="8 hours">8 hours</option>
-                              <option value="8 hours">On Going</option>
+                              <option value="On Going">On Going</option>
                             </select>
                           </div>
                         </div>
@@ -453,6 +452,7 @@ export default function Empdetails() {
           <thead>
             <tr>
               <th className="wid-40 text-start">Task</th>
+              <th className="wid-10 text-start">Project</th>
               {JSON.parse(authData).role === "admin" ? (
                 <>
                   {/* <th className="wid-7 text-center">Date</th> */}
@@ -488,6 +488,9 @@ export default function Empdetails() {
                   {/* <td className="text-start">{htmlToText(item.task)}</td> */}
                   <td className="text-start lh-sm pb-0 pt-3">
                     {parse(item.task)}
+                  </td>
+                  <td className="text-start lh-sm pb-0 pt-3">
+                    {parse(item.project)}
                   </td>
                   {/* <td className="text-start">{item.task}</td> */}
                   {JSON.parse(authData).role === "admin" ? (
@@ -606,8 +609,8 @@ export default function Empdetails() {
                                       <option value="5 hours">5 hours</option>
                                       <option value="6 hours">6 hours</option>
                                       <option value="7 hours">7 hours</option>
+                                      <option value="8 hours">8 hours</option>
                                       <option value="On Going">On Going</option>
-
                                     </select>
                                   </div>
                                 </div>
@@ -646,7 +649,7 @@ export default function Empdetails() {
             ) : (
               <h4
                 className="text-center mb-0"
-                style={{ marginLeft: "25%", color: "rgba(0, 137, 123, 0.3)" }}
+                style={{ marginLeft: "50%", color: "rgba(0, 137, 123, 0.3)" }}
               >
                 No Record
               </h4>

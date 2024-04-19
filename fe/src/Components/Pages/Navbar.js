@@ -6,22 +6,14 @@ import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 export default function Navbar() {
   var authData = localStorage.getItem("user");
-  // const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
-
-  // const toggleDropdown = () => {
-  //   setIsDropdownOpen(!isDropdownOpen);
-  // };
 
   const logout = () => {
     localStorage.clear();
     navigate("/loginpage");
-    // Close the dropdown after logout
-    // setIsDropdownOpen(false);
   };
   return (
-    // <div className="header">
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-sm navbar-light bg-light">
       <div className="container-fluid">
         {JSON.parse(authData).role === "admin" ? (
           <div>
@@ -61,8 +53,7 @@ export default function Navbar() {
         </button>
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           {authData ? (
-            <div className="navbar-nav d-flex align-items-center">
-              {/* <div className="alignend"> */}
+            <div className="navbar-nav d-flex align-items-center justify-content-between wid-100 bg-white">
               {JSON.parse(authData).role === "admin" ? (
                 <div>
                   <NavLink
@@ -70,7 +61,15 @@ export default function Navbar() {
                     aria-current="page"
                     to={"/alldetails/" + JSON.parse(authData)._id}
                   >
-                    All Details
+                    Tasks
+                  </NavLink>
+
+                  <NavLink
+                    className="btn ButtonText"
+                    aria-current="page"
+                    to={"/projects"}
+                  >
+                    Projects
                   </NavLink>
 
                   <NavLink className="btn ButtonText" to="/allemployee">
@@ -78,20 +77,11 @@ export default function Navbar() {
                   </NavLink>
                 </div>
               ) : null}
-              {/* </div> */}
-              {/* <NavLink
-                    className="btn"
-                    aria-current="page"
-                    to={"/" + JSON.parse(authData)._id}
-                  >
-                    User Dashboard
-                  </NavLink> */}
-              <div className="logoutbtn">
-                {/* <NavLink className="btn" to="/loginpage" onClick={logout}>
-                    Logout | {JSON.parse(authData).name}
-                  </NavLink> */}
 
-                <div className="d-flex flex-row justify-content-end gap-3">
+              {JSON.parse(authData).role === "admin" ? 
+              (
+              <div className="logoutbtn">
+                <div className="d-flex flex-row gap-3">
                   <div className="">
                     <div className="menuimg rounded-circle text-lg-end">
                       {JSON.parse(authData).profileimage === "" ||
@@ -127,6 +117,45 @@ export default function Navbar() {
                   </div>
                 </div>
               </div>
+              ):
+              (<div className="logoutbtn wid-100 d-flex justify-content-end">
+                <div className="d-flex flex-row gap-3">
+                  <div className="">
+                    <div className="menuimg rounded-circle text-lg-end">
+                      {JSON.parse(authData).profileimage === "" ||
+                      JSON.parse(authData).profileimage == null ? (
+                        <img
+                          className="profimage rounded-circle"
+                          src={"/empimg.jpg"}
+                          alt=""
+                          style={{ width: "40px", height: "40px" }}
+                        />
+                      ) : (
+                        <img
+                          className="profimage rounded-circle"
+                          src={JSON.parse(authData).profileimage}
+                          alt=""
+                          style={{ width: "40px", height: "40px" }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-gray pr-2">
+                    <p className="m-0 text-muted">Hi Welcome</p>
+                    <p className="m-0 fontWeight ">
+                      {JSON.parse(authData).name}
+                    </p>
+                  </div>
+                  <div className=" align-self-center  pe-2">
+                    <FontAwesomeIcon
+                      icon={faSignOutAlt}
+                      onClick={logout}
+                      className="wid-100 cursor-pointer"
+                    />
+                  </div>
+                </div>
+              </div>
+              )}
             </div>
           ) : (
             <div className=" position-fixed" style={{ right: "0.7%" }}>
@@ -136,6 +165,5 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-    // </div>
   );
 }

@@ -7,7 +7,7 @@ import Navbar from "./Components/Pages/Navbar";
 import Empnamemenu from "./Components/Pages/Empnamemenu";
 import Home from "./Components/Layouts/Home";
 import Loginpage from "./Components/Pages/Loginpage";
-import ResetPasswordPage from "./Components/Pages/ResetPage"
+import ResetPasswordPage from "./Components/Pages/ResetPage";
 import PrivateComponent from "./Components/Pages/PrivateComponent";
 import Alldetails from "./Components/Layouts/Alldetails";
 import Allemployee from "./Components/Pages/Allemployee";
@@ -17,6 +17,7 @@ import Empdashmenu from "./Components/Pages/Empdashmenu";
 import Updateprofile from "./Components/Pages/Updateprofile";
 // import Algofolkshome from "./Components/Pages/Algofolkshome";
 import Pagenotfound from "./Components/Pages/Pagenotfound";
+import Projects from "./Components/Pages/Projects";
 
 function App() {
   return (
@@ -79,6 +80,14 @@ function App() {
             element={
               <>
                 <Updateprofile /> <Navbar />
+              </>
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <>
+                <Projects /> <Navbar />
               </>
             }
           />

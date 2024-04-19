@@ -58,18 +58,20 @@ export default function Empnamemenu() {
     try {
       let result = await fetch(`${process.env.REACT_APP_API_KEY}/listname`);
       result = await result.json();
-  
+
       const updatedList1 = await Promise.all(
         result.map(async (user) => {
           const counts = await getStatusCount(user._id);
           return { ...user, counts };
         })
       );
-  
+
       // Sort the updatedList1 alphabetically by the 'name' property
-      updatedList1.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
-      console.log("hiuhx",updatedList1)
-      
+      updatedList1.sort((a, b) =>
+        a.name > b.name ? 1 : b.name > a.name ? -1 : 0
+      );
+      console.log("hiuhx", updatedList1);
+
       if (updatedList1) {
         setListname(updatedList1);
       }
@@ -77,7 +79,6 @@ export default function Empnamemenu() {
       setLoading(false); // Set loading to false after data is fetched
     }
   };
-  
 
   const getStatusCount = async (id) => {
     try {
@@ -89,13 +90,12 @@ export default function Empnamemenu() {
       );
 
       result = await result.json();
-      // setCounts(result);
       return result;
     } catch (error) {
       // console.log("Error fetching status counts:", error);
       return {
         pending: 0,
-        running: 0,
+        // running: 0,
         completed: 0,
       };
     }
@@ -226,12 +226,28 @@ export default function Empnamemenu() {
                           <div>{item.name}</div>
                           <div
                             className="mt-1"
-                            style={{ fontSize: "10px" }}
                             // key={}
+                            style={{
+                              fontSize: "10px",
+                              // color:
+                              //   item.status === "Pending"
+                              //     ? "rgba(239, 154, 154, 0.7)"
+                              //     : // : item.status === "Running"
+                              //     // ? "rgba(255, 235, 59, 0.6)"
+                              //     item.status === "Completed"
+                              //     ? "rgba(0, 137, 123, 0.8)"
+                              //     : "rgba(255, 235, 59, 0.6)"
+                            }}
                           >
-                            Completed: {item.counts.completed} | Running:{" "}
-                            {item.counts.running} | Pending:{" "}
-                            {item.counts.pending}
+                            <span style={{ color: "green" }}>
+                              Completed: {item.counts.completed}{" "}
+                            </span>
+                            |
+                            <span style={{ color: "red" }}>
+                              {" "}
+                              Pending:{item.counts.pending}
+                            </span>
+                            {/* | Running: {item.counts.running}  */}
                           </div>
                         </div>
                       </div>
