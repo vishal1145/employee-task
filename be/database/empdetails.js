@@ -22,6 +22,10 @@ const empdetailsSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    project:{
+      type:String,
+      // default:null,
+    },
     assign: {
       type: String,
       default:"Not Assign"

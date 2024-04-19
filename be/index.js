@@ -5,6 +5,7 @@ const EmpDetail = require("./database/empdetails");
 const EmpAdd = require("./database/empadd");
 // const userdb = require("./database/user");
 const Message = require("./database/messages");
+const Projects = require("./database/projects")
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 // const io = require("socket.io")(8080,{
@@ -189,6 +190,76 @@ app.get("/taskautofillss/:id", async (req, resp) => {
 });
 
 //******************************************************************************************* */
+//**********************************************For Projects********************************************************* */
+app.get("/allprojects", async (req, resp) => {
+  const result = await Projects.find({ empid: null });
+  if (result) {
+    resp.send(result);
+  } else {
+    resp.send("result not found");
+  }
+});
+
+app.get("/listprojects", async (req, resp) => {
+  const result = await Projects.find();
+  if (result) {
+    resp.send(result);
+  } else {
+    resp.send("result not found");
+  }
+});
+
+// app.get("/listprojects", async (req, res) => {
+//   try {
+//     const result = await Projects.findAll({});
+//     if (result && result.length > 0) {
+//       res.json(result);
+//     } else {
+//       res.status(404).json({ message: "No projects found" });
+//     }
+//   } catch (error) {
+//     console.error("Error fetching projects:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+// app.get("/listnamess/:id", async (req, resp) => {
+//   const result = await EmpAdd.findOne({ _id: req.params.id });
+//   if (result) {
+//     resp.send(result);
+//   } else {
+//     resp.send("result not found");
+//   }
+// });
+
+app.post("/addprojects", async (req, resp) => {
+  let details = new Projects(req.body);
+  let result = await details.save();
+  resp.send(result);
+});
+
+app.put("/updateprojects/:id", async (req, resp) => {
+  let result = await Projects.updateOne(
+    { _id: req.params.id },
+    { $set: req.body }
+  );
+  resp.send(result);
+});
+
+app.get("/projectsautofillss/:id", async (req, resp) => {
+  let result = await Projects.findOne({ _id: req.params.id });
+  if (result) {
+    resp.send(result);
+  } else {
+    resp.send("result not found");
+  }
+});
+
+app.delete("/deleteproject/:id", async (req, resp) => {
+  const result = await Projects.deleteOne({ _id: req.params.id });
+  resp.send(result);
+});
+//************************************************************************************************************************* */
 
 app.get("/empdetails/:id", async (req, resp) => {
   const result = await EmpDetail.find({ empid: req.params.id });
@@ -377,10 +448,10 @@ app.get("/statuscount/:id", async (req, resp) => {
         empid: req.params.id,
         status: "Pending",
       });
-      const runningCount = await EmpDetail.countDocuments({
-        empid: req.params.id,
-        status: "Running",
-      });
+      // const runningCount = await EmpDetail.countDocuments({
+      //   empid: req.params.id,
+      //   status: "Running",
+      // });
       const completedCount = await EmpDetail.countDocuments({
         empid: req.params.id,
         status: "Completed",
@@ -388,7 +459,7 @@ app.get("/statuscount/:id", async (req, resp) => {
 
       resp.json({
         pending: pendingCount,
-        running: runningCount,
+        // running: runningCount,
         completed: completedCount,
       });
     } else {
