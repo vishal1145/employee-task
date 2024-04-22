@@ -558,7 +558,7 @@ export default function Empdetails() {
                     {parse(item.task)}
                   </td>
                   <td className="text-start lh-sm pb-0 pt-3">
-                    {parse(item.project)}
+                    {parse(item?.project)}
                   </td>
                   {/* <td className="text-start">{item.task}</td> */}
                   {JSON.parse(authData).role === "admin" ? (
