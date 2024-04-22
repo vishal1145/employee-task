@@ -1,58 +1,28 @@
 import React, { useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 // import axios from "axios";
 
 export default function Empnamemenu() {
   const [listname, setListname] = React.useState([]);
+  // const [empdetails, setEmpdetails] = React.useState([]);
   const [loading, setLoading] = React.useState(true); // Add loading state
-  const [stopInterval, setStopInterval] = React.useState("run");
+  // const [stopInterval, setStopInterval] = React.useState("stop");
   // const [dataLoad, setDataLoad] = React.useState(false);
-  // const [statusCount, setStatusCount] = React.useState({
-  //   pending: 0,
-  //   running: 0,
-  //   completed: 0,
-  // });
-  // const [counts, setCounts] = React.useState({
-  //   pending: 0,
-  //   running: 0,
-  //   completed: 0,
-  // });
 
-  // const params = useParams();
+  const params = useParams();
 
   useEffect(() => {
     getListname();
 
-    if (stopInterval === "run") {
-      const interval = setInterval(async () => {
-        await getListname();
-      }, 7000);
-      return () => clearInterval(interval);
-    }
-  }, [stopInterval]);
-
-  // const getListname = async () => {
-  //   try {
-  //     let result = await fetch(`${process.env.REACT_APP_API_KEY}/listname`);
-  //     result = await result.json();
-
-  //     const updatedList1 = await Promise.all(
-  //       result.map(async (user) => {
-  //         const counts = await getStatusCount(user._id);
-  //         return { ...user, counts };
-  //       })
-  //     );
-  //     if (updatedList1) {
-  //       setListname(updatedList1);
-  //     }
-  //   } finally {
-  //     // catch (error) {
-  //     //   console.log("Error fetching data:", error);
-  //     // }
-  //     setLoading(false); // Set loading to false after data is fetched
-  //   }
-  // };
+    // if (stopInterval === "run") {
+    //   const interval = setInterval(async () => {
+    //     await getListname();
+    //   }, 7000);
+    //   return () => clearInterval(interval);
+    // }
+  }, []);
+  // stopInterval
 
   const getListname = async () => {
     try {
@@ -70,7 +40,6 @@ export default function Empnamemenu() {
       updatedList1.sort((a, b) =>
         a.name > b.name ? 1 : b.name > a.name ? -1 : 0
       );
-      console.log("hiuhx", updatedList1);
 
       if (updatedList1) {
         setListname(updatedList1);
@@ -100,27 +69,6 @@ export default function Empnamemenu() {
       };
     }
   };
-
-  // const searchuser = async (event) => {
-  //   let key = event.target.value;
-  //   if (key) {
-  //     let result = await fetch(
-  //       `${process.env.REACT_APP_API_KEY}/empsearch/${key}`,
-  //       {
-  //         headers: {
-  //           // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
-  //         },
-  //       }
-  //     );
-  //     result = await result.json();
-  //     // var input=result.toLowerCase();
-  //     if (result) {
-  //       setListname(result);
-  //     }
-  //   } else {
-  //     getListname();
-  //   }
-  // };
 
   // const searchusers = async (event) => {
   //   let key = event.target.value//.toLowerCase();
@@ -154,16 +102,20 @@ export default function Empnamemenu() {
   const searchuser = (event) => {
     let key = event.target.value.toLowerCase(); // Convert search key to lowercase
     if (key) {
-      setStopInterval("stop");
+      // setStopInterval("stop");
       const filteredList = listname.filter((item) =>
         item.name.toLowerCase().includes(key)
       );
       setListname(filteredList);
     } else {
-      setStopInterval("run");
+      // setStopInterval("run");
       getListname(); // If search key is empty, reset the list
     }
   };
+
+  const loadData = () => {
+    getListname();
+  }
 
   // const start =()=>{
   //   setStopInterval("run");
@@ -185,7 +137,7 @@ export default function Empnamemenu() {
               type="text"
               placeholder="Search here"
               onChange={searchuser}
-              // style={{ width: "100%" }}
+            // style={{ width: "100%" }}
             />
           </form>
         </div>
@@ -203,12 +155,13 @@ export default function Empnamemenu() {
                     <NavLink
                       to={"/alldetails/" + item._id}
                       className="navlink-custom btn"
-                      // activeclassname="active-link" // Add activeClassName for active state
+                      onClick={loadData}
+                    // activeclassname="active-link" // Add activeClassName for active state
                     >
                       <div className="menudiv">
                         <div className="menuimg">
                           {item.profileimage === "" ||
-                          item.profileimage == null ? (
+                            item.profileimage == null ? (
                             <img
                               className="profimage"
                               src={"/empimg.jpg"}
@@ -245,9 +198,14 @@ export default function Empnamemenu() {
                             |
                             <span style={{ color: "red" }}>
                               {" "}
-                              Pending:{item.counts.pending}
-                            </span>
-                            {/* | Running: {item.counts.running}  */}
+                              Pending: {item.counts.pending}
+                            </span> |
+                            {(item.counts.time) > 0 ? (
+                              <span style={{ color: "blue" }}>
+                                {" "}
+                                On Going
+                              </span>
+                            ) : null}
                           </div>
                         </div>
                       </div>

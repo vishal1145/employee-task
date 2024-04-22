@@ -79,14 +79,14 @@ export default function Algofolkshome() {
       setListname(result1);
       let empid = name;
 
-      let result2 = await fetch(
-        `${process.env.REACT_APP_API_KEY}/listprojects`,
-        {
-          method: "get",
-        }
-      );
-      result2 = await result2.json();
-      setListProject(result2);
+      // let result2 = await fetch(
+      //   `${process.env.REACT_APP_API_KEY}/listprojects`,
+      //   {
+      //     method: "get",
+      //   }
+      // );
+      // result2 = await result2.json();
+      // setListProject(result2);
 
       let result3 = await fetch(
         `${process.env.REACT_APP_API_KEY}/updatetaskss/${taskId}`,

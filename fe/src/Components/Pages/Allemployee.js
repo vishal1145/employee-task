@@ -10,7 +10,7 @@ export default function Allemployee() {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
-  // const [newpassword, setNewPassword] = useState("");
+  const [newpassword, setNewPassword] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [updatePassword, setUpdatePassword] = useState("");
@@ -162,39 +162,38 @@ export default function Allemployee() {
   };
 
   const [showUpdatePasswordModal, setShowUpdatePasswordModal] = useState(false);
-  const [showUpdatePasswordModalEdit, setShowUpdatePasswordModalEdit] =
-    useState(false);
+  const [showUpdateEmployeeModal, setShowUpdateEmployeeModal] = useState(false);
 
   const openUpdatePasswordModal = (employeeId) => {
     setSelectedEmployeeId(employeeId);
     setShowUpdatePasswordModal(true); // Set the state to true to open the modal
   };
 
-  // const openUpdatePasswordModalEdit = (employeeId) => {
+  // const openUpdateEmployeeModal = (employeeId) => {
   //   setSelectedEmployeeId(employeeId);
-  //   setShowUpdatePasswordModalEdit(true); // Set the state to true to open the modal
+  //   setShowUpdateEmployeeModal(true); // Set the state to true to open the modal
   // };
 
-  const openUpdatePasswordModalEdit = async (employeeId) => {
+  const openUpdateEmployeeModal = async (employeeId) => {
     setSelectedEmployeeId(employeeId);
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_KEY}/listnamess/${employeeId}`
       );
-      const data = await response.json();
+      const result = await response.json();
       // Populate modal fields with fetched data
-      setName(data.name);
-      setEmail(data.email);
-      setRole(data.role);
-      setPassword(data.password);
-      setShowUpdatePasswordModalEdit(true); // Open the modal
+      setName(result.name);
+      setEmail(result.email);
+      setRole(result.role);
+      setPassword(result.password);
+      setShowUpdateEmployeeModal(true); // Open the modal
     } catch (error) {
       console.error("Error fetching employee data:", error);
     }
   };
 
-  const closeUpdatePasswordModalEdit = () => {
-    setShowUpdatePasswordModalEdit(false); // Set the state to false to close the modal
+  const closeUpdateEmployeeModal = () => {
+    setShowUpdateEmployeeModal(false); // Set the state to false to close the modal
   };
 
   const closeUpdatePasswordModal = () => {
@@ -279,6 +278,7 @@ export default function Allemployee() {
               >
                 Add Employee
               </button>
+
               <div
                 className="modal fade"
                 id="addEmpModal"
@@ -355,16 +355,16 @@ export default function Allemployee() {
                           placeholder="Password"
                           required
                         />
-                        <div className="d-flex align-items-center justify-content-between">
-                          <button
-                            className="btn mt-3 wid-100"
-                            type="button"
-                            onClick={collectData}
-                          >
-                            Submit
-                          </button>
-                        </div>
                       </form>
+                    </div>
+                    <div className="modal-footer">
+                      <button
+                        className="btn wid-100"
+                        type="button"
+                        onClick={collectData}
+                      >
+                        Submit
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -433,13 +433,14 @@ export default function Allemployee() {
                         className="text-decoration-none"
                       >
                         <div className="card">
-                          <div className="card-header justify-content-center d-flex">
+                          <div className="card-header justify-content-center d-flex" style={{ borderRadius: "15px" }}>
                             <div className="dotmenu">
                               <div className="dropdown">
                                 <button
                                   className="btn btn-secondary dropdown-toggl"
                                   type="button"
                                   id={`dropdownMenuButton${index}`}
+                                  // id="dropdownMenuButton1"
                                   data-bs-toggle="dropdown"
                                   aria-expanded="false"
                                 >
@@ -451,7 +452,7 @@ export default function Allemployee() {
                                 >
                                   <li>
                                     <Link
-                                      className="dropdown-item p-1 px-3 py-2"
+                                      className="dropdown-item p-1 px-2 py-1 ButtonText"
                                       onClick={() => deleteemp(item._id)}
                                     >
                                       Delete
@@ -460,57 +461,37 @@ export default function Allemployee() {
 
                                   <li>
                                     <Link
-                                      to="#" // Add this to prevent navigation
                                       onClick={(e) => {
-                                        e.preventDefault(); // Prevent default behavior
+                                        e.preventDefault();
                                         openUpdatePasswordModal(item._id);
                                       }}
-                                      className="dropdown-item p-1"
+                                      className="dropdown-item px-2 py-1 ButtonText"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#updatePasswordModal"
                                     >
-                                      <button
-                                        to="#" // Add this to prevent navigation
-                                        onClick={(e) => {
-                                          e.preventDefault(); // Prevent default behavior
-                                          openUpdatePasswordModal(item._id);
-                                        }}
-                                        className="dropdown-item p-1"
-                                        data-bs-toggle="modal" // Add this attribute to trigger modal opening
-                                        data-bs-target="#updatePasswordModal" // Correct the target to match the modal's id
-                                      >
-                                        Update Password
-                                      </button>
+                                      Update Password
                                     </Link>
                                   </li>
+
                                   <li>
                                     <Link
-                                      to="#" // Add this to prevent navigation
                                       onClick={(e) => {
-                                        e.preventDefault(); // Prevent default behavior
-                                        openUpdatePasswordModalEdit(item._id);
+                                        e.preventDefault();
+                                        openUpdateEmployeeModal(item._id);
                                       }}
-                                      className="dropdown-item p-1"
+                                      className="dropdown-item px-2 py-1 ButtonText"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#updateEmployeeModal"
                                     >
-                                      <button
-                                        to="#" // Add this to prevent navigation
-                                        onClick={(e) => {
-                                          e.preventDefault(); // Prevent default behavior
-                                          openUpdatePasswordModalEdit(item._id);
-                                        }}
-                                        className="dropdown-item p-1"
-                                        data-bs-toggle="modal" // Add this attribute to trigger modal opening
-                                        data-bs-target="#updateEmpModal" // Correct the target to match the modal's id
-                                      >
-                                        Edit Employee
-                                      </button>
+                                      Edit Employee
                                     </Link>
                                   </li>
                                 </ul>
                               </div>
-                              <Link></Link>
                             </div>
                             <div className="emppic">
                               {item.profileimage === "" ||
-                              item.profileimage == null ? (
+                                item.profileimage == null ? (
                                 <img
                                   src={"/empimg.jpg"}
                                   alt=""
@@ -552,6 +533,7 @@ export default function Allemployee() {
         pauseOnHover
         theme="light"
       />
+
       {showUpdatePasswordModal && (
         <div
           className="modal fade"
@@ -578,33 +560,25 @@ export default function Allemployee() {
                 ></button>
               </div>
               <div className="modal-body">
-                <label htmlFor="updatePassword" className="form-label">
-                  New Password
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="updatePassword"
-                  value={updatePassword}
-                  onChange={(e) => setUpdatePassword(e.target.value)}
-                  placeholder="Enter New Password"
-                  required
-                />
+                <form>
+                  <label htmlFor="updatePassword" className="form-label shno">
+                    New Password
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="updatePassword"
+                    value={updatePassword}
+                    onChange={(e) => setUpdatePassword(e.target.value)}
+                    placeholder="Enter New Password"
+                    required
+                  />
+                </form>
               </div>
               <div className="modal-footer">
-                {/* <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => {
-                    setSelectedEmployeeId(null);
-                    setUpdatePassword("");
-                  }}
-                >
-                  Close
-                </button> */}
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn wid-100"
                   onClick={updateEmployeePassword}
                 >
                   Save changes
@@ -614,18 +588,19 @@ export default function Allemployee() {
           </div>
         </div>
       )}
-      {showUpdatePasswordModalEdit && (
+
+      {showUpdateEmployeeModal && (
         <div
           className="modal fade"
-          id="updateEmpModal"
+          id="updateEmployeeModal"
           tabIndex="-1"
-          aria-labelledby="updateEmpModalLabel"
+          aria-labelledby="updateEmployeeModalLabel"
           aria-hidden="true"
         >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="updateEmpModalLabel">
+                <h5 className="modal-title" id="updateEmployeeModalLabel">
                   Update Employee
                 </h5>
                 <button
@@ -688,16 +663,16 @@ export default function Allemployee() {
                     placeholder="Password"
                     required
                   />
-                  <div className="d-flex align-items-center justify-content-between">
-                    <button
-                      className="btn mt-3 wid-100"
-                      type="button"
-                      onClick={collectData2}
-                    >
-                      Update
-                    </button>
-                  </div>
                 </form>
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="btn wid-100"
+                  type="button"
+                  onClick={collectData2}
+                >
+                  Update
+                </button>
               </div>
             </div>
           </div>

@@ -16,6 +16,7 @@ export default function Empdetails() {
   const [listname, setListname] = useState([]);
   const [task, setTask] = useState("");
   const [time, setTime] = useState("1 hour");
+  // const [statuscount, setStatusCount] = useState([]);
   // const [name, setName] = useState("");
   // const [date, setDate] = useState("");
   const [taskId, setTaskId] = useState("");
@@ -23,6 +24,8 @@ export default function Empdetails() {
   const [stopInterval2, setStopInterval2] = React.useState("stop");
   // const [dataLoad, setDataLoad] = useState(false);
   // const [socket, setSocket] = useState(null);
+  const [project, setProject] = useState("");
+  const [listproject, setListProject] = useState([]);
 
   const params = useParams();
   // const navigate = useNavigate();
@@ -41,7 +44,9 @@ export default function Empdetails() {
     getMessages();
     getEmpdetails();
     getListname();
+    getListProject();
     getUpdate();
+    // getStatusCount();
 
     if (stopInterval2 === "run") {
       const interval = setInterval(getMessages, 5000);
@@ -52,7 +57,20 @@ export default function Empdetails() {
   const idnull = () => {
     setTask("");
     setTime("1 hour");
+    setProject("");
   };
+
+  // const getStatusCount = async (id) => {
+  //   let result = await fetch(
+  //     `${process.env.REACT_APP_API_KEY}/statuscount/${id}`,
+  //     {
+  //       method: "get",
+  //     }
+  //   );
+
+  //   result = await result.json();
+  //   setStatusCount(result);
+  // };
 
   const getEmpdetails = async () => {
     let result = await fetch(
@@ -83,6 +101,7 @@ export default function Empdetails() {
               task,
               time,
               empid,
+              project,
               // name,
               date: new Date(),
               assign: "Assign",
@@ -99,6 +118,7 @@ export default function Empdetails() {
           setTask("");
           // setDate("");
           setTime("1 hour");
+          setProject("");
           getEmpdetails();
         }
       } catch (error) {
@@ -122,6 +142,7 @@ export default function Empdetails() {
     result = await result.json();
     setTask(result.task);
     setTime(result.time);
+    setProject(result.project);
   };
 
   const updateCollectData = async (taskId) => {
@@ -131,7 +152,7 @@ export default function Empdetails() {
         `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
         {
           method: "put",
-          body: JSON.stringify({ task, time }),
+          body: JSON.stringify({ task, time, project }),
           headers: {
             "Content-Type": "application/json",
           },
@@ -142,6 +163,7 @@ export default function Empdetails() {
       if (result) {
         toast.success("Task updated successfully");
         setTask("");
+        setProject("");
         getEmpdetails();
 
         setTimeout(() => {
@@ -281,6 +303,19 @@ export default function Empdetails() {
     setListname(result);
   };
 
+  const getListProject = async () => {
+    let result = await fetch(`${process.env.REACT_APP_API_KEY}/listprojects`, {
+      method: "get",
+    });
+    result = await result.json();
+
+    // Sort the list alphabetically
+
+    result.sort((a, b) => (a.project > b.project ? 1 : b.project > a.project ? -1 : 0));
+
+    setListProject(result);
+  };
+
   const deletechat = async (id) => {
     let result = await fetch(
       `${process.env.REACT_APP_API_KEY}/deletechat/${id}`,
@@ -320,6 +355,8 @@ export default function Empdetails() {
       setLoading(false);
     }
   };
+
+
   const chatBodyRef = useRef(null);
   const scrollToBottom = () => {
     if (chatBodyRef.current) {
@@ -394,8 +431,8 @@ export default function Empdetails() {
                           }}
                         />
 
-                        <div className="d-flex align-items-center justify-content-between">
-                          <div className="wid-100 pt-2">
+                        <div className="d-flex align-items-center justify-content-between mt-3">
+                          <div className="wid-100 me-2">
                             <label
                               htmlFor="timeduration"
                               className="form-label"
@@ -418,6 +455,37 @@ export default function Empdetails() {
                               <option value="7 hours">7 hours</option>
                               <option value="8 hours">8 hours</option>
                               <option value="On Going">On Going</option>
+                            </select>
+                          </div>
+
+                          <div className="wid-100">
+                            <label
+                              htmlFor="projectname"
+                              className="form-label"
+                            >
+                              Project Name
+                            </label>
+                            <select
+                              // type="text"
+                              className="form-select"
+                              aria-label="Default select example"
+                              id="projectname"
+                              value={project}
+                              // value={item._id}
+                              onChange={(e) =>
+                                setProject(e.target.value)
+                              }
+                            >
+                              <option value="" disabled>
+                                Choose any one
+                              </option>
+                              {listproject.length > 0
+                                ? listproject.map((item, index) => (
+                                  <option key={item._id} value={item.project}>
+                                    {parse(item.project)}
+                                  </option>
+                                ))
+                                : null}
                             </select>
                           </div>
                         </div>
@@ -479,10 +547,10 @@ export default function Empdetails() {
                       item.status === "Pending"
                         ? "rgba(239, 154, 154, 0.7)"
                         : item.status === "Running"
-                        ? "rgba(255, 235, 59, 0.6)"
-                        : item.status === "Completed"
-                        ? "rgba(0, 137, 123, 0.8)"
-                        : "rgba(239, 154, 154, 0.7)",
+                          ? "rgba(255, 235, 59, 0.6)"
+                          : item.status === "Completed"
+                            ? "rgba(0, 137, 123, 0.8)"
+                            : "rgba(239, 154, 154, 0.7)",
                   }}
                 >
                   {/* <td className="text-start">{htmlToText(item.task)}</td> */}
@@ -587,8 +655,8 @@ export default function Empdetails() {
                                   }}
                                 />
 
-                                <div className="d-flex justify-content-between pt-2">
-                                  <div className="wid-100">
+                                <div className="d-flex justify-content-between pt-3">
+                                  <div className="wid-100 me-2">
                                     <label
                                       htmlFor="timeduration"
                                       className="form-label"
@@ -611,6 +679,37 @@ export default function Empdetails() {
                                       <option value="7 hours">7 hours</option>
                                       <option value="8 hours">8 hours</option>
                                       <option value="On Going">On Going</option>
+                                    </select>
+                                  </div>
+
+                                  <div className="wid-100">
+                                    <label
+                                      htmlFor="projectname"
+                                      className="form-label"
+                                    >
+                                      Project Name
+                                    </label>
+                                    <select
+                                      // type="text"
+                                      className="form-select"
+                                      aria-label="Default select example"
+                                      id="projectname"
+                                      value={project}
+                                      // value={item._id}
+                                      onChange={(e) =>
+                                        setProject(e.target.value)
+                                      }
+                                    >
+                                      <option value="" disabled>
+                                        Choose any one
+                                      </option>
+                                      {listproject.length > 0
+                                        ? listproject.map((item, index) => (
+                                          <option key={item._id} value={item.project}>
+                                            {parse(item.project)}
+                                          </option>
+                                        ))
+                                        : null}
                                     </select>
                                   </div>
                                 </div>
@@ -677,54 +776,54 @@ export default function Empdetails() {
           >
             {listname.length > 0
               ? listname.map((item, index) => (
-                  <div className="offcanvas-header">
-                    <div className="menudiv d-flex align-items-center">
-                      <div
-                        className="menuimg"
-                        style={{
-                          backgroundColor:
-                            item.online === true ? "yellow" : "white",
-                          width: "35px",
-                          height: "35px",
-                          borderRadius: "100px",
-                        }}
-                      >
-                        {item.profileimage === "" ||
+                <div className="offcanvas-header">
+                  <div className="menudiv d-flex align-items-center">
+                    <div
+                      className="menuimg"
+                      style={{
+                        backgroundColor:
+                          item.online === true ? "yellow" : "white",
+                        width: "35px",
+                        height: "35px",
+                        borderRadius: "100px",
+                      }}
+                    >
+                      {item.profileimage === "" ||
                         item.profileimage == null ? (
-                          <img
-                            className="profimage"
-                            src={"/empimg.jpg"}
-                            alt=""
-                            style={{
-                              width: "35px",
-                              height: "35px",
-                              borderRadius: "100px",
-                            }}
-                          />
-                        ) : (
-                          <img
-                            className="profimage"
-                            src={item.profileimage}
-                            alt=""
-                            style={{
-                              width: "35px",
-                              height: "35px",
-                              borderRadius: "100px",
-                            }}
-                          />
-                        )}
-                      </div>
-                      <div className="ps-2">{item.name}</div>
+                        <img
+                          className="profimage"
+                          src={"/empimg.jpg"}
+                          alt=""
+                          style={{
+                            width: "35px",
+                            height: "35px",
+                            borderRadius: "100px",
+                          }}
+                        />
+                      ) : (
+                        <img
+                          className="profimage"
+                          src={item.profileimage}
+                          alt=""
+                          style={{
+                            width: "35px",
+                            height: "35px",
+                            borderRadius: "100px",
+                          }}
+                        />
+                      )}
                     </div>
-                    <button
-                      type="button"
-                      className="btn-close text-reset"
-                      data-bs-dismiss="offcanvas"
-                      aria-label="Close"
-                      onClick={stop}
-                    ></button>
+                    <div className="ps-2">{item.name}</div>
                   </div>
-                ))
+                  <button
+                    type="button"
+                    className="btn-close text-reset"
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close"
+                    onClick={stop}
+                  ></button>
+                </div>
+              ))
               : null}
 
             <div className="offcanvas-body" ref={chatBodyRef}>
@@ -787,7 +886,7 @@ export default function Empdetails() {
                       <div className="msgbody">
                         <h6>{item.text}</h6>
                       </div>
-                      <h6>{}</h6>
+                      <h6>{ }</h6>
                     </div>
                   </div>
                 ))
@@ -811,8 +910,8 @@ export default function Empdetails() {
                   placeholder="Message here"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
-                  // style={{width:"85%"}}
-                  // onKeyPress={handleKeyPress}
+                // style={{width:"85%"}}
+                // onKeyPress={handleKeyPress}
                 />
                 <button
                   id="messageButton"
@@ -820,7 +919,7 @@ export default function Empdetails() {
                   className=""
                   type="button"
                   onClick={addMessages}
-                  // style={{width:"15%"}}
+                // style={{width:"15%"}}
                 >
                   <i className="bi bi-send"></i>
                 </button>
@@ -840,7 +939,7 @@ export default function Empdetails() {
         draggable
         pauseOnHover
         theme="light"
-        // transition:Bounce
+      // transition:Bounce
       />
     </>
   );
