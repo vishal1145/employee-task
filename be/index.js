@@ -316,7 +316,7 @@ app.post("/addemp", async (req, resp) => {
 
 app.put("/addemp/:id", async (req, resp) => {
   try {
-    const result = await EmpDetail.updateOne(
+    const result = await EmpAdd.updateOne(
       { _id: req.params.id },
       { $set: { password: req.body.password } }
     );
@@ -456,11 +456,16 @@ app.get("/statuscount/:id", async (req, resp) => {
         empid: req.params.id,
         status: "Completed",
       });
+      const time = await EmpDetail.countDocuments({
+        empid: req.params.id,
+        time: "On Going",
+      });
 
       resp.json({
         pending: pendingCount,
         // running: runningCount,
         completed: completedCount,
+        time: time,
       });
     } else {
       resp.send("result not found");
@@ -470,6 +475,19 @@ app.get("/statuscount/:id", async (req, resp) => {
     resp.status(500).json({ message: "Internal server error" });
   }
 });
+
+// app.get("/emptime/:id", async (req, resp) => {
+//   try {
+//     const result = await EmpDetail.findOne({ empid: req.params.id });
+//     if (result) {
+//       resp.send(result.time); 
+//     } else {
+//       resp.status(404).send("Employee details not found");
+//     }
+//   } catch (error) {
+//     resp.status(500).send("Internal server error");
+//   }
+// });
 
 // app.get("/searchusers/:key", async (req, res) => {
 //   try {
