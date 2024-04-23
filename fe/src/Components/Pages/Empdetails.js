@@ -27,10 +27,11 @@ export default function Empdetails() {
   const [project, setProject] = useState("");
   const [listproject, setListProject] = useState([]);
 
+  const closeButtonRef6 = useRef();
+  const closeButtonRef7 = useRef();
   const params = useParams();
   // const navigate = useNavigate();
   const editor = useRef(null);
-  const closeButtonRef = useRef();
   const inputRef = useRef(null);
 
   const handleKeyPress = (event) => {
@@ -120,6 +121,7 @@ export default function Empdetails() {
           setTime("1 hour");
           setProject("");
           getEmpdetails();
+          // closeButtonRef6.current.click();
         }
       } catch (error) {
         toast.error("Failed to add task");
@@ -128,6 +130,8 @@ export default function Empdetails() {
       }
     }
   };
+
+  const [showUpdateTaskModal, setShowUpdateTaskModal] = useState(true);
 
   const getUpdate = async (id) => {
     setTaskId(id);
@@ -159,16 +163,17 @@ export default function Empdetails() {
         }
       );
       result = await result.json();
-      // closeButtonRef.current.click();
       if (result) {
         toast.success("Task updated successfully");
         setTask("");
         setProject("");
         getEmpdetails();
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        setShowUpdateTaskModal(false);
+        
+        // closeButtonRef7.current.click();
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1000);
       }
     } catch {
       toast.error("Failed Update Data");
@@ -311,7 +316,9 @@ export default function Empdetails() {
 
     // Sort the list alphabetically
 
-    result.sort((a, b) => (a.project > b.project ? 1 : b.project > a.project ? -1 : 0));
+    result.sort((a, b) =>
+      a.project > b.project ? 1 : b.project > a.project ? -1 : 0
+    );
 
     setListProject(result);
   };
@@ -355,7 +362,6 @@ export default function Empdetails() {
       setLoading(false);
     }
   };
-
 
   const chatBodyRef = useRef(null);
   const scrollToBottom = () => {
@@ -411,6 +417,7 @@ export default function Empdetails() {
                         Add Task
                       </h5>
                       <button
+                        ref={closeButtonRef6}
                         type="button"
                         class="btn-close"
                         data-bs-dismiss="modal"
@@ -459,10 +466,7 @@ export default function Empdetails() {
                           </div>
 
                           <div className="wid-100">
-                            <label
-                              htmlFor="projectname"
-                              className="form-label"
-                            >
+                            <label htmlFor="projectname" className="form-label">
                               Project Name
                             </label>
                             <select
@@ -472,43 +476,40 @@ export default function Empdetails() {
                               id="projectname"
                               value={project}
                               // value={item._id}
-                              onChange={(e) =>
-                                setProject(e.target.value)
-                              }
+                              onChange={(e) => setProject(e.target.value)}
                             >
                               <option value="" disabled>
                                 Choose any one
                               </option>
                               {listproject.length > 0
                                 ? listproject.map((item, index) => (
-                                  <option key={item._id} value={item.project}>
-                                    {parse(item.project)}
-                                  </option>
-                                ))
+                                    <option key={item._id} value={item.project}>
+                                      {parse(item.project)}
+                                    </option>
+                                  ))
                                 : null}
                             </select>
                           </div>
                         </div>
-
-                        <div className="d-flex flex-row">
-                          <button
-                            className="btn mt-3 me-2 wid-100"
-                            type="button"
-                            onClick={collectData}
-                            disabled={loading}
-                          >
-                            {loading ? (
-                              <ClipLoader
-                                size={18}
-                                color={"#ffffff"}
-                                loading={loading}
-                              />
-                            ) : (
-                              "Submit"
-                            )}
-                          </button>
-                        </div>
                       </form>
+                    </div>
+                    <div className="modal-footer">
+                      <button
+                        className="btn wid-100"
+                        type="button"
+                        onClick={collectData}
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          <ClipLoader
+                            size={18}
+                            color={"#ffffff"}
+                            loading={loading}
+                          />
+                        ) : (
+                          "Submit"
+                        )}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -547,10 +548,10 @@ export default function Empdetails() {
                       item.status === "Pending"
                         ? "rgba(239, 154, 154, 0.7)"
                         : item.status === "Running"
-                          ? "rgba(255, 235, 59, 0.6)"
-                          : item.status === "Completed"
-                            ? "rgba(0, 137, 123, 0.8)"
-                            : "rgba(239, 154, 154, 0.7)",
+                        ? "rgba(255, 235, 59, 0.6)"
+                        : item.status === "Completed"
+                        ? "rgba(0, 137, 123, 0.8)"
+                        : "rgba(239, 154, 154, 0.7)",
                   }}
                 >
                   {/* <td className="text-start">{htmlToText(item.task)}</td> */}
@@ -558,7 +559,9 @@ export default function Empdetails() {
                     {parse(item.task)}
                   </td>
                   <td className="text-start lh-sm pb-0 pt-3">
-                    {typeof item.project === 'string' ? parse(item.project):null}
+                    {typeof item.project === "string"
+                      ? parse(item.project)
+                      : null}
                   </td>
                   {/* <td className="text-start">{item.task}</td> */}
                   {JSON.parse(authData).role === "admin" ? (
@@ -605,6 +608,14 @@ export default function Empdetails() {
                         ></i> */}
 
                       <Link
+                        onClick={(e) => {
+                          e.preventDefault();
+                          getUpdate(item._id);
+                        }}
+                        onMouseEnter={(e) => {
+                          e.preventDefault();
+                          setShowUpdateTaskModal(true);
+                        }}
                         type="button"
                         data-bs-toggle="modal"
                         data-bs-target="#updateTaskModal"
@@ -612,131 +623,141 @@ export default function Empdetails() {
                         <i
                           className="bi bi-pencil-square pe-3"
                           // onClick={() => handleUpdateTaskClick(item._id)}
-                          onClick={() => getUpdate(item._id)}
                           style={{ cursor: "pointer" }}
                         ></i>
                       </Link>
 
-                      <div
-                        class="modal fade"
-                        id="updateTaskModal"
-                        tabindex="-1"
-                        aria-labelledby="updateTaskModalLabel"
-                        aria-hidden="true"
-                      >
-                        <div class="modal-dialog modal-dialog-centered modal-xl">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title" id="updateTaskModalLabel">
-                                Update Task
-                              </h5>
-                              <button
-                                ref={closeButtonRef}
-                                type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                              ></button>
-                            </div>
-                            <div class="modal-body">
-                              <form className="text-start">
-                                <label
-                                  htmlFor="addtask"
-                                  className="form-label shno"
+                      {showUpdateTaskModal && (
+                        <div
+                          class="modal fade"
+                          id="updateTaskModal"
+                          tabindex="-1"
+                          aria-labelledby="updateTaskModalLabel"
+                          aria-hidden="true"
+                        >
+                          <div class="modal-dialog modal-dialog-centered modal-xl">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5
+                                  class="modal-title"
+                                  id="updateTaskModalLabel"
                                 >
-                                  Task
-                                </label>
-
-                                <JoditEditor
-                                  //ref={editor}
-                                  value={task}
-                                  onChange={(newTask) => {
-                                    setTask(newTask);
-                                  }}
-                                />
-
-                                <div className="d-flex justify-content-between pt-3">
-                                  <div className="wid-100 me-2">
-                                    <label
-                                      htmlFor="timeduration"
-                                      className="form-label"
-                                    >
-                                      Time Duration
-                                    </label>
-                                    <select
-                                      className="form-select"
-                                      aria-label="Default select example"
-                                      id="timeduration"
-                                      value={time}
-                                      onChange={(e) => setTime(e.target.value)}
-                                    >
-                                      <option value="1 hour">1 hour</option>
-                                      <option value="2 hours">2 hours</option>
-                                      <option value="3 hours">3 hours</option>
-                                      <option value="4 hours">4 hours</option>
-                                      <option value="5 hours">5 hours</option>
-                                      <option value="6 hours">6 hours</option>
-                                      <option value="7 hours">7 hours</option>
-                                      <option value="8 hours">8 hours</option>
-                                      <option value="On Going">On Going</option>
-                                    </select>
-                                  </div>
-
-                                  <div className="wid-100">
-                                    <label
-                                      htmlFor="projectname"
-                                      className="form-label"
-                                    >
-                                      Project Name
-                                    </label>
-                                    <select
-                                      // type="text"
-                                      className="form-select"
-                                      aria-label="Default select example"
-                                      id="projectname"
-                                      value={project}
-                                      // value={item._id}
-                                      onChange={(e) =>
-                                        setProject(e.target.value)
-                                      }
-                                    >
-                                      <option value="" disabled>
-                                        Choose any one
-                                      </option>
-                                      {listproject.length > 0
-                                        ? listproject.map((item, index) => (
-                                          <option key={item._id} value={item.project}>
-                                            {parse(item.project)}
-                                          </option>
-                                        ))
-                                        : null}
-                                    </select>
-                                  </div>
-                                </div>
-
-                                <div className="d-flex flex-row">
-                                  <button
-                                    className="btn mt-3 me-2 wid-100"
-                                    type="button"
-                                    onClick={() => updateCollectData(taskId)}
-                                    disabled={loading}
+                                  Update Task
+                                </h5>
+                                <button
+                                  ref={closeButtonRef7}
+                                  type="button"
+                                  class="btn-close"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                ></button>
+                              </div>
+                              <div class="modal-body">
+                                <form className="text-start">
+                                  <label
+                                    htmlFor="addtask"
+                                    className="form-label shno"
                                   >
-                                    {loading ? (
-                                      <ClipLoader
-                                        size={18}
-                                        color={"#ffffff"}
-                                        loading={loading}
-                                      />
-                                    ) : (
-                                      "Update"
-                                    )}
-                                  </button>
-                                </div>
-                              </form>
+                                    Task
+                                  </label>
+
+                                  <JoditEditor
+                                    //ref={editor}
+                                    value={task}
+                                    onChange={(newTask) => {
+                                      setTask(newTask);
+                                    }}
+                                  />
+
+                                  <div className="d-flex justify-content-between pt-3">
+                                    <div className="wid-100 me-2">
+                                      <label
+                                        htmlFor="timeduration"
+                                        className="form-label"
+                                      >
+                                        Time Duration
+                                      </label>
+                                      <select
+                                        className="form-select"
+                                        aria-label="Default select example"
+                                        id="timeduration"
+                                        value={time}
+                                        onChange={(e) =>
+                                          setTime(e.target.value)
+                                        }
+                                      >
+                                        <option value="1 hour">1 hour</option>
+                                        <option value="2 hours">2 hours</option>
+                                        <option value="3 hours">3 hours</option>
+                                        <option value="4 hours">4 hours</option>
+                                        <option value="5 hours">5 hours</option>
+                                        <option value="6 hours">6 hours</option>
+                                        <option value="7 hours">7 hours</option>
+                                        <option value="8 hours">8 hours</option>
+                                        <option value="On Going">
+                                          On Going
+                                        </option>
+                                      </select>
+                                    </div>
+
+                                    <div className="wid-100">
+                                      <label
+                                        htmlFor="projectname"
+                                        className="form-label"
+                                      >
+                                        Project Name
+                                      </label>
+                                      <select
+                                        // type="text"
+                                        className="form-select"
+                                        aria-label="Default select example"
+                                        id="projectname"
+                                        value={project}
+                                        // value={item._id}
+                                        onChange={(e) =>
+                                          setProject(e.target.value)
+                                        }
+                                      >
+                                        <option value="" disabled>
+                                          Choose any one
+                                        </option>
+                                        {listproject.length > 0
+                                          ? listproject.map((item, index) => (
+                                              <option
+                                                key={item._id}
+                                                value={item.project}
+                                              >
+                                                {parse(item.project)}
+                                              </option>
+                                            ))
+                                          : null}
+                                      </select>
+                                    </div>
+                                  </div>
+                                </form>
+                              </div>
+                              <div className="modal-footer">
+                                <button
+                                  className="btn wid-100"
+                                  type="button"
+                                  onClick={() => updateCollectData(taskId)}
+                                  disabled={loading}
+                                >
+                                  {loading ? (
+                                    <ClipLoader
+                                      size={18}
+                                      color={"#ffffff"}
+                                      loading={loading}
+                                    />
+                                  ) : (
+                                    "Update"
+                                  )}
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      )}
 
                       <Link onClick={() => deletetask(item._id)}>
                         <i className="bi bi-trash3-fill"></i>
@@ -776,54 +797,54 @@ export default function Empdetails() {
           >
             {listname.length > 0
               ? listname.map((item, index) => (
-                <div className="offcanvas-header">
-                  <div className="menudiv d-flex align-items-center">
-                    <div
-                      className="menuimg"
-                      style={{
-                        backgroundColor:
-                          item.online === true ? "yellow" : "white",
-                        width: "35px",
-                        height: "35px",
-                        borderRadius: "100px",
-                      }}
-                    >
-                      {item.profileimage === "" ||
+                  <div className="offcanvas-header">
+                    <div className="menudiv d-flex align-items-center">
+                      <div
+                        className="menuimg"
+                        style={{
+                          backgroundColor:
+                            item.online === true ? "yellow" : "white",
+                          width: "35px",
+                          height: "35px",
+                          borderRadius: "100px",
+                        }}
+                      >
+                        {item.profileimage === "" ||
                         item.profileimage == null ? (
-                        <img
-                          className="profimage"
-                          src={"/empimg.jpg"}
-                          alt=""
-                          style={{
-                            width: "35px",
-                            height: "35px",
-                            borderRadius: "100px",
-                          }}
-                        />
-                      ) : (
-                        <img
-                          className="profimage"
-                          src={item.profileimage}
-                          alt=""
-                          style={{
-                            width: "35px",
-                            height: "35px",
-                            borderRadius: "100px",
-                          }}
-                        />
-                      )}
+                          <img
+                            className="profimage"
+                            src={"/empimg.jpg"}
+                            alt=""
+                            style={{
+                              width: "35px",
+                              height: "35px",
+                              borderRadius: "100px",
+                            }}
+                          />
+                        ) : (
+                          <img
+                            className="profimage"
+                            src={item.profileimage}
+                            alt=""
+                            style={{
+                              width: "35px",
+                              height: "35px",
+                              borderRadius: "100px",
+                            }}
+                          />
+                        )}
+                      </div>
+                      <div className="ps-2">{item.name}</div>
                     </div>
-                    <div className="ps-2">{item.name}</div>
+                    <button
+                      type="button"
+                      className="btn-close text-reset"
+                      data-bs-dismiss="offcanvas"
+                      aria-label="Close"
+                      onClick={stop}
+                    ></button>
                   </div>
-                  <button
-                    type="button"
-                    className="btn-close text-reset"
-                    data-bs-dismiss="offcanvas"
-                    aria-label="Close"
-                    onClick={stop}
-                  ></button>
-                </div>
-              ))
+                ))
               : null}
 
             <div className="offcanvas-body" ref={chatBodyRef}>
@@ -886,7 +907,7 @@ export default function Empdetails() {
                       <div className="msgbody">
                         <h6>{item.text}</h6>
                       </div>
-                      <h6>{ }</h6>
+                      <h6>{}</h6>
                     </div>
                   </div>
                 ))
@@ -910,8 +931,8 @@ export default function Empdetails() {
                   placeholder="Message here"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
-                // style={{width:"85%"}}
-                // onKeyPress={handleKeyPress}
+                  // style={{width:"85%"}}
+                  // onKeyPress={handleKeyPress}
                 />
                 <button
                   id="messageButton"
@@ -919,7 +940,7 @@ export default function Empdetails() {
                   className=""
                   type="button"
                   onClick={addMessages}
-                // style={{width:"15%"}}
+                  // style={{width:"15%"}}
                 >
                   <i className="bi bi-send"></i>
                 </button>
@@ -939,7 +960,7 @@ export default function Empdetails() {
         draggable
         pauseOnHover
         theme="light"
-      // transition:Bounce
+        // transition:Bounce
       />
     </>
   );

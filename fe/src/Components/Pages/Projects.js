@@ -8,16 +8,18 @@ import parse from "html-react-parser";
 import Swal from "sweetalert2";
 
 export default function Algofolkshome() {
-//   const [listname, setListname] = useState([]);
+  //   const [listname, setListname] = useState([]);
   const [project, setProject] = useState("");
-//   const [name, setName] = useState("");
+  //   const [name, setName] = useState("");
   // const [assign, setAssign] = useState("");
-//   const [time, setTime] = useState("1 hour");
+  //   const [time, setTime] = useState("1 hour");
   const [allprojects, setAllProjects] = useState([]);
-  const [projectId, setProjectId] = useState("");
+  const [projectId, setProjectId] = useState(null);
   const [loading, setLoading] = useState(true);
+  // const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
 
-  const closeButtonRef = useRef();
+  const closeButtonRef8 = useRef();
+  const closeButtonRef9 = useRef();
   const editor = useRef(null);
 
   useEffect(() => {
@@ -42,7 +44,7 @@ export default function Algofolkshome() {
             method: "post",
             body: JSON.stringify({
               project,
-            //   assign: "Not Assign",
+              //   assign: "Not Assign",
               // empid,
             }),
             headers: {
@@ -53,6 +55,7 @@ export default function Algofolkshome() {
         result2 = await result2.json();
         if (result2) {
           toast.success("Project added successfully");
+          // closeButtonRef8.current.click();
           setProject("");
           // setAssign("Not Assign");
           getAllProjects();
@@ -66,65 +69,10 @@ export default function Algofolkshome() {
     }
   };
 
-  const updateProjects = async (taskId) => {
-    // setLoading(true);
-    try {
-    //   let result1 = await fetch(`${process.env.REACT_APP_API_KEY}/listnamess`, {
-    //     method: "get",
-    //   });
-    //   result1 = await result1.json();
-
-    //   setListname(result1);
-    //   let empid = name;
-
-      let result2 = await fetch(
-        `${process.env.REACT_APP_API_KEY}/updateprojects/${taskId}`,
-        {
-          method: "put",
-          body: JSON.stringify({
-            project,
-            // empid,
-            // time,
-            // date: new Date(),
-            // assign,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      result2 = await result2.json();
-      if (result2) {
-        // closeButtonRef.current.click();
-        toast.success("Project updated successfully");
-        getAllProjects(); // Refresh task list
-        setProject("");
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      }
-    } catch (error) {
-      toast.error("Failed to update Project");
-    }
-    // finally {
-    //   setLoading(false);
-    // }
-  };
-
-//   const getListname = async () => {
-//     let result = await fetch(`${process.env.REACT_APP_API_KEY}/listnamess`, {
-//       method: "get",
-//     });
-//     result = await result.json();
-
-//     // Sort the list alphabetically
-
-//     result.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
-
-//     setListname(result);
-//   };
+  const [showUpdateProjectModal, setShowUpdateProjectModal] = useState(true);
 
   let getUpdate = async (id) => {
+     setShowUpdateProjectModal(true);
     setProjectId(id);
     if (!id) return;
 
@@ -137,18 +85,64 @@ export default function Algofolkshome() {
 
     result = await result.json();
     setProject(result.project);
+   
     // setName(result.name);
   };
+
+  const updateProjects = async () => {
+    try {
+      let result2 = await fetch(
+        `${process.env.REACT_APP_API_KEY}/updateprojects/${projectId}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            project,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      result2 = await result2.json();
+
+      if (result2) {
+        toast.success("Project updated successfully");
+        // closeButtonRef9.current.click();
+        setShowUpdateProjectModal(false);
+        getAllProjects(); // Refresh task list
+        setProject("");
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 1000);
+      }
+    } catch (error) {
+      toast.error("Failed to update Project");
+    }
+    // finally {
+    //   // setLoading(false);
+    //    setShowUpdateProjectModal(true);
+    // }
+  };
+
+  //   const getListname = async () => {
+  //     let result = await fetch(`${process.env.REACT_APP_API_KEY}/listnamess`, {
+  //       method: "get",
+  //     });
+  //     result = await result.json();
+
+  //     // Sort the list alphabetically
+
+  //     result.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
+
+  //     setListname(result);
+  //   };
 
   const getAllProjects = async () => {
     // setLoading(true);
     try {
-      let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/allprojects`,
-        {
-          method: "get",
-        }
-      );
+      let result = await fetch(`${process.env.REACT_APP_API_KEY}/allprojects`, {
+        method: "get",
+      });
       result = await result.json();
 
       setAllProjects(result);
@@ -241,7 +235,7 @@ export default function Algofolkshome() {
                         Add Project
                       </h5>
                       <button
-                        // ref={closeButtonRef}
+                        ref={closeButtonRef8}
                         type="button"
                         class="btn-close"
                         data-bs-dismiss="modal"
@@ -250,25 +244,22 @@ export default function Algofolkshome() {
                     </div>
 
                     <div class="modal-body">
-                      <div className="">
-                        <form id="addform">
-                          <label
-                            htmlFor="addproject"
-                            className="form-label shno"
-                          >
-                            Project
-                          </label>
-                          <JoditEditor
-                            ref={editor}
-                            value={project}
-                            // config={config}
-                            // tabIndex={1} // tabIndex of textarea
-                            // onBlur={(newTask) => setTask(newTask)} // preferred to use only this option to update the content for performance reasons
-                            // value={displayedTask}
-                            onChange={(newProject) => setProject(newProject)}
-                          />
-
-                          {/* <div className="d-flex align-items-center justify-content-between">
+                      <form id="addform">
+                        <label htmlFor="addproject" className="form-label shno">
+                          Project
+                        </label>
+                        <JoditEditor
+                          ref={editor}
+                          value={project}
+                          // config={config}
+                          // tabIndex={1} // tabIndex of textarea
+                          // onBlur={(newTask) => setTask(newTask)} // preferred to use only this option to update the content for performance reasons
+                          // value={displayedTask}
+                          onChange={(newProject) => setProject(newProject)}
+                        />
+                      </form>
+                    </div>
+                    {/* <div className="d-flex align-items-center justify-content-between">
                           <div className="wid-100 pt-2">
                             <label
                               htmlFor="employeename"
@@ -295,18 +286,15 @@ export default function Algofolkshome() {
                           </div>
                         </div> */}
 
-                          <div className="d-flex flex-row">
-                            <button
-                              id="add"
-                              className="btn mt-3 me-2 wid-100"
-                              type="button"
-                              onClick={collectData}
-                            >
-                              Submit
-                            </button>
-                          </div>
-                        </form>
-                      </div>
+                    <div className="modal-footer">
+                      <button
+                        id="add"
+                        className="btn wid-100"
+                        type="button"
+                        onClick={collectData}
+                      >
+                        Submit
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -358,6 +346,16 @@ export default function Algofolkshome() {
 
                         <td className="modifysec text-center">
                           <Link
+                            onClick={(e) => {
+                              e.preventDefault();
+                              getUpdate(item._id);
+                              // setShowUpdateProjectModal(true);
+                            }}
+                            onMouseEnter={(e) => {
+                              e.preventDefault();
+                              setShowUpdateProjectModal(true);
+                            }}
+                            // onMouseEnter={setShowUpdateProjectModal(true)}
                             // to={item._id}
                             // let taskid={item._id}
                             type="button"
@@ -368,56 +366,57 @@ export default function Algofolkshome() {
                             <i
                               className="bi bi-pencil-square"
                               // onClick={updateCollectData(item._id)}
-                              onClick={() => getUpdate(item._id)}
                               style={{ cursor: "pointer" }}
                             ></i>
                           </Link>
 
-                          <div
-                            class="modal fade"
-                            id="updateProjectModal"
-                            tabindex="-1"
-                            aria-labelledby="updateProjectModalLabel"
-                            aria-hidden="true"
-                          >
-                            <div class="modal-dialog modal-dialog-centered modal-xl">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5
-                                    class="modal-title"
-                                    id="updateProjectModalLabel"
-                                  >
-                                    Update Task
-                                  </h5>
-                                  <button
-                                    ref={closeButtonRef}
-                                    type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close"
-                                  ></button>
-                                </div>
-
-                                <div class="modal-body text-start">
-                                  {/* <div className=""> */}
-                                  <form id="updateform">
-                                    <label
-                                      htmlFor="updateproject"
-                                      className="form-label shno"
+                          {showUpdateProjectModal && (
+                            <div
+                              class="modal fade"
+                              id="updateProjectModal"
+                              tabindex="-1"
+                              aria-labelledby="updateProjectModalLabel"
+                              aria-hidden="true"
+                            >
+                              <div class="modal-dialog modal-dialog-centered modal-xl">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5
+                                      class="modal-title"
+                                      id="updateProjectModalLabel"
                                     >
-                                      Project
-                                    </label>
-                                    <JoditEditor
-                                      ref={editor}
-                                      // value={editingTask.task}
-                                      value={project}
-                                      onChange={(newProject) =>
-                                        setProject(newProject)
-                                      }
-                                      className="m"
-                                    />
+                                      Update Task
+                                    </h5>
+                                    <button
+                                      // ref={closeButtonRef9}
+                                      type="button"
+                                      class="btn-close"
+                                      data-bs-dismiss="modal"
+                                      aria-label="Close"
+                                    ></button>
+                                  </div>
 
-                                    {/* <div className="d-flex align-items-center justify-content-between pt-2">
+                                  <div class="modal-body text-start">
+                                    <form id="updateform">
+                                      <label
+                                        htmlFor="updateproject"
+                                        className="form-label shno"
+                                      >
+                                        Project
+                                      </label>
+                                      <JoditEditor
+                                        ref={editor}
+                                        // value={editingTask.task}
+                                        value={project}
+                                        onChange={(newProject) =>
+                                          setProject(newProject)
+                                        }
+                                        className="m"
+                                      />
+                                    </form>
+                                  </div>
+
+                                  {/* <div className="d-flex align-items-center justify-content-between pt-2">
                                       <div className="wid-50 pe-2">
                                         <label
                                           htmlFor="employeename"
@@ -502,26 +501,19 @@ export default function Algofolkshome() {
                                       </div>
                                     </div> */}
 
-                                    <div
-                                      className="d-flex flex-row"
-                                      id="update"
+                                  <div className="modal-footer" id="update">
+                                    <button
+                                      className="btn wid-100"
+                                      type="button"
+                                      onClick={updateProjects}
                                     >
-                                      <button
-                                        className="btn mt-3 me-2 wid-100"
-                                        type="button"
-                                        onClick={() =>
-                                          updateProjects(projectId)
-                                        }
-                                      >
-                                        Update
-                                      </button>
-                                    </div>
-                                  </form>
-                                  {/* </div> */}
+                                      Update
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          )}
 
                           <Link onClick={() => deleteproject(item._id)}>
                             <i className="bi bi-trash3-fill"></i>

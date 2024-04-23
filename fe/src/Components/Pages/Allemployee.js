@@ -17,8 +17,9 @@ export default function Allemployee() {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [originalList, setOriginalList] = useState([]);
 
-  const closeButtonRef = useRef();
+  const closeButtonRef1 = useRef();
   const closeButtonRef2 = useRef();
+  const closeButtonRef3 = useRef();
 
   useEffect(() => {
     getListname();
@@ -98,7 +99,7 @@ export default function Allemployee() {
         const data = await result.json();
         if (data) {
           toast.success("Employee add successfully");
-          closeButtonRef.current.click();
+          closeButtonRef1.current.click();
 
           // setTimeout(() => {
           //   navigate("/allemployee");
@@ -147,7 +148,7 @@ export default function Allemployee() {
 
       if (result.ok) {
         toast.success("Employee update successfully");
-        closeButtonRef.current.click();
+        closeButtonRef2.current.click();
         getListname();
         setName("");
         setEmail("");
@@ -205,6 +206,7 @@ export default function Allemployee() {
   const updateEmployeePassword = async () => {
     // if (password === "" || null) {
     //   toast.info("Please fill Employee Password");
+    //   // return;
     // } 
     // else {
       try {
@@ -227,7 +229,7 @@ export default function Allemployee() {
           // setTimeout(() => {
           //   window.location.reload();
           // }, 1000);
-          closeButtonRef2.current.click();
+          closeButtonRef3.current.click();
         }
       } catch (error) {
         console.error("Error updating password:", error);
@@ -312,7 +314,7 @@ export default function Allemployee() {
                         Add Employee
                       </h5>
                       <button
-                        ref={closeButtonRef}
+                        ref={closeButtonRef1}
                         type="button"
                         className="btn-close"
                         data-bs-dismiss="modal"
@@ -571,15 +573,15 @@ export default function Allemployee() {
                   Update Password
                 </h5>
                 <button
-                  ref={closeButtonRef2}
+                  ref={closeButtonRef3}
                   type="button"
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
-                  onClick={() => {
-                    setSelectedEmployeeId(null);
-                    setUpdatePassword("");
-                  }}
+                  // onClick={() => {
+                  //   setSelectedEmployeeId(null);
+                  //   setUpdatePassword("");
+                  // }}
                 ></button>
               </div>
               <div className="modal-body">
@@ -627,7 +629,7 @@ export default function Allemployee() {
                   Update Employee
                 </h5>
                 <button
-                  ref={closeButtonRef}
+                  ref={closeButtonRef2}
                   type="button"
                   className="btn-close"
                   data-bs-dismiss="modal"
