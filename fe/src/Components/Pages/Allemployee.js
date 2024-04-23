@@ -18,6 +18,7 @@ export default function Allemployee() {
   const [originalList, setOriginalList] = useState([]);
 
   const closeButtonRef = useRef();
+  const closeButtonRef2 = useRef();
 
   useEffect(() => {
     getListname();
@@ -96,7 +97,7 @@ export default function Allemployee() {
         // }
         const data = await result.json();
         if (data) {
-          toast.success("Employee added successfully");
+          toast.success("Employee add successfully");
           closeButtonRef.current.click();
 
           // setTimeout(() => {
@@ -145,7 +146,7 @@ export default function Allemployee() {
       );
 
       if (result.ok) {
-        toast.success("Employee updated successfully");
+        toast.success("Employee update successfully");
         closeButtonRef.current.click();
         getListname();
         setName("");
@@ -161,12 +162,13 @@ export default function Allemployee() {
     }
   };
 
-  const [showUpdatePasswordModal, setShowUpdatePasswordModal] = useState(false);
-  const [showUpdateEmployeeModal, setShowUpdateEmployeeModal] = useState(false);
+  const [showUpdatePasswordModal, setShowUpdatePasswordModal] = useState(true);
+  const [showUpdateEmployeeModal, setShowUpdateEmployeeModal] = useState(true);
 
   const openUpdatePasswordModal = (employeeId) => {
     setSelectedEmployeeId(employeeId);
-    setShowUpdatePasswordModal(true); // Set the state to true to open the modal
+    setUpdatePassword("");
+    // setShowUpdatePasswordModal(true); // Set the state to true to open the modal
   };
 
   // const openUpdateEmployeeModal = (employeeId) => {
@@ -186,43 +188,52 @@ export default function Allemployee() {
       setEmail(result.email);
       setRole(result.role);
       setPassword(result.password);
-      setShowUpdateEmployeeModal(true); // Open the modal
+      // setShowUpdateEmployeeModal(true); // Open the modal
     } catch (error) {
       console.error("Error fetching employee data:", error);
     }
   };
 
-  const closeUpdateEmployeeModal = () => {
-    setShowUpdateEmployeeModal(false); // Set the state to false to close the modal
-  };
+  // const closeUpdateEmployeeModal = () => {
+  //   setShowUpdateEmployeeModal(false); // Set the state to false to close the modal
+  // };
 
-  const closeUpdatePasswordModal = () => {
-    setShowUpdatePasswordModal(false); // Set the state to false to close the modal
-  };
+  // const closeUpdatePasswordModal = () => {
+  //   setShowUpdatePasswordModal(false); // Set the state to false to close the modal
+  // };
 
   const updateEmployeePassword = async () => {
-    try {
-      let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/addemp/${selectedEmployeeId}`,
-        {
-          method: "PUT",
-          body: JSON.stringify({ password: updatePassword }),
-          headers: {
-            "Content-Type": "application/json",
-          },
+    // if (password === "" || null) {
+    //   toast.info("Please fill Employee Password");
+    // } 
+    // else {
+      try {
+        let result = await fetch(
+          `${process.env.REACT_APP_API_KEY}/addemp/${selectedEmployeeId}`,
+          {
+            method: "PUT",
+            body: JSON.stringify({ password: updatePassword }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        result = await result.json();
+        if (result) {
+          toast.success("Password update successfully");
+          // closeUpdatePasswordModal(); // Close the modal
+          getListname(); // Refresh the list of employees
+          setUpdatePassword(""); // Clear the updatePassword state
+          // setTimeout(() => {
+          //   window.location.reload();
+          // }, 1000);
+          closeButtonRef2.current.click();
         }
-      );
-      result = await result.json();
-      if (result) {
-        toast.success("Password updated successfully");
-        closeUpdatePasswordModal(); // Close the modal
-        getListname(); // Refresh the list of employees
-        setUpdatePassword(""); // Clear the updatePassword state
+      } catch (error) {
+        console.error("Error updating password:", error);
+        toast.error("Failed to update password");
       }
-    } catch (error) {
-      console.error("Error updating password:", error);
-      toast.error("Failed to update password");
-    }
+    // }
   };
 
   const sortByPosition = (role) => {
@@ -251,6 +262,13 @@ export default function Allemployee() {
     setListname(filteredList);
   };
 
+  const idnull = () => {
+    setName("");
+    setEmail("");
+    setRole("");
+    setPassword("");
+  };
+
   return (
     <>
       <div className="allemployee flex-column">
@@ -275,6 +293,7 @@ export default function Allemployee() {
                 className="btn me-0 ButtonText"
                 data-bs-toggle="modal"
                 data-bs-target="#addEmpModal"
+                onClick={idnull}
               >
                 Add Employee
               </button>
@@ -433,7 +452,10 @@ export default function Allemployee() {
                         className="text-decoration-none"
                       >
                         <div className="card">
-                          <div className="card-header justify-content-center d-flex" style={{ borderRadius: "15px" }}>
+                          <div
+                            className="card-header justify-content-center d-flex"
+                            style={{ borderRadius: "15px" }}
+                          >
                             <div className="dotmenu">
                               <div className="dropdown">
                                 <button
@@ -491,7 +513,7 @@ export default function Allemployee() {
                             </div>
                             <div className="emppic">
                               {item.profileimage === "" ||
-                                item.profileimage == null ? (
+                              item.profileimage == null ? (
                                 <img
                                   src={"/empimg.jpg"}
                                   alt=""
@@ -549,6 +571,7 @@ export default function Allemployee() {
                   Update Password
                 </h5>
                 <button
+                  ref={closeButtonRef2}
                   type="button"
                   className="btn-close"
                   data-bs-dismiss="modal"
