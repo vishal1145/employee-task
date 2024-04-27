@@ -419,6 +419,15 @@ app.get("/messagebodyname/:id", async (req, resp) => {
   }
 });
 
+app.get("/reassignListName", async (req, resp) => {
+  const result = await EmpAdd.find();
+  if (result) {
+    resp.send(result);
+  } else {
+    resp.send("result not found");
+  }
+});
+
 app.post("/addmessages", async (req, resp) => {
   let message = new Message(req.body);
   let result = await message.save();
