@@ -39,7 +39,10 @@ export default function Loginpage() {
 
       var authData = localStorage.getItem("user");
 
-      if (JSON.parse(authData).role === "admin") {
+      if (
+        JSON.parse(authData).role === "admin" ||
+        JSON.parse(authData).role === "Team Lead"
+      ) {
         navigate("/");
       } else {
         navigate("/" + JSON.parse(authData)._id);

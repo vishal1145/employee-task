@@ -404,6 +404,7 @@ export default function Allemployee() {
               <ul
                 className="dropdown-menu"
                 aria-labelledby="dropdownMenuButton"
+                style={{overflow:"hidden"}}
               >
                 <li>
                   <button

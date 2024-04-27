@@ -26,9 +26,12 @@ export default function Empdetails() {
   // const [socket, setSocket] = useState(null);
   const [project, setProject] = useState("");
   const [listproject, setListProject] = useState([]);
+  const [reassign, setReassign] = useState("");
+  const [reassignListName, setReassignListName] = useState([]);
 
   const closeButtonRef6 = useRef();
   const closeButtonRef7 = useRef();
+  const closeButtonRef15 = useRef();
   const params = useParams();
   // const navigate = useNavigate();
   const editor = useRef(null);
@@ -45,6 +48,7 @@ export default function Empdetails() {
     getMessages();
     getEmpdetails();
     getListname();
+    getReassignListName();
     getListProject();
     getUpdate();
     // getStatusCount();
@@ -130,6 +134,37 @@ export default function Empdetails() {
       }
     }
   };
+  const [showReassignTaskModal, setShowReassignTaskModal] = useState(true);
+  const reassignCollectData = async (taskId) => {
+    setLoading(true);
+    try {
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({ empid: reassign }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      result = await result.json();
+      if (result) {
+        toast.success("Task Reassign successfully");
+        setReassign("");
+        getEmpdetails();
+        setShowReassignTaskModal(false);
+        closeButtonRef15.current.click();
+      }
+    } catch {
+      toast.error("Failed Reassign Data");
+    } finally {
+      setLoading(false);
+    }
+  };
+  // const namenull =()=>{
+  //   setReassign("");
+  // }
 
   const [showUpdateTaskModal, setShowUpdateTaskModal] = useState(true);
 
@@ -169,7 +204,7 @@ export default function Empdetails() {
         setProject("");
         getEmpdetails();
         setShowUpdateTaskModal(false);
-        
+
         // closeButtonRef7.current.click();
         // setTimeout(() => {
         //   window.location.reload();
@@ -298,6 +333,16 @@ export default function Empdetails() {
     }
   };
 
+  const getReassignListName = async () => {
+    let result = await fetch(
+      `${process.env.REACT_APP_API_KEY}/reassignListName`
+    );
+
+    result = await result.json();
+
+    setReassignListName(result);
+  };
+
   const getListname = async () => {
     let result = await fetch(
       `${process.env.REACT_APP_API_KEY}/messagebodyname/${params.id}`
@@ -376,7 +421,15 @@ export default function Empdetails() {
 
   return (
     <>
-      <div className="empdeatils wid-80">
+      <div
+        className={`empdeatils ${
+          JSON.parse(authData).role === "admin" ||
+          JSON.parse(authData).role === "Team Lead"
+            ? "wid-75"
+            : "wid-100"
+        }`}
+      >
+        {/* <div className="empdetails wid-100"> */}
         <div className="headsec">
           <div className="d-flex align-items-center">
             <h5 className="mb-0 me-3">Task</h5>
@@ -391,11 +444,12 @@ export default function Empdetails() {
               )}
             </Link>
           </div>
-          {JSON.parse(authData).role === "admin" ? (
+          {JSON.parse(authData).role === "admin" ||
+          JSON.parse(authData).role === "Team Lead" ? (
             <div className="addtaskbtn">
               <button
                 type="button"
-                class="btn"
+                class="btn ButtonText"
                 data-bs-toggle="modal"
                 data-bs-target="#addTaskModal"
                 onClick={idnull}
@@ -522,18 +576,21 @@ export default function Empdetails() {
             <tr>
               <th className="wid-40 text-start">Task</th>
               <th className="wid-10 text-start">Project</th>
-              {JSON.parse(authData).role === "admin" ? (
+              {JSON.parse(authData).role === "admin" ||
+              JSON.parse(authData).role === "Team Lead" ? (
                 <>
                   {/* <th className="wid-7 text-center">Date</th> */}
                   <th className="wid-5 text-center">Estimate</th>
                 </>
               ) : null}
-              {JSON.parse(authData).role === "admin" ? null : (
+              {JSON.parse(authData).role === "admin" ||
+              JSON.parse(authData).role === "Team Lead" ? null : (
                 <th className=" text-center" style={{ width: "8%" }}>
                   Status
                 </th>
               )}
-              {JSON.parse(authData).role === "admin" ? (
+              {JSON.parse(authData).role === "admin" ||
+              JSON.parse(authData).role === "Team Lead" ? (
                 <th className="wid-5 text-center">Modify</th>
               ) : null}
             </tr>
@@ -564,7 +621,8 @@ export default function Empdetails() {
                       : null}
                   </td>
                   {/* <td className="text-start">{item.task}</td> */}
-                  {JSON.parse(authData).role === "admin" ? (
+                  {JSON.parse(authData).role === "admin" ||
+                  JSON.parse(authData).role === "Team Lead" ? (
                     <>
                       {/* <td className="text-center">
                           {moment(item.date).format("DD-MM-YYYY")}
@@ -573,7 +631,8 @@ export default function Empdetails() {
                     </>
                   ) : null}
 
-                  {JSON.parse(authData).role === "admin" ? null : (
+                  {JSON.parse(authData).role === "admin" ||
+                  JSON.parse(authData).role === "Team Lead" ? null : (
                     <td className="text-center" key={index}>
                       <NavLink
                         className="text-decoration-none"
@@ -599,13 +658,109 @@ export default function Empdetails() {
                       </NavLink>
                     </td>
                   )}
-                  {JSON.parse(authData).role === "admin" ? (
+                  {JSON.parse(authData).role === "admin" ||
+                  JSON.parse(authData).role === "Team Lead" ? (
                     <td className="modifysec text-center">
-                      {/* <i
-                          className="bi bi-pencil-square pe-3"
-                          onClick={() => handleUpdateTaskClick(item._id)}
-                          style={{ cursor: "pointer" }}
-                        ></i> */}
+                      <Link
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#reassignTaskModal"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          getUpdate(item._id);
+                        }}
+                        onMouseEnter={(e) => {
+                          e.preventDefault();
+                          setShowReassignTaskModal(true);
+                          setReassign("");
+                        }}
+                      >
+                        <i className="bi bi-bootstrap-reboot pe-3"></i>
+                      </Link>
+                      {showReassignTaskModal && (
+                        <div
+                          class="modal fade"
+                          id="reassignTaskModal"
+                          tabindex="-1"
+                          aria-labelledby="reassignTaskModalLabel"
+                          aria-hidden="true"
+                        >
+                          <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5
+                                  class="modal-title"
+                                  id="reassignTaskModalLabel"
+                                >
+                                  Reassign Task
+                                </h5>
+                                <button
+                                  ref={closeButtonRef15}
+                                  type="button"
+                                  class="btn-close"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                ></button>
+                              </div>
+                              <div class="modal-body">
+                                <form className="text-start">
+                                  <div className="wid-100">
+                                    <label
+                                      htmlFor="employeename"
+                                      className="form-label"
+                                    >
+                                      Employee Name
+                                    </label>
+                                    <select
+                                      className="form-select"
+                                      aria-label="Default select example"
+                                      id="employeename"
+                                      value={reassign}
+                                      onChange={(e) =>
+                                        setReassign(e.target.value)
+                                      }
+                                    >
+                                      <option value="">Choose Employee</option>
+                                      {reassignListName.length > 0
+                                        ? reassignListName
+                                            .filter(
+                                              (item) => item.role !== "admin"
+                                            )
+                                            .map((item, index) => (
+                                              <option
+                                                value={item._id}
+                                                key={item._id}
+                                              >
+                                                {item.name}
+                                              </option>
+                                            ))
+                                        : null}
+                                    </select>
+                                  </div>
+                                </form>
+                              </div>
+                              <div className="modal-footer">
+                                <button
+                                  className="btn wid-100"
+                                  type="button"
+                                  onClick={() => reassignCollectData(taskId)}
+                                  disabled={loading}
+                                >
+                                  {loading ? (
+                                    <ClipLoader
+                                      size={18}
+                                      color={"#ffffff"}
+                                      loading={loading}
+                                    />
+                                  ) : (
+                                    "Update"
+                                  )}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
                       <Link
                         onClick={(e) => {
@@ -621,7 +776,7 @@ export default function Empdetails() {
                         data-bs-target="#updateTaskModal"
                       >
                         <i
-                          className="bi bi-pencil-square pe-3"
+                          className="bi bi-pencil-square pe-2"
                           // onClick={() => handleUpdateTaskClick(item._id)}
                           style={{ cursor: "pointer" }}
                         ></i>

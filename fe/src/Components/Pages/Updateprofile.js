@@ -38,8 +38,9 @@ export default function Updateprofile() {
       setPassword(result.password);
       setMobile(result.mobile);
       setDob(result.dob);
-      setPosition(result.position);
+      setPosition(result.role);
       setProfileImage(result.profileimage);
+
     } catch (error) {
       console.error("Error fetching update:", error);
     } 
@@ -191,8 +192,9 @@ export default function Updateprofile() {
                   className="form-control"
                   id="addposition"
                   value={position}
-                  onChange={(e) => setPosition(e.target.value)}
+                  // onChange={(e) => setPosition(e.target.value)}
                   placeholder="Position"
+                  disabled
                 />
               </div>
 

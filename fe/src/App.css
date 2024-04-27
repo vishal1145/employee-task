@@ -35,6 +35,9 @@
 .wid-70 {
   width: 70%;
 }
+.wid-75{
+  width:75%;
+}
 .wid-80 {
   width: 80%;
 }
@@ -101,10 +104,11 @@
   padding: 0px 1.5%;
   position: fixed;
   right: 0;
-  width: 75%;
+  /* width: 75%; */
   height: 91%;
   top: 9%;
 }
+
 .headsec {
   display: flex;
   align-items: center;

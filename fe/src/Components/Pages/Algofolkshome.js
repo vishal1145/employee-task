@@ -250,7 +250,7 @@ export default function Algofolkshome() {
             <div>
               <button
                 type="button"
-                className="btn me-0"
+                className="btn me-0 ButtonText"
                 data-bs-toggle="modal"
                 data-bs-target="#addTaskModal"
                 onClick={idnull}
@@ -442,7 +442,7 @@ export default function Algofolkshome() {
                                               setName(e.target.value)
                                             }
                                           >
-                                            <option value="" >
+                                            <option value="">
                                               Choose any one
                                             </option>
                                             {listname.length > 0
@@ -552,9 +552,10 @@ export default function Algofolkshome() {
                                     <button
                                       className="btn wid-100"
                                       type="button"
-                                      onClick={(e)=>{
-                                      e.preventDefault();
-                                      updateTask(taskId);}}
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        updateTask(taskId);
+                                      }}
                                     >
                                       Update
                                     </button>

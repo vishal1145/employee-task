@@ -91,7 +91,14 @@ function App() {
               </>
             }
           />
-          <Route path="*" element={<Pagenotfound />} />
+          <Route
+            path="*"
+            element={
+              <>
+                <Pagenotfound />
+              </>
+            }
+          />
         </Route>
 
         <Route path="/loginpage" element={<Loginpage />} />

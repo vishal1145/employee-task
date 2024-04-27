@@ -213,7 +213,7 @@ export default function Algofolkshome() {
             <div>
               <button
                 type="button"
-                className="btn me-0"
+                className="btn me-0 ButtonText"
                 data-bs-toggle="modal"
                 data-bs-target="#addProjectModal"
                 onClick={idnull}

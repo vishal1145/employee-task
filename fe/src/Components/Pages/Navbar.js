@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
+
 export default function Navbar() {
   var authData = localStorage.getItem("user");
   const navigate = useNavigate();
@@ -13,9 +14,10 @@ export default function Navbar() {
     navigate("/loginpage");
   };
   return (
-    <nav className="navbar navbar-expand-sm navbar-light bg-light">
+    <nav className="navbar navbar-expand-sm navbar-light">
       <div className="container-fluid">
-        {JSON.parse(authData).role === "admin" ? (
+        {JSON.parse(authData).role === "admin" ||
+        JSON.parse(authData).role === "Team Lead" ? (
           <div>
             <Link className="navbar-brand" to="/">
               <img
@@ -54,7 +56,8 @@ export default function Navbar() {
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           {authData ? (
             <div className="navbar-nav d-flex align-items-center justify-content-between wid-100 bg-white">
-              {JSON.parse(authData).role === "admin" ? (
+              {JSON.parse(authData).role === "admin" ||
+              JSON.parse(authData).role === "Team Lead" ? (
                 <div>
                   <NavLink
                     className="btn ButtonText"
@@ -76,85 +79,102 @@ export default function Navbar() {
                     Employees
                   </NavLink>
                 </div>
-              ) : null}
+              ) : (
+                <div className="d-flex">
+                  <NavLink
+                    to={"/empprofile/" + JSON.parse(authData)._id}
+                    className="btn ButtonText"
+                  >
+                    Profile
+                  </NavLink>
 
-              {JSON.parse(authData).role === "admin" ? 
-              (
-              <div className="logoutbtn">
-                <div className="d-flex flex-row gap-3">
-                  <div className="">
-                    <div className="menuimg rounded-circle text-lg-end">
-                      {JSON.parse(authData).profileimage === "" ||
-                      JSON.parse(authData).profileimage == null ? (
-                        <img
-                          className="profimage rounded-circle"
-                          src={"/empimg.jpg"}
-                          alt=""
-                          style={{ width: "40px", height: "40px" }}
-                        />
-                      ) : (
-                        <img
-                          className="profimage rounded-circle"
-                          src={JSON.parse(authData).profileimage}
-                          alt=""
-                          style={{ width: "40px", height: "40px" }}
-                        />
-                      )}
+                  <NavLink
+                    className="btn ButtonText"
+                    aria-current="page"
+                    to={"/alldetails/" + JSON.parse(authData)._id}
+                  >
+                    Tasks
+                  </NavLink>
+                </div>
+              )}
+
+              {JSON.parse(authData).role === "admin" ||
+              JSON.parse(authData).role === "Team Lead" ? (
+                <div className="logoutbtn">
+                  <div className="d-flex flex-row gap-3">
+                    <div className="">
+                      <div className="menuimg rounded-circle text-lg-end">
+                        {JSON.parse(authData).profileimage === "" ||
+                        JSON.parse(authData).profileimage == null ? (
+                          <img
+                            className="profimage rounded-circle"
+                            src={"/empimg.jpg"}
+                            alt=""
+                            style={{ width: "40px", height: "40px" }}
+                          />
+                        ) : (
+                          <img
+                            className="profimage rounded-circle"
+                            src={JSON.parse(authData).profileimage}
+                            alt=""
+                            style={{ width: "40px", height: "40px" }}
+                          />
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-gray pr-2">
+                      <p className="m-0 text-muted">Hi Welcome</p>
+                      <p className="m-0 fontWeight ">
+                        {JSON.parse(authData).name}
+                      </p>
+                    </div>
+                    <div className=" align-self-center  pe-2">
+                      <FontAwesomeIcon
+                        icon={faSignOutAlt}
+                        onClick={logout}
+                        className="wid-100 cursor-pointer"
+                      />
                     </div>
                   </div>
-                  <div className="text-gray pr-2">
-                    <p className="m-0 text-muted">Hi Welcome</p>
-                    <p className="m-0 fontWeight ">
-                      {JSON.parse(authData).name}
-                    </p>
-                  </div>
-                  <div className=" align-self-center  pe-2">
-                    <FontAwesomeIcon
-                      icon={faSignOutAlt}
-                      onClick={logout}
-                      className="wid-100 cursor-pointer"
-                    />
-                  </div>
                 </div>
-              </div>
-              ):
-              (<div className="logoutbtn wid-100 d-flex justify-content-end">
-                <div className="d-flex flex-row gap-3">
-                  <div className="">
-                    <div className="menuimg rounded-circle text-lg-end">
-                      {JSON.parse(authData).profileimage === "" ||
-                      JSON.parse(authData).profileimage == null ? (
-                        <img
-                          className="profimage rounded-circle"
-                          src={"/empimg.jpg"}
-                          alt=""
-                          style={{ width: "40px", height: "40px" }}
-                        />
-                      ) : (
-                        <img
-                          className="profimage rounded-circle"
-                          src={JSON.parse(authData).profileimage}
-                          alt=""
-                          style={{ width: "40px", height: "40px" }}
-                        />
-                      )}
+              ) : (
+                <div className="logoutbtn wid-100 d-flex justify-content-end">
+                  <div className="d-flex flex-row gap-3">
+                    <div className="">
+                      <div className="menuimg rounded-circle text-lg-end">
+                        {JSON.parse(authData).profileimage === "" ||
+                        JSON.parse(authData).profileimage == null ? (
+                          <img
+                            className="profimage rounded-circle"
+                            src={"/empimg.jpg"}
+                            alt=""
+                            style={{ width: "40px", height: "40px" }}
+                          />
+                        ) : (
+                          <img
+                            className="profimage rounded-circle"
+                            src={JSON.parse(authData).profileimage}
+                            alt=""
+                            style={{ width: "40px", height: "40px" }}
+                          />
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-gray pr-2">
+                      <p className="m-0 text-muted">Hi Welcome</p>
+                      <p className="m-0 fontWeight ">
+                        {JSON.parse(authData).name}
+                      </p>
+                    </div>
+                    <div className=" align-self-center  pe-2">
+                      <FontAwesomeIcon
+                        icon={faSignOutAlt}
+                        onClick={logout}
+                        className="wid-100 cursor-pointer"
+                      />
                     </div>
                   </div>
-                  <div className="text-gray pr-2">
-                    <p className="m-0 text-muted">Hi Welcome</p>
-                    <p className="m-0 fontWeight ">
-                      {JSON.parse(authData).name}
-                    </p>
-                  </div>
-                  <div className=" align-self-center  pe-2">
-                    <FontAwesomeIcon
-                      icon={faSignOutAlt}
-                      onClick={logout}
-                      className="wid-100 cursor-pointer"
-                    />
-                  </div>
                 </div>
-              </div>
               )}
             </div>
           ) : (

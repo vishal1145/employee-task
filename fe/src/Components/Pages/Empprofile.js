@@ -57,7 +57,7 @@ export default function Empprofile() {
                       <h4>Running Project : </h4>
                       <h4>Pending Project : </h4> */}
 
-                    {emprole === "admin" ? null : (
+                    {emprole === "admin" || emprole === "Team Lead" ? null : (
                       <div>
                         <NavLink
                           to={"/updateprofile/" + item._id}

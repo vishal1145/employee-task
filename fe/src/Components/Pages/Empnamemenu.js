@@ -137,7 +137,7 @@ export default function Empnamemenu() {
               type="text"
               placeholder="Search here"
               onChange={searchuser}
-            // style={{ width: "100%" }}
+              // style={{ width: "100%" }}
             />
           </form>
         </div>
@@ -156,12 +156,12 @@ export default function Empnamemenu() {
                       to={"/alldetails/" + item._id}
                       className="navlink-custom btn"
                       onClick={loadData}
-                    // activeclassname="active-link" // Add activeClassName for active state
+                      // activeclassname="active-link" // Add activeClassName for active state
                     >
                       <div className="menudiv">
                         <div className="menuimg">
                           {item.profileimage === "" ||
-                            item.profileimage == null ? (
+                          item.profileimage == null ? (
                             <img
                               className="profimage"
                               src={"/empimg.jpg"}
@@ -192,16 +192,23 @@ export default function Empnamemenu() {
                               //     : "rgba(255, 235, 59, 0.6)"
                             }}
                           >
-                            <span style={{ color: "green" }}>
-                              Completed: {item.counts.completed}{" "}
+                            <span style={{ color: "black" }}>
+                              Completed:{" "}
+                              <span style={{ fontSize: "15px", color:"green" }}>
+                                {item.counts.completed}{" "}
+                              </span>
                             </span>
                             |
-                            <span style={{ color: "red" }}>
+                            <span style={{ color: "black" }}>
                               {" "}
-                              Pending: {item.counts.pending}
-                            </span> |
-                            {(item.counts.time) > 0 ? (
-                              <span style={{ color: "blue" }}>
+                              Pending:{" "}
+                              <span style={{ fontSize: "15px", color:"red" }}>
+                                {item.counts.pending}
+                              </span>
+                            </span>{" "}
+                            |
+                            {item.counts.time > 0 ? (
+                              <span style={{ color: "blue", fontSize: "15px" }}>
                                 {" "}
                                 On Going
                               </span>
