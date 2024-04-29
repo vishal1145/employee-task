@@ -577,10 +577,10 @@ app.get("/statuscount/:id", async (req, resp) => {
         empid: req.params.id,
         status: "Pending",
       });
-      // const runningCount = await EmpDetail.countDocuments({
-      //   empid: req.params.id,
-      //   status: "Running",
-      // });
+      const runningCount = await EmpDetail.countDocuments({
+        empid: req.params.id,
+        status: "Running",
+      });
       const completedCount = await EmpDetail.countDocuments({
         empid: req.params.id,
         status: "Completed",
@@ -592,7 +592,7 @@ app.get("/statuscount/:id", async (req, resp) => {
 
       resp.json({
         pending: pendingCount,
-        // running: runningCount,
+        running: runningCount,
         completed: completedCount,
         time: time,
       });
