@@ -202,7 +202,7 @@ export default function Algofolkshome() {
 
   return (
     <>
-      {authData.role === "admin" || authData.role === "Team Lead" ? (
+      {authData.role === "admin" || authData.role === "Team Lead" || authData.role === "Human Resource" ? (
         <div className="allemployee">
           {/* <div className=""> */}
           <div className=" wid-100 mx-3">

@@ -8,7 +8,7 @@ export default function Alldetails() {
     return (
       <>
         <div className="main">
-          {emprole === "admin" || emprole === "Team Lead" ? (
+          {emprole === "admin" || emprole === "Team Lead" || emprole === "Human Resource" ? (
             <>
               <Empnamemenu />
               <Empdetails />{" "}

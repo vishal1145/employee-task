@@ -9,7 +9,7 @@ export default function Home() {
     return (
       <>
         <div className="main">
-          {emprole === "admin" || emprole === "Team Lead" ? <Algofolkshome /> : <Userdashboard />}
+          {emprole === "admin" || emprole === "Team Lead" || emprole === "Human Resource" ? <Algofolkshome /> : <Userdashboard />}
         </div>
       </>
     );

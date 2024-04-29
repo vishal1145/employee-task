@@ -17,7 +17,7 @@ export default function Updateprofile() {
   const navigate = useNavigate();
   const params = useParams();
 
-  var authData = localStorage.getItem("user");
+  var authData = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     getUpdate();
@@ -104,7 +104,12 @@ export default function Updateprofile() {
   };
 
   const backstep = () => {
-    navigate("/" + JSON.parse(authData)._id);
+    {authData.role==="admin" || authData.role==="Team Lead" || authData.role==="Human Resource" ?
+      navigate("/allemployee")
+    :
+    navigate("/" + authData._id)
+    }
+    // navigate(-1);
   }
 
   return (

@@ -41,7 +41,8 @@ export default function Loginpage() {
 
       if (
         JSON.parse(authData).role === "admin" ||
-        JSON.parse(authData).role === "Team Lead"
+        JSON.parse(authData).role === "Team Lead" ||
+        JSON.parse(authData).role === "Human Resource"
       ) {
         navigate("/");
       } else {

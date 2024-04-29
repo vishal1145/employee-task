@@ -456,11 +456,13 @@ export default function Empdetails() {
     <>
       {/* {params.id===JSON.parse(authData)._id ? ( */}
       <div
-        className={`empdeatils ${JSON.parse(authData).role === "admin" ||
-          JSON.parse(authData).role === "Team Lead"
-          ? "wid-75"
-          : "wid-100"
-          }`}
+        className={`empdeatils ${
+          JSON.parse(authData).role === "admin" ||
+          JSON.parse(authData).role === "Team Lead" ||
+          JSON.parse(authData).role === "Human Resource"
+            ? "wid-75"
+            : "wid-100"
+        }`}
       >
         {/* <div className="empdetails wid-100"> */}
         <div className="headsec">
@@ -478,7 +480,8 @@ export default function Empdetails() {
             </Link>
           </div>
           {JSON.parse(authData).role === "admin" ||
-            JSON.parse(authData).role === "Team Lead" ? (
+          JSON.parse(authData).role === "Team Lead" ||
+          JSON.parse(authData).role === "Human Resource" ? (
             <div className="addtaskbtn">
               <button
                 type="button"
@@ -570,10 +573,10 @@ export default function Empdetails() {
                               </option>
                               {listproject.length > 0
                                 ? listproject.map((item, index) => (
-                                  <option key={item._id} value={item.project}>
-                                    {parse(item.project)}
-                                  </option>
-                                ))
+                                    <option key={item._id} value={item.project}>
+                                      {parse(item.project)}
+                                    </option>
+                                  ))
                                 : null}
                             </select>
                           </div>
@@ -610,20 +613,23 @@ export default function Empdetails() {
               <th className="wid-40 text-start">Task</th>
               <th className="wid-10 text-start">Project</th>
               {JSON.parse(authData).role === "admin" ||
-                JSON.parse(authData).role === "Team Lead" ? (
+              JSON.parse(authData).role === "Team Lead" ||
+              JSON.parse(authData).role === "Human Resource" ? (
                 <>
                   {/* <th className="wid-7 text-center">Date</th> */}
                   <th className="wid-5 text-center">Estimate</th>
                 </>
               ) : null}
               {JSON.parse(authData).role === "admin" ||
-                JSON.parse(authData).role === "Team Lead" ? null : (
+              JSON.parse(authData).role === "Team Lead" ||
+              JSON.parse(authData).role === "Human Resource" ? null : (
                 <th className=" text-center" style={{ width: "8%" }}>
                   Status
                 </th>
               )}
               {JSON.parse(authData).role === "admin" ||
-                JSON.parse(authData).role === "Team Lead" ? (
+              JSON.parse(authData).role === "Team Lead" ||
+              JSON.parse(authData).role === "Human Resource" ? (
                 <th className="wid-5 text-center">Modify</th>
               ) : null}
             </tr>
@@ -638,10 +644,10 @@ export default function Empdetails() {
                       item.status === "Pending"
                         ? "rgba(239, 154, 154, 0.7)"
                         : item.status === "Running"
-                          ? "rgba(255, 235, 59, 0.6)"
-                          : item.status === "Completed"
-                            ? "rgba(0, 137, 123, 0.8)"
-                            : "rgba(239, 154, 154, 0.7)",
+                        ? "rgba(255, 235, 59, 0.6)"
+                        : item.status === "Completed"
+                        ? "rgba(0, 137, 123, 0.8)"
+                        : "rgba(239, 154, 154, 0.7)",
                   }}
                 >
                   {/* <td className="text-start">{htmlToText(item.task)}</td> */}
@@ -655,7 +661,8 @@ export default function Empdetails() {
                   </td>
                   {/* <td className="text-start">{item.task}</td> */}
                   {JSON.parse(authData).role === "admin" ||
-                    JSON.parse(authData).role === "Team Lead" ? (
+                  JSON.parse(authData).role === "Team Lead" ||
+                  JSON.parse(authData).role === "Human Resource" ? (
                     <>
                       {/* <td className="text-center">
                           {moment(item.date).format("DD-MM-YYYY")}
@@ -665,7 +672,8 @@ export default function Empdetails() {
                   ) : null}
 
                   {JSON.parse(authData).role === "admin" ||
-                    JSON.parse(authData).role === "Team Lead" ? null : (
+                  JSON.parse(authData).role === "Team Lead" ||
+                  JSON.parse(authData).role === "Human Resource" ? null : (
                     <td className="text-center" key={index}>
                       <NavLink
                         className="text-decoration-none"
@@ -692,7 +700,8 @@ export default function Empdetails() {
                     </td>
                   )}
                   {JSON.parse(authData).role === "admin" ||
-                    JSON.parse(authData).role === "Team Lead" ? (
+                  JSON.parse(authData).role === "Team Lead" ||
+                  JSON.parse(authData).role === "Human Resource" ? (
                     <td className="modifysec text-center">
                       <Link
                         type="button"
@@ -756,17 +765,17 @@ export default function Empdetails() {
                                       <option value="">Choose Employee</option>
                                       {reassignListName.length > 0
                                         ? reassignListName
-                                          .filter(
-                                            (item) => item.role !== "admin"
-                                          )
-                                          .map((item, index) => (
-                                            <option
-                                              value={item._id}
-                                              key={item._id}
-                                            >
-                                              {item.name}
-                                            </option>
-                                          ))
+                                            .filter(
+                                              (item) => item.role !== "admin" && item.role !== "Human Resource"
+                                            )
+                                            .map((item, index) => (
+                                              <option
+                                                value={item._id}
+                                                key={item._id}
+                                              >
+                                                {item.name}
+                                              </option>
+                                            ))
                                         : null}
                                     </select>
                                   </div>
@@ -911,13 +920,13 @@ export default function Empdetails() {
                                         </option>
                                         {listproject.length > 0
                                           ? listproject.map((item, index) => (
-                                            <option
-                                              key={item._id}
-                                              value={item.project}
-                                            >
-                                              {parse(item.project)}
-                                            </option>
-                                          ))
+                                              <option
+                                                key={item._id}
+                                                value={item.project}
+                                              >
+                                                {parse(item.project)}
+                                              </option>
+                                            ))
                                           : null}
                                       </select>
                                     </div>
@@ -985,54 +994,54 @@ export default function Empdetails() {
           >
             {listname.length > 0
               ? listname.map((item, index) => (
-                <div className="offcanvas-header">
-                  <div className="menudiv d-flex align-items-center">
-                    <div
-                      className="menuimg"
-                      style={{
-                        backgroundColor:
-                          item.online === true ? "yellow" : "white",
-                        width: "35px",
-                        height: "35px",
-                        borderRadius: "100px",
-                      }}
-                    >
-                      {item.profileimage === "" ||
+                  <div className="offcanvas-header">
+                    <div className="menudiv d-flex align-items-center">
+                      <div
+                        className="menuimg"
+                        style={{
+                          backgroundColor:
+                            item.online === true ? "yellow" : "white",
+                          width: "35px",
+                          height: "35px",
+                          borderRadius: "100px",
+                        }}
+                      >
+                        {item.profileimage === "" ||
                         item.profileimage == null ? (
-                        <img
-                          className="profimage"
-                          src={"/empimg.jpg"}
-                          alt=""
-                          style={{
-                            width: "35px",
-                            height: "35px",
-                            borderRadius: "100px",
-                          }}
-                        />
-                      ) : (
-                        <img
-                          className="profimage"
-                          src={item.profileimage}
-                          alt=""
-                          style={{
-                            width: "35px",
-                            height: "35px",
-                            borderRadius: "100px",
-                          }}
-                        />
-                      )}
+                          <img
+                            className="profimage"
+                            src={"/empimg.jpg"}
+                            alt=""
+                            style={{
+                              width: "35px",
+                              height: "35px",
+                              borderRadius: "100px",
+                            }}
+                          />
+                        ) : (
+                          <img
+                            className="profimage"
+                            src={item.profileimage}
+                            alt=""
+                            style={{
+                              width: "35px",
+                              height: "35px",
+                              borderRadius: "100px",
+                            }}
+                          />
+                        )}
+                      </div>
+                      <div className="ps-2">{item.name}</div>
                     </div>
-                    <div className="ps-2">{item.name}</div>
+                    <button
+                      type="button"
+                      className="btn-close text-reset"
+                      data-bs-dismiss="offcanvas"
+                      aria-label="Close"
+                      onClick={stop}
+                    ></button>
                   </div>
-                  <button
-                    type="button"
-                    className="btn-close text-reset"
-                    data-bs-dismiss="offcanvas"
-                    aria-label="Close"
-                    onClick={stop}
-                  ></button>
-                </div>
-              ))
+                ))
               : null}
 
             <div className="offcanvas-body" ref={chatBodyRef}>
@@ -1095,7 +1104,7 @@ export default function Empdetails() {
                       <div className="msgbody">
                         <h6>{item.text}</h6>
                       </div>
-                      <h6>{ }</h6>
+                      <h6>{}</h6>
                     </div>
                   </div>
                 ))
@@ -1119,8 +1128,8 @@ export default function Empdetails() {
                   placeholder="Message here"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
-                // style={{width:"85%"}}
-                // onKeyPress={handleKeyPress}
+                  // style={{width:"85%"}}
+                  // onKeyPress={handleKeyPress}
                 />
                 <button
                   id="messageButton"
@@ -1128,7 +1137,7 @@ export default function Empdetails() {
                   className=""
                   type="button"
                   onClick={addMessages}
-                // style={{width:"15%"}}
+                  // style={{width:"15%"}}
                 >
                   <i className="bi bi-send"></i>
                 </button>

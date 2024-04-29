@@ -64,7 +64,7 @@ export default function Empnamemenu() {
       // console.log("Error fetching status counts:", error);
       return {
         pending: 0,
-        // running: 0,
+        running: 0,
         completed: 0,
       };
     }
@@ -149,7 +149,7 @@ export default function Empnamemenu() {
           <>
             {listname.length > 0 ? (
               listname
-                .filter((item) => item.role !== "admin") // Filter out admins
+                .filter((item) => item.role !== "admin" && item.role!=="Human Resource") // Filter out admins
                 .map((item, index) => (
                   <div className="pe-0 allemp" key={item._id}>
                     <NavLink
@@ -176,44 +176,67 @@ export default function Empnamemenu() {
                           )}
                         </div>
                         <div className="menuname">
-                          <div>{item.name}</div>
-                          <div
-                            className="mt-1"
-                            // key={}
-                            style={{
-                              fontSize: "10px",
-                              // color:
-                              //   item.status === "Pending"
-                              //     ? "rgba(239, 154, 154, 0.7)"
-                              //     : // : item.status === "Running"
-                              //     // ? "rgba(255, 235, 59, 0.6)"
-                              //     item.status === "Completed"
-                              //     ? "rgba(0, 137, 123, 0.8)"
-                              //     : "rgba(255, 235, 59, 0.6)"
-                            }}
-                          >
-                            <span style={{ color: "black" }}>
-                              Completed:{" "}
-                              <span style={{ fontSize: "15px", color:"green" }}>
-                                {item.counts.completed}{" "}
+                          <div className="d-flex align-items-center">
+                            <div className="" style={{ fontSize: "1vw" }}>
+                              {item.name}
+                            </div>
+                            <div
+                              className=""
+                              // key={}
+                              style={{
+                                fontSize: "0.9vw",
+                                marginLeft: "0.9vw",
+                                // color:
+                                //   item.status === "Pending"
+                                //     ? "rgba(239, 154, 154, 0.7)"
+                                //     : // : item.status === "Running"
+                                //     // ? "rgba(255, 235, 59, 0.6)"
+                                //     item.status === "Completed"
+                                //     ? "rgba(0, 137, 123, 0.8)"
+                                //     : "rgba(255, 235, 59, 0.6)"
+                              }}
+                            >
+                              <span style={{ color: "black", fontSize: "0.9vw" }}>
+                                [C:{" "}
+                                <span
+                                  style={{ fontSize: "0.9vw", color: "green" }}
+                                >
+                                  {item.counts.completed}{" "}
+                                </span>
                               </span>
-                            </span>
-                            |
-                            <span style={{ color: "black" }}>
-                              {" "}
-                              Pending:{" "}
-                              <span style={{ fontSize: "15px", color:"red" }}>
-                                {item.counts.pending}
-                              </span>
-                            </span>{" "}
-                            |
-                            {item.counts.time > 0 ? (
-                              <span style={{ color: "blue", fontSize: "15px" }}>
+                              |
+                              <span style={{ color: "black", fontSize: "0.9vw" }}>
                                 {" "}
-                                On Going
-                              </span>
-                            ) : null}
+                                R:{" "}
+                                <span
+                                  style={{
+                                    fontSize: "0.9vw",
+                                    color: "rgb(251, 192, 45)",
+                                  }}
+                                >
+                                  {item.counts.running}
+                                </span>
+                              </span>{" "}
+                              |
+                              <span style={{ color: "black", fontSize: "0.9vw" }}>
+                                {" "}
+                                P:{" "}
+                                <span style={{ fontSize: "0.9vw", color: "red" }}>
+                                  {item.counts.pending}
+                                </span>
+                              </span>{" "}
+                              ]
+                              {item.counts.time > 0 ? (
+                                <span
+                                  style={{ color: "blue", fontSize: "0.9vw" }}
+                                >
+                                  {" "}
+                                  On Going
+                                </span>
+                              ) : null}
+                            </div>
                           </div>
+                          <div style={{fontSize:"0.9vw"}}>Progress Bar Coming...</div>
                         </div>
                       </div>
                     </NavLink>

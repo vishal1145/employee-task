@@ -255,6 +255,8 @@ export default function Allemployee() {
         sortedList = sortedList.filter((item) => item.role === "Developer");
       } else if (role === "Team Lead") {
         sortedList = sortedList.filter((item) => item.role === "Team Lead");
+      } else if (role === "Human Resource") {
+        sortedList = sortedList.filter((item) => item.role === "Human Resource");
       }
     }
     setListname(sortedList);
@@ -276,281 +278,294 @@ export default function Allemployee() {
 
   return (
     <>
-    {authData.role==="admin" || authData.role==="Team Lead" ?(
-      <div className="allemployee flex-column">
-        <div
-          className="py-2 px-3 d-flex align-items-center justify-content-between bg-white wid-100"
-          style={{ position: "sticky", top: "0", zIndex: "999" }}
-        >
-          <h4 className="mb-0">All Employee</h4>
-          <div className="d-flex flex-row gap-2">
-            <div>
-              <input
-                type="text"
-                placeholder="Search by name..."
-                onChange={(e) => handleSearch(e.target.value)}
-                className="searchInput px-2"
-              />
-            </div>
+      {authData.role === "admin" || authData.role === "Team Lead" || authData.role === "Human Resource" ? (
+        <div className="allemployee flex-column">
+          <div
+            className="py-2 px-3 d-flex align-items-center justify-content-between bg-white wid-100"
+            style={{ position: "sticky", top: "0", zIndex: "999" }}
+          >
+            <h4 className="mb-0">All Employee</h4>
+            <div className="d-flex flex-row gap-2">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Search by name..."
+                  onChange={(e) => handleSearch(e.target.value)}
+                  className="searchInput px-2"
+                />
+              </div>
 
-            <div>
-              <button
-                type="button"
-                className="btn me-0 ButtonText"
-                data-bs-toggle="modal"
-                data-bs-target="#addEmpModal"
-                onClick={idnull}
-              >
-                Add Employee
-              </button>
+              <div>
+                <button
+                  type="button"
+                  className="btn me-0 ButtonText"
+                  data-bs-toggle="modal"
+                  data-bs-target="#addEmpModal"
+                  onClick={idnull}
+                >
+                  Add Employee
+                </button>
 
-              <div
-                className="modal fade"
-                id="addEmpModal"
-                tabIndex="-1"
-                aria-labelledby="addEmpModalLabel"
-                aria-hidden="true"
-              >
-                <div className="modal-dialog modal-dialog-centered">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title" id="addEmpModalLabel">
-                        Add Employee
-                      </h5>
-                      <button
-                        ref={closeButtonRef1}
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                    <div className="modal-body">
-                      <form>
-                        <label htmlFor="addname" className="form-label shno">
-                          Name
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="addname"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          placeholder="Name"
-                          required
-                        />
-                        <label htmlFor="addemail" className="form-label">
-                          Email Id
-                        </label>
-                        <input
-                          type="email"
-                          className="form-control"
-                          id="addemail"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="Email"
-                          required
-                        />
-                        <label htmlFor="addrole" className="form-label">
-                          Role
-                        </label>
-                        <select
-                          className="form-select"
-                          id="addrole"
-                          value={role}
-                          onChange={(e) => setRole(e.target.value)}
-                          required
+                <div
+                  className="modal fade"
+                  id="addEmpModal"
+                  tabIndex="-1"
+                  aria-labelledby="addEmpModalLabel"
+                  aria-hidden="true"
+                >
+                  <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <h5 className="modal-title" id="addEmpModalLabel">
+                          Add Employee
+                        </h5>
+                        <button
+                          ref={closeButtonRef1}
+                          type="button"
+                          className="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                        ></button>
+                      </div>
+                      <div className="modal-body">
+                        <form>
+                          <label htmlFor="addname" className="form-label shno">
+                            Name
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="addname"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Name"
+                            required
+                          />
+                          <label htmlFor="addemail" className="form-label">
+                            Email Id
+                          </label>
+                          <input
+                            type="email"
+                            className="form-control"
+                            id="addemail"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Email"
+                            required
+                          />
+                          <label htmlFor="addrole" className="form-label">
+                            Role
+                          </label>
+                          <select
+                            className="form-select"
+                            id="addrole"
+                            value={role}
+                            onChange={(e) => setRole(e.target.value)}
+                            required
+                          >
+                            <option value="">Select Position</option>
+                            <option value="Developer">Developer</option>
+                            <option value="Team Lead">Team Lead</option>
+                            <option value="Human Resource">
+                              Human Resource
+                            </option>
+                          </select>
+                          <label
+                            htmlFor="addpassword"
+                            className="form-label pt-2"
+                          >
+                            Password
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="addpassword"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Password"
+                            required
+                          />
+                        </form>
+                      </div>
+                      <div className="modal-footer">
+                        <button
+                          className="btn wid-100"
+                          type="button"
+                          onClick={collectData}
                         >
-                          <option value="">Select Position</option>
-                          <option value="Developer">Developer</option>
-                          <option value="Team Lead">Team Lead</option>
-                        </select>
-                        <label
-                          htmlFor="addpassword"
-                          className="form-label pt-2"
-                        >
-                          Password
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="addpassword"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="Password"
-                          required
-                        />
-                      </form>
-                    </div>
-                    <div className="modal-footer">
-                      <button
-                        className="btn wid-100"
-                        type="button"
-                        onClick={collectData}
-                      >
-                        Submit
-                      </button>
+                          Submit
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="dropdown">
-              <button
-                className="btn me-0 dropdown-toggle ButtonText"
-                type="button"
-                id="dropdownMenuButton"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Sort by Position
-              </button>
-              <ul
-                className="dropdown-menu"
-                aria-labelledby="dropdownMenuButton"
-                style={{overflow:"hidden"}}
-              >
-                <li>
-                  <button
-                    className="dropdown-item"
-                    onClick={() => sortByPosition("All")}
-                  >
-                    All
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="dropdown-item"
-                    onClick={() => sortByPosition("Developer")}
-                  >
-                    Developer
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="dropdown-item"
-                    onClick={() => sortByPosition("Team Lead")}
-                  >
-                    Team Lead
-                  </button>
-                </li>
-                {/* <li><button className="dropdown-item" onClick={() => getListname()}>Alphabetical</button></li>  */}
-              </ul>
+              <div className="dropdown">
+                <button
+                  className="btn me-0 dropdown-toggle ButtonText"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Sort by Position
+                </button>
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton"
+                  style={{ overflow: "hidden" }}
+                >
+                  <li>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => sortByPosition("All")}
+                    >
+                      All
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => sortByPosition("Developer")}
+                    >
+                      Developer
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => sortByPosition("Team Lead")}
+                    >
+                      Team Lead
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => sortByPosition("Human Resource")}
+                    >
+                      Human Resource
+                    </button>
+                  </li>
+                  {/* <li><button className="dropdown-item" onClick={() => getListname()}>Alphabetical</button></li>  */}
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="row px-5">
-          {loading ? (
-            <div className="loader-container2">
-              <ClipLoader size={35} color={"#36D7B7"} loading={loading} />
-            </div>
-          ) : (
-            <>
-              {listname.length > 0 ? (
-                listname
-                  .filter((item) => item.role !== "admin")
-                  .map((item, index) => (
-                    <div
-                      className="p-3 col-6 col-sm-6 col-md-3 col-lg-2"
-                      key={index}
-                    >
-                      <NavLink
-                        to={"/empprofile/" + item._id}
-                        className="text-decoration-none"
+          <div className="row px-5">
+            {loading ? (
+              <div className="loader-container2">
+                <ClipLoader size={35} color={"#36D7B7"} loading={loading} />
+              </div>
+            ) : (
+              <>
+                {listname.length > 0 ? (
+                  listname
+                    .filter((item) => item.role !== "admin")
+                    .map((item, index) => (
+                      <div
+                        className="p-3 col-6 col-sm-6 col-md-3 col-lg-2"
+                        key={index}
                       >
-                        <div className="card">
-                          <div
-                            className="card-header justify-content-center d-flex"
-                            style={{ borderRadius: "15px" }}
-                          >
-                            <div className="dotmenu">
-                              <div className="dropdown">
-                                <button
-                                  className="btn btn-secondary dropdown-toggl"
-                                  type="button"
-                                  id={`dropdownMenuButton${index}`}
-                                  // id="dropdownMenuButton1"
-                                  data-bs-toggle="dropdown"
-                                  aria-expanded="false"
-                                >
-                                  <i className="bi bi-three-dots-vertical"></i>
-                                </button>
-                                <ul
-                                  className="dropdown-menu p-0"
-                                  aria-labelledby={`dropdownMenuButton${index}`}
-                                >
-                                  <li>
-                                    <Link
-                                      className="dropdown-item p-1 px-2 py-1 ButtonText"
-                                      onClick={() => deleteemp(item._id)}
-                                    >
-                                      Delete
-                                    </Link>
-                                  </li>
+                        <NavLink
+                          to={"/empprofile/" + item._id}
+                          className="text-decoration-none"
+                        >
+                          <div className="card">
+                            <div
+                              className="card-header justify-content-center d-flex"
+                              style={{ borderRadius: "15px" }}
+                            >
+                              <div className="dotmenu">
+                                <div className="dropdown">
+                                  <button
+                                    className="btn btn-secondary dropdown-toggl"
+                                    type="button"
+                                    id={`dropdownMenuButton${index}`}
+                                    // id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                  >
+                                    <i className="bi bi-three-dots-vertical"></i>
+                                  </button>
+                                  <ul
+                                    className="dropdown-menu p-0"
+                                    aria-labelledby={`dropdownMenuButton${index}`}
+                                  >
+                                    <li>
+                                      <Link
+                                        className="dropdown-item p-1 px-2 py-1 ButtonText"
+                                        onClick={() => deleteemp(item._id)}
+                                      >
+                                        Delete
+                                      </Link>
+                                    </li>
 
-                                  <li>
-                                    <Link
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        openUpdatePasswordModal(item._id);
-                                      }}
-                                      className="dropdown-item px-2 py-1 ButtonText"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#updatePasswordModal"
-                                    >
-                                      Update Password
-                                    </Link>
-                                  </li>
+                                    <li>
+                                      <Link
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          openUpdatePasswordModal(item._id);
+                                        }}
+                                        className="dropdown-item px-2 py-1 ButtonText"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#updatePasswordModal"
+                                      >
+                                        Update Password
+                                      </Link>
+                                    </li>
 
-                                  <li>
-                                    <Link
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        openUpdateEmployeeModal(item._id);
-                                      }}
-                                      className="dropdown-item px-2 py-1 ButtonText"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#updateEmployeeModal"
-                                    >
-                                      Edit Employee
-                                    </Link>
-                                  </li>
-                                </ul>
+                                    <li>
+                                      <Link
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          openUpdateEmployeeModal(item._id);
+                                        }}
+                                        className="dropdown-item px-2 py-1 ButtonText"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#updateEmployeeModal"
+                                      >
+                                        Edit Employee
+                                      </Link>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                              <div className="emppic">
+                                {item.profileimage === "" ||
+                                item.profileimage == null ? (
+                                  <img
+                                    src={"/empimg.jpg"}
+                                    alt=""
+                                    style={{ width: "100%" }}
+                                  />
+                                ) : (
+                                  <img
+                                    src={item.profileimage}
+                                    alt=""
+                                    style={{ width: "100%" }}
+                                  />
+                                )}
                               </div>
                             </div>
-                            <div className="emppic">
-                              {item.profileimage === "" ||
-                              item.profileimage == null ? (
-                                <img
-                                  src={"/empimg.jpg"}
-                                  alt=""
-                                  style={{ width: "100%" }}
-                                />
-                              ) : (
-                                <img
-                                  src={item.profileimage}
-                                  alt=""
-                                  style={{ width: "100%" }}
-                                />
-                              )}
+                            <div className="card-body text-center pb-0">
+                              <h6>{item.name}</h6>
+                              <h6>{item.role}</h6>
                             </div>
                           </div>
-                          <div className="card-body text-center pb-0">
-                            <h6>{item.name}</h6>
-                            <h6>{item.role}</h6>
-                          </div>
-                        </div>
-                      </NavLink>
-                    </div>
-                  ))
-              ) : (
-                <h6>Record not found..</h6>
-              )}
-            </>
-          )}
+                        </NavLink>
+                      </div>
+                    ))
+                ) : (
+                  <h6>Record not found..</h6>
+                )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
-      ):<PageNotFound />}
+      ) : (
+        <PageNotFound />
+      )}
       <ToastContainer
         position="top-right"
         autoClose={1500}
@@ -709,7 +724,6 @@ export default function Allemployee() {
           </div>
         </div>
       )}
-      
     </>
   );
 }
