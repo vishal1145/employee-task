@@ -223,6 +223,16 @@ export default function Updateprofile() {
                 <button
                   className="btn w-100"
                   type="button"
+                  onClick={backstep}
+                >
+                  Cancel
+                </button>
+              </div>
+
+              <div className="" style={{ width: "50%" }}>
+                <button
+                  className="btn w-100"
+                  type="button"
                   onClick={collectData}
                   disabled={loading}
                 >
@@ -231,15 +241,6 @@ export default function Updateprofile() {
                   ) : (
                     "Update"
                   )}
-                </button>
-              </div>
-              <div className="" style={{ width: "50%" }}>
-                <button
-                  className="btn w-100"
-                  type="button"
-                  onClick={backstep}
-                >
-                  Cancel
                 </button>
               </div>
             </div>

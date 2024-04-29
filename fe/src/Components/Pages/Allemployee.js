@@ -3,8 +3,11 @@ import { NavLink, Link } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import { ToastContainer, toast } from "react-toastify";
 import Swal from "sweetalert2"; // Import SweetAlert
+import PageNotFound from "./PageNotFound";
 
 export default function Allemployee() {
+  var authData = JSON.parse(localStorage.getItem("user"));
+
   const [listname, setListname] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -273,6 +276,7 @@ export default function Allemployee() {
 
   return (
     <>
+    {authData.role==="admin" || authData.role==="Team Lead" ?(
       <div className="allemployee flex-column">
         <div
           className="py-2 px-3 d-flex align-items-center justify-content-between bg-white wid-100"
@@ -546,6 +550,7 @@ export default function Allemployee() {
           )}
         </div>
       </div>
+      ):<PageNotFound />}
       <ToastContainer
         position="top-right"
         autoClose={1500}
@@ -704,6 +709,7 @@ export default function Allemployee() {
           </div>
         </div>
       )}
+      
     </>
   );
 }

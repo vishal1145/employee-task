@@ -1,12 +1,14 @@
 import React from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import PageNotFound from "./PageNotFound";
 
 
 export default function Navbar() {
   var authData = localStorage.getItem("user");
+  const params = useParams;
   const navigate = useNavigate();
 
   const logout = () => {
@@ -17,7 +19,7 @@ export default function Navbar() {
     <nav className="navbar navbar-expand-sm navbar-light">
       <div className="container-fluid">
         {JSON.parse(authData).role === "admin" ||
-        JSON.parse(authData).role === "Team Lead" ? (
+          JSON.parse(authData).role === "Team Lead" ? (
           <div>
             <Link className="navbar-brand" to="/">
               <img
@@ -57,7 +59,7 @@ export default function Navbar() {
           {authData ? (
             <div className="navbar-nav d-flex align-items-center justify-content-between wid-100 bg-white">
               {JSON.parse(authData).role === "admin" ||
-              JSON.parse(authData).role === "Team Lead" ? (
+                JSON.parse(authData).role === "Team Lead" ? (
                 <div>
                   <NavLink
                     className="btn ButtonText"
@@ -99,13 +101,13 @@ export default function Navbar() {
               )}
 
               {JSON.parse(authData).role === "admin" ||
-              JSON.parse(authData).role === "Team Lead" ? (
+                JSON.parse(authData).role === "Team Lead" ? (
                 <div className="logoutbtn">
                   <div className="d-flex flex-row gap-3">
                     <div className="">
                       <div className="menuimg rounded-circle text-lg-end">
                         {JSON.parse(authData).profileimage === "" ||
-                        JSON.parse(authData).profileimage == null ? (
+                          JSON.parse(authData).profileimage == null ? (
                           <img
                             className="profimage rounded-circle"
                             src={"/empimg.jpg"}
@@ -143,7 +145,7 @@ export default function Navbar() {
                     <div className="">
                       <div className="menuimg rounded-circle text-lg-end">
                         {JSON.parse(authData).profileimage === "" ||
-                        JSON.parse(authData).profileimage == null ? (
+                          JSON.parse(authData).profileimage == null ? (
                           <img
                             className="profimage rounded-circle"
                             src={"/empimg.jpg"}

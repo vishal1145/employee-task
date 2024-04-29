@@ -6,6 +6,7 @@ import { ClipLoader } from "react-spinners";
 // import moment from "moment";
 import parse from "html-react-parser";
 import Swal from "sweetalert2";
+import PageNotFound from "./PageNotFound";
 
 export default function Algofolkshome() {
   //   const [listname, setListname] = useState([]);
@@ -17,6 +18,8 @@ export default function Algofolkshome() {
   const [projectId, setProjectId] = useState(null);
   const [loading, setLoading] = useState(true);
   // const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+
+  var authData = JSON.parse(localStorage.getItem("user"));
 
   const closeButtonRef8 = useRef();
   const closeButtonRef9 = useRef();
@@ -72,7 +75,7 @@ export default function Algofolkshome() {
   const [showUpdateProjectModal, setShowUpdateProjectModal] = useState(true);
 
   let getUpdate = async (id) => {
-     setShowUpdateProjectModal(true);
+    setShowUpdateProjectModal(true);
     setProjectId(id);
     if (!id) return;
 
@@ -85,7 +88,7 @@ export default function Algofolkshome() {
 
     result = await result.json();
     setProject(result.project);
-   
+
     // setName(result.name);
   };
 
@@ -199,67 +202,68 @@ export default function Algofolkshome() {
 
   return (
     <>
-      <div className="allemployee">
-        {/* <div className=""> */}
-        <div className=" wid-100 mx-3">
-          <div
-            className="d-flex align-items-center justify-content-between bg-white py-2"
-            style={{ position: "sticky", top: "0", zIndex: "999" }}
-          >
-            {/* <div className=""> */}
-            <h4 className="mb-0">All Projects</h4>
-            {/* </div> */}
+      {authData.role === "admin" || authData.role === "Team Lead" ? (
+        <div className="allemployee">
+          {/* <div className=""> */}
+          <div className=" wid-100 mx-3">
+            <div
+              className="d-flex align-items-center justify-content-between bg-white py-2"
+              style={{ position: "sticky", top: "0", zIndex: "999" }}
+            >
+              {/* <div className=""> */}
+              <h4 className="mb-0">All Projects</h4>
+              {/* </div> */}
 
-            <div>
-              <button
-                type="button"
-                className="btn me-0 ButtonText"
-                data-bs-toggle="modal"
-                data-bs-target="#addProjectModal"
-                onClick={idnull}
-              >
-                Add Project
-              </button>
+              <div>
+                <button
+                  type="button"
+                  className="btn me-0 ButtonText"
+                  data-bs-toggle="modal"
+                  data-bs-target="#addProjectModal"
+                  onClick={idnull}
+                >
+                  Add Project
+                </button>
 
-              <div
-                class="modal fade"
-                id="addProjectModal"
-                tabindex="-1"
-                aria-labelledby="addProjectModalLabel"
-                aria-hidden="true"
-              >
-                <div class="modal-dialog modal-dialog-centered modal-xl">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="addProjectModalLabel">
-                        Add Project
-                      </h5>
-                      <button
-                        ref={closeButtonRef8}
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
-                    </div>
+                <div
+                  class="modal fade"
+                  id="addProjectModal"
+                  tabindex="-1"
+                  aria-labelledby="addProjectModalLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-centered modal-xl">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="addProjectModalLabel">
+                          Add Project
+                        </h5>
+                        <button
+                          ref={closeButtonRef8}
+                          type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                        ></button>
+                      </div>
 
-                    <div class="modal-body">
-                      <form id="addform">
-                        <label htmlFor="addproject" className="form-label shno">
-                          Project
-                        </label>
-                        <JoditEditor
-                          ref={editor}
-                          value={project}
-                          // config={config}
-                          // tabIndex={1} // tabIndex of textarea
-                          // onBlur={(newTask) => setTask(newTask)} // preferred to use only this option to update the content for performance reasons
-                          // value={displayedTask}
-                          onChange={(newProject) => setProject(newProject)}
-                        />
-                      </form>
-                    </div>
-                    {/* <div className="d-flex align-items-center justify-content-between">
+                      <div class="modal-body">
+                        <form id="addform">
+                          <label htmlFor="addproject" className="form-label shno">
+                            Project
+                          </label>
+                          <JoditEditor
+                            ref={editor}
+                            value={project}
+                            // config={config}
+                            // tabIndex={1} // tabIndex of textarea
+                            // onBlur={(newTask) => setTask(newTask)} // preferred to use only this option to update the content for performance reasons
+                            // value={displayedTask}
+                            onChange={(newProject) => setProject(newProject)}
+                          />
+                        </form>
+                      </div>
+                      {/* <div className="d-flex align-items-center justify-content-between">
                           <div className="wid-100 pt-2">
                             <label
                               htmlFor="employeename"
@@ -286,41 +290,41 @@ export default function Algofolkshome() {
                           </div>
                         </div> */}
 
-                    <div className="modal-footer">
-                      <button
-                        id="add"
-                        className="btn wid-100"
-                        type="button"
-                        onClick={collectData}
-                      >
-                        Submit
-                      </button>
+                      <div className="modal-footer">
+                        <button
+                          id="add"
+                          className="btn wid-100"
+                          type="button"
+                          onClick={collectData}
+                        >
+                          Submit
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <table className="wid-100">
-            <thead>
-              <tr>
-                <th className="text-start wid-60">Project</th>
-                {/* <th className="text-center wid-10">Assign</th> */}
-                <th className="text-center wid-5">Modify</th>
-              </tr>
-            </thead>
-            {loading ? ( // Display loader if loading state is true
-              <div className="loader-container">
-                <ClipLoader size={35} color={"#36D7B7"} loading={loading} />
-              </div>
-            ) : (
-              <tbody>
-                {allprojects.length > 0 ? (
-                  allprojects.map((item, index) => (
-                    <>
-                      <tr
-                        key={item._id}
+            <table className="wid-100">
+              <thead>
+                <tr>
+                  <th className="text-start wid-60">Project</th>
+                  {/* <th className="text-center wid-10">Assign</th> */}
+                  <th className="text-center wid-5">Modify</th>
+                </tr>
+              </thead>
+              {loading ? ( // Display loader if loading state is true
+                <div className="loader-container">
+                  <ClipLoader size={35} color={"#36D7B7"} loading={loading} />
+                </div>
+              ) : (
+                <tbody>
+                  {allprojects.length > 0 ? (
+                    allprojects.map((item, index) => (
+                      <>
+                        <tr
+                          key={item._id}
                         // style={{
                         //   backgroundColor:
                         //     item.status === "Pending"
@@ -331,92 +335,92 @@ export default function Algofolkshome() {
                         //       ? "rgba(0, 137, 123, 0.8)"
                         //       : "rgba(239, 154, 154, 0.7)",
                         // }}
-                      >
-                        <td className="text-start lh-sm pb-0 pt-3">
-                          {parse(item.project)}
-                          {/* <div style={{ marginBottom: "0" }}>
+                        >
+                          <td className="text-start lh-sm pb-0 pt-3">
+                            {parse(item.project)}
+                            {/* <div style={{ marginBottom: "0" }}>
                             <div
                               className="remove-margin remove-marginol"
                               dangerouslySetInnerHTML={{ __html: item.project }}
                             />
                           </div> */}
-                        </td>
+                          </td>
 
-                        {/* <td className="text-center">{item.assign}</td> */}
+                          {/* <td className="text-center">{item.assign}</td> */}
 
-                        <td className="modifysec text-center">
-                          <Link
-                            onClick={(e) => {
-                              e.preventDefault();
-                              getUpdate(item._id);
-                              // setShowUpdateProjectModal(true);
-                            }}
-                            onMouseEnter={(e) => {
-                              e.preventDefault();
-                              setShowUpdateProjectModal(true);
-                            }}
-                            // onMouseEnter={setShowUpdateProjectModal(true)}
-                            // to={item._id}
-                            // let taskid={item._id}
-                            type="button"
-                            class="pe-3 pb-0"
-                            data-bs-toggle="modal"
-                            data-bs-target="#updateProjectModal"
-                          >
-                            <i
-                              className="bi bi-pencil-square"
-                              // onClick={updateCollectData(item._id)}
-                              style={{ cursor: "pointer" }}
-                            ></i>
-                          </Link>
-
-                          {showUpdateProjectModal && (
-                            <div
-                              class="modal fade"
-                              id="updateProjectModal"
-                              tabindex="-1"
-                              aria-labelledby="updateProjectModalLabel"
-                              aria-hidden="true"
+                          <td className="modifysec text-center">
+                            <Link
+                              onClick={(e) => {
+                                e.preventDefault();
+                                getUpdate(item._id);
+                                // setShowUpdateProjectModal(true);
+                              }}
+                              onMouseEnter={(e) => {
+                                e.preventDefault();
+                                setShowUpdateProjectModal(true);
+                              }}
+                              // onMouseEnter={setShowUpdateProjectModal(true)}
+                              // to={item._id}
+                              // let taskid={item._id}
+                              type="button"
+                              class="pe-3 pb-0"
+                              data-bs-toggle="modal"
+                              data-bs-target="#updateProjectModal"
                             >
-                              <div class="modal-dialog modal-dialog-centered modal-xl">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5
-                                      class="modal-title"
-                                      id="updateProjectModalLabel"
-                                    >
-                                      Update Task
-                                    </h5>
-                                    <button
-                                      // ref={closeButtonRef9}
-                                      type="button"
-                                      class="btn-close"
-                                      data-bs-dismiss="modal"
-                                      aria-label="Close"
-                                    ></button>
-                                  </div>
+                              <i
+                                className="bi bi-pencil-square"
+                                // onClick={updateCollectData(item._id)}
+                                style={{ cursor: "pointer" }}
+                              ></i>
+                            </Link>
 
-                                  <div class="modal-body text-start">
-                                    <form id="updateform">
-                                      <label
-                                        htmlFor="updateproject"
-                                        className="form-label shno"
+                            {showUpdateProjectModal && (
+                              <div
+                                class="modal fade"
+                                id="updateProjectModal"
+                                tabindex="-1"
+                                aria-labelledby="updateProjectModalLabel"
+                                aria-hidden="true"
+                              >
+                                <div class="modal-dialog modal-dialog-centered modal-xl">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5
+                                        class="modal-title"
+                                        id="updateProjectModalLabel"
                                       >
-                                        Project
-                                      </label>
-                                      <JoditEditor
-                                        ref={editor}
-                                        // value={editingTask.task}
-                                        value={project}
-                                        onChange={(newProject) =>
-                                          setProject(newProject)
-                                        }
-                                        className="m"
-                                      />
-                                    </form>
-                                  </div>
+                                        Update Task
+                                      </h5>
+                                      <button
+                                        // ref={closeButtonRef9}
+                                        type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"
+                                      ></button>
+                                    </div>
 
-                                  {/* <div className="d-flex align-items-center justify-content-between pt-2">
+                                    <div class="modal-body text-start">
+                                      <form id="updateform">
+                                        <label
+                                          htmlFor="updateproject"
+                                          className="form-label shno"
+                                        >
+                                          Project
+                                        </label>
+                                        <JoditEditor
+                                          ref={editor}
+                                          // value={editingTask.task}
+                                          value={project}
+                                          onChange={(newProject) =>
+                                            setProject(newProject)
+                                          }
+                                          className="m"
+                                        />
+                                      </form>
+                                    </div>
+
+                                    {/* <div className="d-flex align-items-center justify-content-between pt-2">
                                       <div className="wid-50 pe-2">
                                         <label
                                           htmlFor="employeename"
@@ -501,43 +505,44 @@ export default function Algofolkshome() {
                                       </div>
                                     </div> */}
 
-                                  <div className="modal-footer" id="update">
-                                    <button
-                                      className="btn wid-100"
-                                      type="button"
-                                      onClick={updateProjects}
-                                    >
-                                      Update
-                                    </button>
+                                    <div className="modal-footer" id="update">
+                                      <button
+                                        className="btn wid-100"
+                                        type="button"
+                                        onClick={updateProjects}
+                                      >
+                                        Update
+                                      </button>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          )}
+                            )}
 
-                          <Link onClick={() => deleteproject(item._id)}>
-                            <i className="bi bi-trash3-fill"></i>
-                          </Link>
-                        </td>
-                      </tr>
-                    </>
-                  ))
-                ) : (
-                  <h4
-                    className="text-center mb-0"
-                    style={{
-                      marginLeft: "7%",
-                      color: "rgba(0, 137, 123, 0.3)",
-                    }}
-                  >
-                    No Record
-                  </h4>
-                )}
-              </tbody>
-            )}
-          </table>
+                            <Link onClick={() => deleteproject(item._id)}>
+                              <i className="bi bi-trash3-fill"></i>
+                            </Link>
+                          </td>
+                        </tr>
+                      </>
+                    ))
+                  ) : (
+                    <h4
+                      className="text-center mb-0"
+                      style={{
+                        marginLeft: "7%",
+                        color: "rgba(0, 137, 123, 0.3)",
+                      }}
+                    >
+                      No Record
+                    </h4>
+                  )}
+                </tbody>
+              )}
+            </table>
+          </div>
         </div>
-      </div>
+        ) : <PageNotFound />} 
       {/* </div> */}
       <ToastContainer
         position="top-right"
@@ -551,7 +556,6 @@ export default function Algofolkshome() {
         pauseOnHover
         theme="light"
         class="m-0"
-        // transition:Bounce
       />
     </>
   );

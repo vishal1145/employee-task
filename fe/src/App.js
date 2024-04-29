@@ -4,7 +4,7 @@ import "./App.css";
 
 // Components for different routes
 import Navbar from "./Components/Pages/Navbar";
-import Empnamemenu from "./Components/Pages/Empnamemenu";
+// import Empnamemenu from "./Components/Pages/Empnamemenu";
 import Home from "./Components/Layouts/Home";
 import Loginpage from "./Components/Pages/Loginpage";
 import ResetPasswordPage from "./Components/Pages/ResetPage";
@@ -13,16 +13,16 @@ import Alldetails from "./Components/Layouts/Alldetails";
 import Allemployee from "./Components/Pages/Allemployee";
 import Empprofile from "./Components/Pages/Empprofile";
 import Userdashboard from "./Components/Layouts/Userdashboard";
-import Empdashmenu from "./Components/Pages/Empdashmenu";
+// import Empdashmenu from "./Components/Pages/Empdashmenu";
 import Updateprofile from "./Components/Pages/Updateprofile";
-// import Algofolkshome from "./Components/Pages/Algofolkshome";
-import Pagenotfound from "./Components/Pages/Pagenotfound";
+import PageNotFound from "./Components/Pages/PageNotFound";
 import Projects from "./Components/Pages/Projects";
+
+
 
 function App() {
   return (
     <Router>
-      {/* <Navbar /> */}
       <Routes>
         <Route element={<PrivateComponent />}>
           <Route
@@ -33,22 +33,23 @@ function App() {
               </>
             }
           />
+
           <Route
             path="/:id"
             element={
               <>
-                <Userdashboard /> <Navbar />{" "}
+                <Userdashboard /> <Navbar />
               </>
             }
           />
+
           <Route
             path="/allemployee"
             element={
-              <>
-                <Allemployee /> <Navbar />
-              </>
+              <> <Allemployee /> <Navbar /></>
             }
           />
+
           <Route
             path="/empprofile/:id"
             element={
@@ -57,14 +58,14 @@ function App() {
               </>
             }
           />
-          <Route
+          {/* <Route
             path="/alldetails"
             element={
               <>
                 <Alldetails /> <Navbar />{" "}
               </>
             }
-          />
+          /> */}
           <Route
             path="/alldetails/:id"
             element={
@@ -73,8 +74,8 @@ function App() {
               </>
             }
           />
-          <Route path="/empnamemenu" element={<Empnamemenu />} />
-          <Route path="/empdashmenu" element={<Empdashmenu />} />
+          {/* <Route path="/empnamemenu" element={<Empnamemenu />} /> */}
+          {/* <Route path="/empdashmenu" element={<Empdashmenu />} /> */}
           <Route
             path="/updateprofile/:id"
             element={
@@ -86,25 +87,14 @@ function App() {
           <Route
             path="/projects"
             element={
-              <>
-                <Projects /> <Navbar />
-              </>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <>
-                <Pagenotfound />
-              </>
+              <> <Projects /> <Navbar /> </>
             }
           />
         </Route>
-
         <Route path="/loginpage" element={<Loginpage />} />
         <Route path="/resetpassword" element={<ResetPasswordPage />} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
-      {/* <Footer /> */}
     </Router>
   );
 }
