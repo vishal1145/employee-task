@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 // import axios from "axios";
+import ProgressBar from "./ProgressBar";
 
 export default function Empnamemenu() {
   const [listname, setListname] = React.useState([]);
@@ -24,6 +25,17 @@ export default function Empnamemenu() {
   }, []);
   // stopInterval
 
+  const extractDigits = (inputString) => {
+    const regex = /\d+/;
+    const match = inputString.match(regex);
+
+    if (match) {
+      return parseInt(match[0]);
+    }
+
+    return null;
+  };
+
   const getListname = async () => {
     try {
       let result = await fetch(`${process.env.REACT_APP_API_KEY}/listname`);
@@ -32,6 +44,7 @@ export default function Empnamemenu() {
       const updatedList1 = await Promise.all(
         result.map(async (user) => {
           const counts = await getStatusCount(user._id);
+          // const totalTime = extractTotalTime(user._id);
           return { ...user, counts };
         })
       );
@@ -59,16 +72,46 @@ export default function Empnamemenu() {
       );
 
       result = await result.json();
+      // console.log(result.totalTime);
       return result;
+
     } catch (error) {
       // console.log("Error fetching status counts:", error);
       return {
         pending: 0,
         running: 0,
         completed: 0,
+        totalTime: 0,
       };
     }
   };
+
+  // const extractTotalTime = async (id) => {
+  //   try {
+  //     let result = await fetch(
+  //       `${process.env.REACT_APP_API_KEY}/statuscount/${id}`,
+  //       {
+  //         method: "get",
+  //       }
+  //     );
+
+  //     result = await result.json();
+  //     let totalTime=result;
+
+  //     return totalTime;
+  //     // Calculate total time spent on tasks
+  //     // let totalTime = 0;
+  //     // const tasks = result.tasks; // Assuming the response contains tasks
+  //     // tasks.forEach((task) => {
+  //     //   totalTime += extractDigits(task.time); // Use the extractDigits function
+      
+
+  //   } catch (error) {
+  //     console.error("Error fetching total time:", error);
+  //     return 0;
+  //   }
+  // };
+
 
   // const searchusers = async (event) => {
   //   let key = event.target.value//.toLowerCase();
@@ -115,7 +158,7 @@ export default function Empnamemenu() {
 
   const loadData = () => {
     getListname();
-  }
+  };
 
   // const start =()=>{
   //   setStopInterval("run");
@@ -149,7 +192,10 @@ export default function Empnamemenu() {
           <>
             {listname.length > 0 ? (
               listname
-                .filter((item) => item.role !== "admin" && item.role!=="Human Resource") // Filter out admins
+                .filter(
+                  (item) =>
+                    item.role !== "admin" && item.role !== "Human Resource"
+                ) // Filter out admins
                 .map((item, index) => (
                   <div className="pe-0 allemp" key={item._id}>
                     <NavLink
@@ -196,47 +242,73 @@ export default function Empnamemenu() {
                                 //     : "rgba(255, 235, 59, 0.6)"
                               }}
                             >
-                              <span style={{ color: "black", fontSize: "0.9vw" }}>
-                                [C:{" "}
-                                <span
-                                  style={{ fontSize: "0.9vw", color: "green" }}
-                                >
-                                  {item.counts.completed}{" "}
-                                </span>
+                              <span
+                                className=""
+                                style={{
+                                  color: "white",
+                                  fontSize: "0.9vw",
+                                  borderRadius: "5px",
+                                  backgroundColor: "green",
+                                  padding: "0 0.2vw",
+                                  marginRight: "0.2vw",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                C: {item.counts.completed}
                               </span>
-                              |
-                              <span style={{ color: "black", fontSize: "0.9vw" }}>
-                                {" "}
-                                R:{" "}
-                                <span
+                              <span
+                                className=""
+                                style={{
+                                  color: "white",
+                                  fontSize: "0.9vw",
+                                  borderRadius: "5px",
+                                  backgroundColor: "rgb(251, 192, 45)",
+                                  padding: "0 0.2vw",
+                                  marginRight: "0.3vw",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                R: {item.counts.running}
+                                {/* <span
                                   style={{
                                     fontSize: "0.9vw",
-                                    color: "rgb(251, 192, 45)",
+                                    color: "white",
                                   }}
-                                >
-                                  {item.counts.running}
-                                </span>
-                              </span>{" "}
-                              |
-                              <span style={{ color: "black", fontSize: "0.9vw" }}>
-                                {" "}
-                                P:{" "}
-                                <span style={{ fontSize: "0.9vw", color: "red" }}>
-                                  {item.counts.pending}
-                                </span>
-                              </span>{" "}
-                              ]
+                                ></span> */}
+                              </span>
+                              <span
+                                className=""
+                                style={{
+                                  color: "white",
+                                  fontSize: "0.9vw",
+                                  borderRadius: "5px",
+                                  backgroundColor: "rgb(239, 83, 80)",
+                                  padding: "0 0.2vw",
+                                  marginRight: "0.3vw",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                P: {item.counts.pending}
+                                {/* <span
+                                  style={{ fontSize: "0.9vw", color: "white" }}
+                                ></span> */}
+                              </span>
                               {item.counts.time > 0 ? (
                                 <span
                                   style={{ color: "blue", fontSize: "0.9vw" }}
                                 >
-                                  {" "}
                                   On Going
                                 </span>
                               ) : null}
                             </div>
                           </div>
-                          <div style={{fontSize:"0.9vw"}}>Progress Bar Coming...</div>
+                          <div style={{}}>
+                            <ProgressBar
+                              totalTime={item.counts.totalTime * 3600000}
+                              // taskCreateTime={item.counts.createTime}
+                              // taskCreateTime={new Date().getTime()}
+                            />
+                          </div>
                         </div>
                       </div>
                     </NavLink>

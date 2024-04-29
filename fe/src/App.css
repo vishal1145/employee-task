@@ -381,7 +381,8 @@ button {
   align-items: center;
   justify-content: flex-start;
   background-color: rgba(0, 137, 123, 0.1);
-  overflow:hidden;
+  /* overflow:hidden; */
+  width:100%;
 }
 .menu .menuimg {
   width: 45px;

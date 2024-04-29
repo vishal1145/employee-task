@@ -467,6 +467,11 @@ export default function Empdetails() {
         {/* <div className="empdetails wid-100"> */}
         <div className="headsec">
           <div className="d-flex align-items-center">
+            {listname.length > 0
+              ? listname.map((item, index) => (
+                  <h5 className="mb-0 me-3 border" style={{padding:"2px 5px", borderRadius:"7px"}}>{item.name}</h5>
+                ))
+              : null}
             <h5 className="mb-0 me-3">Task</h5>
             <Link onClick={referesh}>
               {loading ? (
@@ -766,7 +771,9 @@ export default function Empdetails() {
                                       {reassignListName.length > 0
                                         ? reassignListName
                                             .filter(
-                                              (item) => item.role !== "admin" && item.role !== "Human Resource"
+                                              (item) =>
+                                                item.role !== "admin" &&
+                                                item.role !== "Human Resource"
                                             )
                                             .map((item, index) => (
                                               <option
