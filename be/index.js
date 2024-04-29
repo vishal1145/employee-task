@@ -139,73 +139,105 @@ app.post("/login", async (req, resp) => {
 //*************************************************************************************************************** */
 //**************************************************For Home Page*************************** */
 app.get("/alltasknotempid", async (req, resp) => {
-  const result = await EmpDetail.find({ empid: null });
-  if (result) {
-    resp.send(result);
-  } else {
-    resp.send("result not found");
+  try {
+    const result = await EmpDetail.find({ empid: null });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
 app.get("/listnamess", async (req, resp) => {
-  const result = await EmpAdd.find();
-  if (result) {
-    resp.send(result);
-  } else {
-    resp.send("result not found");
+  try {
+    const result = await EmpAdd.find();
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
 app.get("/listnamess/:id", async (req, resp) => {
-  const result = await EmpAdd.findOne({ _id: req.params.id });
-  if (result) {
-    resp.send(result);
-  } else {
-    resp.send("result not found");
+  try {
+    const result = await EmpAdd.findOne({ _id: req.params.id });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
 
 app.post("/adddetailss", async (req, resp) => {
-  let details = new EmpDetail(req.body);
-  let result = await details.save();
-  resp.send(result);
+  try {
+    let details = new EmpDetail(req.body);
+    let result = await details.save();
+    resp.send(result);
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
 });
 
 app.put("/updatetaskss/:id", async (req, resp) => {
-  let result = await EmpDetail.updateOne(
-    { _id: req.params.id },
-    { $set: req.body }
-  );
-  resp.send(result);
+  try {
+    let result = await EmpDetail.updateOne(
+      { _id: req.params.id },
+      { $set: req.body }
+    );
+    resp.send(result);
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
 });
 
 app.get("/taskautofillss/:id", async (req, resp) => {
-  let result = await EmpDetail.findOne({ _id: req.params.id });
-  if (result) {
-    resp.send(result);
-  } else {
-    resp.send("result not found");
+  try {
+    let result = await EmpDetail.findOne({ _id: req.params.id });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
 //******************************************************************************************* */
 //**********************************************For Projects********************************************************* */
 app.get("/allprojects", async (req, resp) => {
-  const result = await Projects.find({ empid: null });
-  if (result) {
-    resp.send(result);
-  } else {
-    resp.send("result not found");
+  try {
+    const result = await Projects.find({ empid: null });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
 app.get("/listprojects", async (req, resp) => {
-  const result = await Projects.find();
-  if (result) {
-    resp.send(result);
-  } else {
-    resp.send("result not found");
+  try {
+    const result = await Projects.find();
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
@@ -233,84 +265,137 @@ app.get("/listprojects", async (req, resp) => {
 // });
 
 app.post("/addprojects", async (req, resp) => {
-  let details = new Projects(req.body);
-  let result = await details.save();
-  resp.send(result);
+  try {
+    let details = new Projects(req.body);
+    let result = await details.save();
+    resp.send(result);
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
 });
 
 app.put("/updateprojects/:id", async (req, resp) => {
-  let result = await Projects.updateOne(
-    { _id: req.params.id },
-    { $set: req.body }
-  );
-  resp.send(result);
+  try {
+    let result = await Projects.updateOne(
+      { _id: req.params.id },
+      { $set: req.body }
+    );
+    resp.send(result);
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
 });
 
 app.get("/projectsautofillss/:id", async (req, resp) => {
-  let result = await Projects.findOne({ _id: req.params.id });
-  if (result) {
-    resp.send(result);
-  } else {
-    resp.send("result not found");
+  try {
+    let result = await Projects.findOne({ _id: req.params.id });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
 app.delete("/deleteproject/:id", async (req, resp) => {
-  const result = await Projects.deleteOne({ _id: req.params.id });
-  resp.send(result);
+  try {
+    const result = await Projects.deleteOne({ _id: req.params.id });
+    resp.send(result);
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
 });
 //************************************************************************************************************************* */
 
 app.get("/empdetails/:id", async (req, resp) => {
-  const result = await EmpDetail.find({ empid: req.params.id });
-  if (result) {
-    resp.send(result);
-  } else {
-    resp.send("result not found");
+  try {
+    const result = await EmpDetail.find({ empid: req.params.id });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
 app.get("/taskautofill/:id", async (req, resp) => {
-  const result = await EmpDetail.findOne({ _id: req.params.id });
-  if (result) {
-    resp.send(result);
-  } else {
-    resp.send("result not found");
+  try {
+    const result = await EmpDetail.findOne({ _id: req.params.id });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
 app.get("/profileautofill/:id", async (req, resp) => {
-  const result = await EmpAdd.findOne({ _id: req.params.id });
-  if (result) {
-    resp.send(result);
-  } else {
-    resp.send("result not found");
+  try {
+    const result = await EmpAdd.findOne({ _id: req.params.id });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
 app.get("/listname", async (req, resp) => {
-  const result = await EmpAdd.find({});
-  if (result) {
-    resp.send(result);
-  } else {
-    resp.send("result not found");
+  try {
+    const result = await EmpAdd.find({});
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
+});
+
+app.get("/reassignListName", async (req, resp) => {
+  try {
+    const result = await EmpAdd.find({});
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
 app.post("/adddetails", async (req, resp) => {
-  let details = new EmpDetail(req.body);
-  let result = await details.save();
-  resp.send(result);
+  try {
+    let details = new EmpDetail(req.body);
+    let result = await details.save();
+    resp.send(result);
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
 });
 
 app.post("/addemp", async (req, resp) => {
-  const existingEmployee = await EmpAdd.findOne({ email: req.body.email });
-  if (existingEmployee) {
-    return resp.status(400).send("Email Id already exists");
-  } else {
-    let details = new EmpAdd(req.body);
-    let result = await details.save();
-    resp.send(result);
+  try {
+    const existingEmployee = await EmpAdd.findOne({ email: req.body.email });
+    if (existingEmployee) {
+      return resp.status(400).send("Email Id already exists");
+    } else {
+      let details = new EmpAdd(req.body);
+      let result = await details.save();
+      resp.send(result);
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
@@ -349,11 +434,15 @@ app.put("/addemp/:id", async (req, resp) => {
 // });
 
 app.get("/empprofile/:id", async (req, resp) => {
-  const result = await EmpAdd.find({ _id: req.params.id });
-  if (result) {
-    resp.send(result);
-  } else {
-    resp.send("result not found");
+  try {
+    const result = await EmpAdd.find({ _id: req.params.id });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
@@ -367,85 +456,116 @@ app.get("/empprofile/:id", async (req, resp) => {
 // });
 
 app.put("/updatetask/:id", async (req, resp) => {
-  let result = await EmpDetail.updateOne(
-    { _id: req.params.id },
-    { $set: req.body }
-  );
-  resp.send(result);
-});
-
-app.delete("/deletetask/:id", async (req, resp) => {
-  const result = await EmpDetail.deleteOne({ _id: req.params.id });
-  resp.send(result);
-});
-
-app.delete("/deleteemp/:id", async (req, resp) => {
-  const result = await EmpAdd.deleteOne({ _id: req.params.id });
-  resp.send(result);
-});
-
-app.put("/addstatus/:id", async (req, resp) => {
-  const result = await EmpDetail.updateOne(
-    { _id: req.params.id },
-    { $set: req.body }
-  );
-  resp.send(result);
-});
-
-app.put("/updateprofile/:id", async (req, resp) => {
-  const result = await EmpAdd.updateOne(
-    { _id: req.params.id },
-    { $set: req.body }
-  );
-  resp.send(result);
-});
-
-app.get("/empsearch/:key", async (req, resp) => {
-  let result = await EmpAdd.find({
-    $or: [
-      { name: { $regex: req.params.key } },
-      // { status: { $regex: req.params.key } },
-    ],
-  });
-  resp.send(result);
-});
-
-app.get("/messagebodyname/:id", async (req, resp) => {
-  const result = await EmpAdd.find({ _id: req.params.id });
-  if (result) {
+  try {
+    let result = await EmpDetail.updateOne(
+      { _id: req.params.id },
+      { $set: req.body }
+    );
     resp.send(result);
-  } else {
-    resp.send("result not found");
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
-app.get("/reassignListName", async (req, resp) => {
-  const result = await EmpAdd.find();
-  if (result) {
+app.delete("/deletetask/:id", async (req, resp) => {
+  try {
+    const result = await EmpDetail.deleteOne({ _id: req.params.id });
     resp.send(result);
-  } else {
-    resp.send("result not found");
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
+});
+
+app.delete("/deleteemp/:id", async (req, resp) => {
+  try {
+    const result = await EmpAdd.deleteOne({ _id: req.params.id });
+    resp.send(result);
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
+});
+
+app.put("/addstatus/:id", async (req, resp) => {
+  try {
+    const result = await EmpDetail.updateOne(
+      { _id: req.params.id },
+      { $set: req.body }
+    );
+    resp.send(result);
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
+});
+
+app.put("/updateprofile/:id", async (req, resp) => {
+  try {
+    const result = await EmpAdd.updateOne(
+      { _id: req.params.id },
+      { $set: req.body }
+    );
+    resp.send(result);
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
+});
+
+app.get("/empsearch/:key", async (req, resp) => {
+  try {
+    let result = await EmpAdd.find({
+      $or: [
+        { name: { $regex: req.params.key } },
+        // { status: { $regex: req.params.key } },
+      ],
+    });
+    resp.send(result);
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
+});
+
+app.get("/messagebodyname/:id", async (req, resp) => {
+  try {
+    const result = await EmpAdd.find({ _id: req.params.id });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
 app.post("/addmessages", async (req, resp) => {
-  let message = new Message(req.body);
-  let result = await message.save();
-  resp.send(result);
+  try {
+    let message = new Message(req.body);
+    let result = await message.save();
+    resp.send(result);
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
 });
 
 app.get("/getmessages/:id", async (req, resp) => {
-  let result = await Message.find({ empid: req.params.id });
-  if (result) {
-    resp.send(result);
-  } else {
-    resp.send("result not found");
+  try {
+    let result = await Message.find({ empid: req.params.id });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
 app.delete("/deletechat/:id", async (req, resp) => {
-  const result = await Message.deleteOne({ _id: req.params.id });
-  resp.send(result);
+  try {
+    const result = await Message.deleteOne({ _id: req.params.id });
+    resp.send(result);
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
 });
 
 app.get("/statuscount/:id", async (req, resp) => {
