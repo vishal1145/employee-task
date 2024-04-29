@@ -568,6 +568,17 @@ app.delete("/deletechat/:id", async (req, resp) => {
   }
 });
 
+const extractDigits = (inputString) => {
+  const regex = /\d+/;
+  const match = inputString.match(regex);
+
+  if (match) {
+    return parseInt(match[0]);
+  }
+
+  return 0; // Return 0 if no digits are found
+};
+
 app.get("/statuscount/:id", async (req, resp) => {
   try {
     let result = await EmpDetail.findOne({ empid: req.params.id });
@@ -590,11 +601,19 @@ app.get("/statuscount/:id", async (req, resp) => {
         time: "On Going",
       });
 
+      const tasks = await EmpDetail.find({ empid: req.params.id });
+
+      let totalTime = 0;
+      tasks.forEach((task) => {
+        totalTime += extractDigits(task.time); // Assuming there is a function extractDigits to extract digits from time string
+      });
+
       resp.json({
         pending: pendingCount,
         running: runningCount,
         completed: completedCount,
         time: time,
+        totalTime: totalTime,
       });
     } else {
       resp.send("result not found");
