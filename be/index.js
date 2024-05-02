@@ -213,6 +213,32 @@ app.get("/taskautofillss/:id", async (req, resp) => {
   }
 });
 
+app.put('/addhighlight/:id', async (req, resp) => {
+  try {
+    let result = await EmpDetail.updateOne({ _id: req.params.id }, { $set: req.body });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
+});
+
+// app.get('/highlighttask', async (req, resp) => {
+//   try {
+//     let result = await EmpDetail.find({ priority: '' });
+//     if (result) {
+//       resp.send(result);
+//     } else {
+//       resp.send("result not found");
+//     }
+//   } catch (error) {
+//     resp.status(500).send("Error: " + error.message);
+//   }
+// });
+
 //******************************************************************************************* */
 //**********************************************For Projects********************************************************* */
 app.get("/allprojects", async (req, resp) => {

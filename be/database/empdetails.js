@@ -24,7 +24,14 @@ const empdetailsSchema = new mongoose.Schema(
     },
     project:{
       type:String,
-      // default:null,
+    },
+    priority:{
+      type:String,
+      default:'bi-check-circle',
+    },
+    archive:{
+      type:String,
+      default:'N',
     },
     assign: {
       type: String,
