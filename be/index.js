@@ -334,7 +334,33 @@ app.delete("/deleteproject/:id", async (req, resp) => {
   }
 });
 //************************************************************************************************************************* */
+//**************************************************For Archive Page*************************** */
+app.get("/allarchivetask", async (req, resp) => {
+  try {
+    const result = await EmpDetail.find({ archive: "Y" });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
+});
 
+app.get("/archiveicon", async (req, resp) => {
+  try {
+    let result = await EmpDetail.find({ archive: "Y" });
+    if (result) {
+      resp.send(result);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
+  }
+});
+//************************************************************************************************************************* */
 app.get("/empdetails/:id", async (req, resp) => {
   try {
     const result = await EmpDetail.find({ empid: req.params.id });
