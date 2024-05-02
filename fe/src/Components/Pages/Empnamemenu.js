@@ -6,10 +6,8 @@ import ProgressBar from "./ProgressBar";
 
 export default function Empnamemenu() {
   const [listname, setListname] = React.useState([]);
-  // const [empdetails, setEmpdetails] = React.useState([]);
+  const [empdetails, setEmpdetails] = React.useState([]);
   const [loading, setLoading] = React.useState(true); // Add loading state
-  // const [stopInterval, setStopInterval] = React.useState("stop");
-  // const [dataLoad, setDataLoad] = React.useState(false);
 
   const params = useParams();
 
@@ -50,7 +48,7 @@ export default function Empnamemenu() {
       );
 
       // Sort the updatedList1 alphabetically by the 'name' property
-      updatedList1.sort((a, b) =>
+     updatedList1.sort((a, b) =>
         a.name > b.name ? 1 : b.name > a.name ? -1 : 0
       );
 
@@ -166,6 +164,22 @@ export default function Empnamemenu() {
   // setTimeout(() => {
   //   setStopInterval("stop");
   // }, 10000);
+
+  const getEmpdetails = async () => {
+    try {
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/empdetails/${params.id}`,
+        {
+          method: "get",
+        }
+      );
+
+      result = await result.json();
+      setEmpdetails(result);
+    } catch (error) {
+      console.log("Error loading");
+    }
+  };
 
   return (
     <>
@@ -304,7 +318,8 @@ export default function Empnamemenu() {
                           </div>
                           <div style={{}}>
                             <ProgressBar
-                              totalTime={item.counts.totalTime * 3600000}
+                              totalTime={item.counts.totalTime * 3600000} 
+                              // color={item.counts.totalTime.color}
                               // taskCreateTime={item.counts.createTime}
                               // taskCreateTime={new Date().getTime()}
                             />

@@ -17,6 +17,7 @@ import Userdashboard from "./Components/Layouts/Userdashboard";
 import Updateprofile from "./Components/Pages/Updateprofile";
 import PageNotFound from "./Components/Pages/PageNotFound";
 import Projects from "./Components/Pages/Projects";
+import Allarchivetask from "./Components/Pages/Allarchivetask";
 
 
 
@@ -88,6 +89,13 @@ function App() {
             path="/projects"
             element={
               <> <Projects /> <Navbar /> </>
+            }
+          />
+
+          <Route
+            path="/allarchivetask"
+            element={
+              <> <Allarchivetask /> <Navbar /> </>
             }
           />
         </Route>

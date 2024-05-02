@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,12 +15,13 @@ export default function Navbar() {
     localStorage.clear();
     navigate("/loginpage");
   };
+
   return (
     <nav className="navbar navbar-expand-sm navbar-light">
       <div className="container-fluid">
         {JSON.parse(authData).role === "admin" ||
-        JSON.parse(authData).role === "Team Lead" ||
-        JSON.parse(authData).role === "Human Resource" ? (
+          JSON.parse(authData).role === "Team Lead" ||
+          JSON.parse(authData).role === "Human Resource" ? (
           <div>
             <Link className="navbar-brand" to="/">
               <img
@@ -60,8 +61,8 @@ export default function Navbar() {
           {authData ? (
             <div className="navbar-nav d-flex align-items-center justify-content-between wid-100 bg-white">
               {JSON.parse(authData).role === "admin" ||
-              JSON.parse(authData).role === "Team Lead" ||
-              JSON.parse(authData).role === "Human Resource" ? (
+                JSON.parse(authData).role === "Team Lead" ||
+                JSON.parse(authData).role === "Human Resource" ? (
                 <div>
                   <NavLink
                     className="btn ButtonText"
@@ -81,6 +82,11 @@ export default function Navbar() {
 
                   <NavLink className="btn ButtonText" to="/allemployee">
                     Employees
+                  </NavLink>
+
+                  <NavLink className="btn ButtonText" to="/allarchivetask">
+                    <i class="bi bi-archive"></i>
+                    {/* <i class="bi bi-archive-fill"></i> */}
                   </NavLink>
                 </div>
               ) : (
@@ -103,14 +109,14 @@ export default function Navbar() {
               )}
 
               {JSON.parse(authData).role === "admin" ||
-              JSON.parse(authData).role === "Team Lead" ||
-              JSON.parse(authData).role === "Human Resource" ? (
+                JSON.parse(authData).role === "Team Lead" ||
+                JSON.parse(authData).role === "Human Resource" ? (
                 <div className="logoutbtn">
                   <div className="d-flex flex-row gap-3">
                     <div className="">
                       <div className="menuimg rounded-circle text-lg-end">
                         {JSON.parse(authData).profileimage === "" ||
-                        JSON.parse(authData).profileimage == null ? (
+                          JSON.parse(authData).profileimage == null ? (
                           <img
                             className="profimage rounded-circle"
                             src={"/empimg.jpg"}
@@ -148,7 +154,7 @@ export default function Navbar() {
                     <div className="">
                       <div className="menuimg rounded-circle text-lg-end">
                         {JSON.parse(authData).profileimage === "" ||
-                        JSON.parse(authData).profileimage == null ? (
+                          JSON.parse(authData).profileimage == null ? (
                           <img
                             className="profimage rounded-circle"
                             src={"/empimg.jpg"}

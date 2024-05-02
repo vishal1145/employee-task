@@ -29,6 +29,7 @@ export default function Empdetails() {
   const [listproject, setListProject] = useState([]);
   const [reassign, setReassign] = useState("");
   const [reassignListName, setReassignListName] = useState([]);
+  const [archivetask, setArchiveTask] = useState("");
 
   const closeButtonRef6 = useRef();
   const closeButtonRef7 = useRef();
@@ -37,6 +38,8 @@ export default function Empdetails() {
   // const navigate = useNavigate();
   const editor = useRef(null);
   const inputRef = useRef(null);
+
+  const paramsid= params.id;
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -188,6 +191,7 @@ export default function Empdetails() {
       setTask(result.task);
       setTime(result.time);
       setProject(result.project);
+      setStatus(result.status);
     } catch (error) {
       toast.error("Error Loading");
     }
@@ -200,7 +204,7 @@ export default function Empdetails() {
         `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
         {
           method: "put",
-          body: JSON.stringify({ task, time, project }),
+          body: JSON.stringify({ task, time, project, status }),
           headers: {
             "Content-Type": "application/json",
           },
@@ -211,6 +215,7 @@ export default function Empdetails() {
         toast.success("Task updated successfully");
         setTask("");
         setProject("");
+        setStatus("");
         getEmpdetails();
         setShowUpdateTaskModal(false);
 
@@ -269,6 +274,29 @@ export default function Empdetails() {
         }
       }
     });
+  };
+
+  const addarchivetask = async (id) => {
+    setArchiveTask(paramsid+"archive");
+    try {
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/updatetask/${id}`,
+        {
+          method: "put",
+          body: JSON.stringify({ empid: archivetask, archive: "Y" }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      result = await result.json();
+      if (result) {
+        toast.success("Task Archived successfully");
+        getEmpdetails();
+      }
+    } catch {
+      toast.error("Failed Update Data");
+    }
   };
 
   const addstatus = async (id) => {
@@ -380,9 +408,12 @@ export default function Empdetails() {
 
   const getListProject = async () => {
     try {
-      let result = await fetch(`${process.env.REACT_APP_API_KEY}/listprojects`, {
-        method: "get",
-      });
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/listprojects`,
+        {
+          method: "get",
+        }
+      );
       result = await result.json();
 
       // Sort the list alphabetically
@@ -424,6 +455,46 @@ export default function Empdetails() {
   //   }
   // };
 
+  const nocheckbtn = async (id) => {
+    let result = await fetch(
+      `${process.env.REACT_APP_API_KEY}/addhighlight/${id}`,
+      {
+        method: "put",
+        body: JSON.stringify({
+          priority: "bi-check-circle-fill",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
+        },
+      }
+    );
+    result = await result.json();
+    if (result) {
+      getEmpdetails();
+    }
+  };
+
+  const yescheckbtn = async (id) => {
+    let result = await fetch(
+      `${process.env.REACT_APP_API_KEY}/addhighlight/${id}`,
+      {
+        method: "put",
+        body: JSON.stringify({
+          priority: "bi-check-circle",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
+        },
+      }
+    );
+    result = await result.json();
+    if (result) {
+      getEmpdetails();
+    }
+  };
+
   const stop = () => {
     setStopInterval2("stop");
   };
@@ -442,11 +513,11 @@ export default function Empdetails() {
   };
 
   const chatBodyRef = useRef(null);
-  const scrollToBottom = () => {
-    if (chatBodyRef.current) {
-      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
-    }
-  };
+  // const scrollToBottom = () => {
+  //   if (chatBodyRef.current) {
+  //     chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+  //   }
+  // };
 
   // useEffect(()=>{
   //   scrollToBottom();
@@ -454,7 +525,6 @@ export default function Empdetails() {
 
   return (
     <>
-      {/* {params.id===JSON.parse(authData)._id ? ( */}
       <div
         className={`empdeatils ${
           JSON.parse(authData).role === "admin" ||
@@ -464,12 +534,16 @@ export default function Empdetails() {
             : "wid-100"
         }`}
       >
-        {/* <div className="empdetails wid-100"> */}
         <div className="headsec">
           <div className="d-flex align-items-center">
             {listname.length > 0
               ? listname.map((item, index) => (
-                  <h5 className="mb-0 me-3 border" style={{padding:"2px 5px", borderRadius:"7px"}}>{item.name}</h5>
+                  <h5
+                    className="mb-0 me-3 border"
+                    style={{ padding: "2px 5px", borderRadius: "7px" }}
+                  >
+                    {item.name}
+                  </h5>
                 ))
               : null}
             <h5 className="mb-0 me-3">Task</h5>
@@ -632,10 +706,13 @@ export default function Empdetails() {
                   Status
                 </th>
               )}
+              <th className=" text-center" style={{ width: "2%" }}>
+                P
+              </th>
               {JSON.parse(authData).role === "admin" ||
               JSON.parse(authData).role === "Team Lead" ||
               JSON.parse(authData).role === "Human Resource" ? (
-                <th className="wid-5 text-center">Modify</th>
+                <th className="wid-10 text-center">Modification</th>
               ) : null}
             </tr>
           </thead>
@@ -675,7 +752,6 @@ export default function Empdetails() {
                       <td className="text-center">{item.time}</td>
                     </>
                   ) : null}
-
                   {JSON.parse(authData).role === "admin" ||
                   JSON.parse(authData).role === "Team Lead" ||
                   JSON.parse(authData).role === "Human Resource" ? null : (
@@ -702,6 +778,30 @@ export default function Empdetails() {
                           </option>
                         </select>
                       </NavLink>
+                    </td>
+                  )}
+                  {JSON.parse(authData).role === "admin" ||
+                  JSON.parse(authData).role === "Team Lead" ||
+                  JSON.parse(authData).role === "Human Resource" ? (
+                    <td className="text-center">
+                      <div
+                        className="checkbtn"
+                        onClick={() => {
+                          if (item.priority == "bi-check-circle") {
+                            nocheckbtn(item._id);
+                          } else {
+                            yescheckbtn(item._id);
+                          }
+                        }}
+                      >
+                        <i className={`bi ${item.priority}`}></i>
+                      </div>
+                    </td>
+                  ) : (
+                    <td className="text-center">
+                      <div className="checkbtn">
+                        <i className={`bi ${item.priority}`}></i>
+                      </div>
                     </td>
                   )}
                   {JSON.parse(authData).role === "admin" ||
@@ -904,7 +1004,7 @@ export default function Empdetails() {
                                       </select>
                                     </div>
 
-                                    <div className="wid-100">
+                                    <div className="wid-100 me-2">
                                       <label
                                         htmlFor="projectname"
                                         className="form-label"
@@ -937,6 +1037,29 @@ export default function Empdetails() {
                                           : null}
                                       </select>
                                     </div>
+
+                                    <div className="wid-100">
+                                      <label
+                                        htmlFor="statusname"
+                                        className="form-label"
+                                      >
+                                        Status
+                                      </label>
+                                      <select
+                                        // type="text"
+                                        className="form-select"
+                                        aria-label="Default select example"
+                                        id="statusname"
+                                        value={status}
+                                        // value={item._id}
+                                        onChange={(e) =>
+                                          setStatus(e.target.value)
+                                        }
+                                      >
+                                        <option value="">Choose any one</option>
+                                        <option value="Pending">Pending</option>
+                                      </select>
+                                    </div>
                                   </div>
                                 </form>
                               </div>
@@ -962,6 +1085,14 @@ export default function Empdetails() {
                           </div>
                         </div>
                       )}
+
+                      <Link
+                        onClick={(e) => {
+                          // addarchivetask(item._id);
+                        }}
+                      >
+                        <i class="bi bi-dash-circle"></i>
+                      </Link>
 
                       <Link onClick={() => deletetask(item._id)}>
                         <i className="bi bi-trash3-fill"></i>
@@ -1123,7 +1254,6 @@ export default function Empdetails() {
                   No Message
                 </h4>
               )}
-              {/* </scrollToBottom> */}
             </div>
 
             <div className="offcanvas-footer">
@@ -1153,7 +1283,6 @@ export default function Empdetails() {
           </div>
         </div>
       </div>
-      {/* ):<PageNotFound />} */}
       <ToastContainer
         position="top-right"
         autoClose={1500}

@@ -423,6 +423,7 @@ button {
   padding: 13px 0;
   text-align: start;
   color: rgba(0, 0, 0, 0.852);
+  padding-right:0.3vw;
 }
 .menusearch {
   background-color: white;
@@ -640,7 +641,9 @@ button {
 .gap-2 {
   gap: 0.4rem !important;
 }
-
+.checkbtn{
+  cursor: pointer;
+}
 
 
 .navbar .btn {
