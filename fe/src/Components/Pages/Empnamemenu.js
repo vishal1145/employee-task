@@ -318,6 +318,7 @@ export default function Empnamemenu() {
                           </div>
                           <div style={{}}>
                             <ProgressBar
+                                tasks={empdetails}
                               totalTime={item.counts.totalTime * 3600000} 
                               // color={item.counts.totalTime.color}
                               // taskCreateTime={item.counts.createTime}

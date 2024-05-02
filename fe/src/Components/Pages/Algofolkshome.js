@@ -375,6 +375,9 @@ export default function Algofolkshome() {
                             // onClick={(e)=>{e.preventDefault();}}
                           >
                             <i
+                              data-bs-toggle="tooltip"
+                              data-bs-placement="top"
+                              title="Update"
                               className="bi bi-pencil-square"
                               // onClick={updateCollectData(item._id)}
                               style={{ cursor: "pointer" }}
@@ -567,7 +570,12 @@ export default function Algofolkshome() {
                             </div>
                           )}
 
-                          <Link onClick={() => deletetask(item._id)}>
+                          <Link
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="Delete"
+                            onClick={() => deletetask(item._id)}
+                          >
                             <i className="bi bi-trash3-fill"></i>
                           </Link>
                         </td>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,6 +7,8 @@ import PageNotFound from "./PageNotFound";
 
 
 export default function Navbar() {
+  const [archiveicon, setArchiveIcon] = useState("");
+
   var authData = localStorage.getItem("user");
   const params = useParams;
   const navigate = useNavigate();
@@ -16,12 +18,32 @@ export default function Navbar() {
     navigate("/loginpage");
   };
 
+  useEffect(()=>{
+    getArchiveIcon();
+  },[]);
+
+  const getArchiveIcon = async () => {
+    try {
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/archiveicon`,
+        {
+          method: "get",
+        }
+      );
+
+      result = await result.json();
+      setArchiveIcon(result);
+    } catch (error) {
+      console.log("Error loading");
+    }
+  };
+
   return (
     <nav className="navbar navbar-expand-sm navbar-light">
       <div className="container-fluid">
         {JSON.parse(authData).role === "admin" ||
-          JSON.parse(authData).role === "Team Lead" ||
-          JSON.parse(authData).role === "Human Resource" ? (
+        JSON.parse(authData).role === "Team Lead" ||
+        JSON.parse(authData).role === "Human Resource" ? (
           <div>
             <Link className="navbar-brand" to="/">
               <img
@@ -61,8 +83,8 @@ export default function Navbar() {
           {authData ? (
             <div className="navbar-nav d-flex align-items-center justify-content-between wid-100 bg-white">
               {JSON.parse(authData).role === "admin" ||
-                JSON.parse(authData).role === "Team Lead" ||
-                JSON.parse(authData).role === "Human Resource" ? (
+              JSON.parse(authData).role === "Team Lead" ||
+              JSON.parse(authData).role === "Human Resource" ? (
                 <div>
                   <NavLink
                     className="btn ButtonText"
@@ -84,9 +106,21 @@ export default function Navbar() {
                     Employees
                   </NavLink>
 
-                  <NavLink className="btn ButtonText" to="/allarchivetask">
-                    <i class="bi bi-archive"></i>
-                    {/* <i class="bi bi-archive-fill"></i> */}
+                  <NavLink
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Archive Box"
+                    className="btn ButtonText"
+                    to="/allarchivetask"
+                  >
+                    {archiveicon.length > 0 ? (
+                      <i
+                        className="bi bi-archive-fill"
+                        style={{ color: "brown" }}
+                      ></i>
+                    ) : (
+                      <i className="bi bi-archive"></i>
+                    )}
                   </NavLink>
                 </div>
               ) : (
@@ -109,14 +143,14 @@ export default function Navbar() {
               )}
 
               {JSON.parse(authData).role === "admin" ||
-                JSON.parse(authData).role === "Team Lead" ||
-                JSON.parse(authData).role === "Human Resource" ? (
+              JSON.parse(authData).role === "Team Lead" ||
+              JSON.parse(authData).role === "Human Resource" ? (
                 <div className="logoutbtn">
                   <div className="d-flex flex-row gap-3">
                     <div className="">
                       <div className="menuimg rounded-circle text-lg-end">
                         {JSON.parse(authData).profileimage === "" ||
-                          JSON.parse(authData).profileimage == null ? (
+                        JSON.parse(authData).profileimage == null ? (
                           <img
                             className="profimage rounded-circle"
                             src={"/empimg.jpg"}
@@ -154,7 +188,7 @@ export default function Navbar() {
                     <div className="">
                       <div className="menuimg rounded-circle text-lg-end">
                         {JSON.parse(authData).profileimage === "" ||
-                          JSON.parse(authData).profileimage == null ? (
+                        JSON.parse(authData).profileimage == null ? (
                           <img
                             className="profimage rounded-circle"
                             src={"/empimg.jpg"}
@@ -177,7 +211,12 @@ export default function Navbar() {
                         {JSON.parse(authData).name}
                       </p>
                     </div>
-                    <div className=" align-self-center  pe-2">
+                    <div
+                      // data-bs-toggle="tooltip"
+                      // data-bs-placement="top"
+                      // title="Logout"
+                      className=" align-self-center  pe-2"
+                    >
                       <FontAwesomeIcon
                         icon={faSignOutAlt}
                         onClick={logout}

@@ -202,7 +202,9 @@ export default function Algofolkshome() {
 
   return (
     <>
-      {authData.role === "admin" || authData.role === "Team Lead" || authData.role === "Human Resource" ? (
+      {authData.role === "admin" ||
+      authData.role === "Team Lead" ||
+      authData.role === "Human Resource" ? (
         <div className="allemployee">
           {/* <div className=""> */}
           <div className=" wid-100 mx-3">
@@ -249,7 +251,10 @@ export default function Algofolkshome() {
 
                       <div class="modal-body">
                         <form id="addform">
-                          <label htmlFor="addproject" className="form-label shno">
+                          <label
+                            htmlFor="addproject"
+                            className="form-label shno"
+                          >
                             Project
                           </label>
                           <JoditEditor
@@ -325,16 +330,16 @@ export default function Algofolkshome() {
                       <>
                         <tr
                           key={item._id}
-                        // style={{
-                        //   backgroundColor:
-                        //     item.status === "Pending"
-                        //       ? "rgba(239, 154, 154, 0.7)"
-                        //       : item.status === "Running"
-                        //       ? "rgba(255, 235, 59, 0.6)"
-                        //       : item.status === "Completed"
-                        //       ? "rgba(0, 137, 123, 0.8)"
-                        //       : "rgba(239, 154, 154, 0.7)",
-                        // }}
+                          // style={{
+                          //   backgroundColor:
+                          //     item.status === "Pending"
+                          //       ? "rgba(239, 154, 154, 0.7)"
+                          //       : item.status === "Running"
+                          //       ? "rgba(255, 235, 59, 0.6)"
+                          //       : item.status === "Completed"
+                          //       ? "rgba(0, 137, 123, 0.8)"
+                          //       : "rgba(239, 154, 154, 0.7)",
+                          // }}
                         >
                           <td className="text-start lh-sm pb-0 pt-3">
                             {parse(item.project)}
@@ -368,6 +373,9 @@ export default function Algofolkshome() {
                               data-bs-target="#updateProjectModal"
                             >
                               <i
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title="Update"
                                 className="bi bi-pencil-square"
                                 // onClick={updateCollectData(item._id)}
                                 style={{ cursor: "pointer" }}
@@ -519,7 +527,12 @@ export default function Algofolkshome() {
                               </div>
                             )}
 
-                            <Link onClick={() => deleteproject(item._id)}>
+                            <Link
+                              data-bs-toggle="tooltip"
+                              data-bs-placement="top"
+                              title="Delete"
+                              onClick={() => deleteproject(item._id)}
+                            >
                               <i className="bi bi-trash3-fill"></i>
                             </Link>
                           </td>
@@ -542,7 +555,9 @@ export default function Algofolkshome() {
             </table>
           </div>
         </div>
-        ) : <PageNotFound />} 
+      ) : (
+        <PageNotFound />
+      )}
       {/* </div> */}
       <ToastContainer
         position="top-right"

@@ -29,7 +29,8 @@ export default function Empdetails() {
   const [listproject, setListProject] = useState([]);
   const [reassign, setReassign] = useState("");
   const [reassignListName, setReassignListName] = useState([]);
-  const [archivetask, setArchiveTask] = useState("");
+  // const [archivetask, setArchiveTask] = useState("");
+  const [paramsid, setParamsId] = useState("");
 
   const closeButtonRef6 = useRef();
   const closeButtonRef7 = useRef();
@@ -39,7 +40,7 @@ export default function Empdetails() {
   const editor = useRef(null);
   const inputRef = useRef(null);
 
-  const paramsid= params.id;
+  // const paramsid= params.id;
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -68,18 +69,6 @@ export default function Empdetails() {
     setTime("1 hour");
     setProject("");
   };
-
-  // const getStatusCount = async (id) => {
-  //   let result = await fetch(
-  //     `${process.env.REACT_APP_API_KEY}/statuscount/${id}`,
-  //     {
-  //       method: "get",
-  //     }
-  //   );
-
-  //   result = await result.json();
-  //   setStatusCount(result);
-  // };
 
   const getEmpdetails = async () => {
     try {
@@ -132,6 +121,7 @@ export default function Empdetails() {
           // setDate("");
           setTime("1 hour");
           setProject("");
+          setTaskId("");
           getEmpdetails();
           // closeButtonRef6.current.click();
         }
@@ -275,12 +265,14 @@ export default function Empdetails() {
       }
     });
   };
+  
+  const archivetask = paramsid + "archive";
 
-  const addarchivetask = async (id) => {
-    setArchiveTask(paramsid+"archive");
+  const addarchivetask = async () => {
+    // setArchiveTask(paramsid+"archive");
     try {
       let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/updatetask/${id}`,
+        `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
         {
           method: "put",
           body: JSON.stringify({ empid: archivetask, archive: "Y" }),
@@ -293,6 +285,7 @@ export default function Empdetails() {
       if (result) {
         toast.success("Task Archived successfully");
         getEmpdetails();
+        setTaskId("");
       }
     } catch {
       toast.error("Failed Update Data");
@@ -314,7 +307,7 @@ export default function Empdetails() {
       result = await result.json();
       if (result) {
         getEmpdetails();
-        setStatus("Pending");
+        setStatus("");
       }
     } catch (error) {
       toast.error("Error Loading");
@@ -547,7 +540,12 @@ export default function Empdetails() {
                 ))
               : null}
             <h5 className="mb-0 me-3">Task</h5>
-            <Link onClick={referesh}>
+            <Link
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              title="Referesh"
+              onClick={referesh}
+            >
               {loading ? (
                 <ClipLoader size={18} color={"#36D7B7"} loading={loading} />
               ) : (
@@ -759,6 +757,10 @@ export default function Empdetails() {
                       <NavLink
                         className="text-decoration-none"
                         onClick={() => addstatus(item._id)}
+                        // onMouseEnter={(e)=>{
+                        //   e.preventDefault();
+                        //   setTaskId(item._id);
+                        // }}
                       >
                         <select
                           className={`form-select choosestatus ${getStatusColorClass(
@@ -784,10 +786,13 @@ export default function Empdetails() {
                   JSON.parse(authData).role === "Team Lead" ||
                   JSON.parse(authData).role === "Human Resource" ? (
                     <td className="text-center">
-                      <div
-                        className="checkbtn"
+                      <Link
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Priority"
+                        className="modifysec"
                         onClick={() => {
-                          if (item.priority == "bi-check-circle") {
+                          if (item.priority === "bi-check-circle") {
                             nocheckbtn(item._id);
                           } else {
                             yescheckbtn(item._id);
@@ -795,11 +800,11 @@ export default function Empdetails() {
                         }}
                       >
                         <i className={`bi ${item.priority}`}></i>
-                      </div>
+                      </Link>
                     </td>
                   ) : (
                     <td className="text-center">
-                      <div className="checkbtn">
+                      <div className="">
                         <i className={`bi ${item.priority}`}></i>
                       </div>
                     </td>
@@ -809,7 +814,6 @@ export default function Empdetails() {
                   JSON.parse(authData).role === "Human Resource" ? (
                     <td className="modifysec text-center">
                       <Link
-                        type="button"
                         data-bs-toggle="modal"
                         data-bs-target="#reassignTaskModal"
                         onClick={(e) => {
@@ -822,7 +826,13 @@ export default function Empdetails() {
                           setReassign("");
                         }}
                       >
-                        <i className="bi bi-bootstrap-reboot pe-3"></i>
+                        <i
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          title="Switch Task"
+                          // type="button"
+                          className="bi bi-bootstrap-reboot pe-2"
+                        ></i>
                       </Link>
                       {showReassignTaskModal && (
                         <div
@@ -925,6 +935,10 @@ export default function Empdetails() {
                         data-bs-target="#updateTaskModal"
                       >
                         <i
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          title="Update Task"
+                          // type="button"
                           className="bi bi-pencil-square pe-2"
                           // onClick={() => handleUpdateTaskClick(item._id)}
                           style={{ cursor: "pointer" }}
@@ -1087,14 +1101,31 @@ export default function Empdetails() {
                       )}
 
                       <Link
+                        className=""
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Archive"
+                        // type="button"
                         onClick={(e) => {
-                          // addarchivetask(item._id);
+                          e.preventDefault();
+                          addarchivetask();
+                        }}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          setTaskId(item._id);
+                          setParamsId(item.empid);
                         }}
                       >
                         <i class="bi bi-dash-circle"></i>
                       </Link>
 
-                      <Link onClick={() => deletetask(item._id)}>
+                      <Link
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Delete"
+                        // type="button"
+                        onClick={() => deletetask(item._id)}
+                      >
                         <i className="bi bi-trash3-fill"></i>
                       </Link>
                     </td>
