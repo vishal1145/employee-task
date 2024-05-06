@@ -32,6 +32,14 @@ const empaddSchema = new mongoose.Schema(
       type: String,
       default: "user",
     },
+    dateOfJoining:{
+      type: String,
+      default: null,
+    },
+    location:{
+      type: String,
+      default: null,
+    },
     profileimage: {
       type: String,
       default: null,

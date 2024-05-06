@@ -19,23 +19,25 @@ const empdetailsSchema = new mongoose.Schema(
       default: "Pending",
     },
     empid: {
+      // type: String,
+      // default: null,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "empadd",
+    },
+    project: {
       type: String,
-      default: null,
     },
-    project:{
-      type:String,
+    priority: {
+      type: String,
+      default: "bi-check-circle",
     },
-    priority:{
-      type:String,
-      default:'bi-check-circle',
-    },
-    archive:{
-      type:String,
-      default:'N',
+    archive: {
+      type:Boolean,
+      default: false,
     },
     assign: {
       type: String,
-      default:"Not Assign"
+      default: "Not Assign",
     },
   },
   { timestamps: true }

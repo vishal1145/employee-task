@@ -5,7 +5,7 @@ const EmpDetail = require("./database/empdetails");
 const EmpAdd = require("./database/empadd");
 // const userdb = require("./database/user");
 const Message = require("./database/messages");
-const Projects = require("./database/projects")
+const Projects = require("./database/projects");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 // const io = require("socket.io")(8080,{
@@ -99,7 +99,6 @@ app.use(
 //   failureRedirect: `${process.env.FRONTEND_URL}/loginpage`
 // }))
 
-
 // **********************************************For Login page**********************************************************
 app.post("/login", async (req, resp) => {
   if (req.body.password && req.body.email) {
@@ -177,7 +176,6 @@ app.get("/listnamess/:id", async (req, resp) => {
   }
 });
 
-
 app.post("/adddetailss", async (req, resp) => {
   try {
     let details = new EmpDetail(req.body);
@@ -213,9 +211,12 @@ app.get("/taskautofillss/:id", async (req, resp) => {
   }
 });
 
-app.put('/addhighlight/:id', async (req, resp) => {
+app.put("/addhighlight/:id", async (req, resp) => {
   try {
-    let result = await EmpDetail.updateOne({ _id: req.params.id }, { $set: req.body });
+    let result = await EmpDetail.updateOne(
+      { _id: req.params.id },
+      { $set: req.body }
+    );
     if (result) {
       resp.send(result);
     } else {
@@ -337,7 +338,7 @@ app.delete("/deleteproject/:id", async (req, resp) => {
 //**************************************************For Archive Page*************************** */
 app.get("/allarchivetask", async (req, resp) => {
   try {
-    const result = await EmpDetail.find({ archive: "Y" });
+    const result = await EmpDetail.find({ archive: true });
     if (result) {
       resp.send(result);
     } else {
@@ -350,7 +351,7 @@ app.get("/allarchivetask", async (req, resp) => {
 
 app.get("/archiveicon", async (req, resp) => {
   try {
-    let result = await EmpDetail.find({ archive: "Y" });
+    let result = await EmpDetail.find({ archive: true });
     if (result) {
       resp.send(result);
     } else {
@@ -363,7 +364,7 @@ app.get("/archiveicon", async (req, resp) => {
 //************************************************************************************************************************* */
 app.get("/empdetails/:id", async (req, resp) => {
   try {
-    const result = await EmpDetail.find({ empid: req.params.id });
+    const result = await EmpDetail.find({ empid: req.params.id, archive: false });
     if (result) {
       resp.send(result);
     } else {
@@ -403,6 +404,7 @@ app.get("/profileautofill/:id", async (req, resp) => {
 app.get("/listname", async (req, resp) => {
   try {
     const result = await EmpAdd.find({});
+
     if (result) {
       resp.send(result);
     } else {
@@ -464,26 +466,6 @@ app.put("/addemp/:id", async (req, resp) => {
   }
 });
 
-
-// app.post("/addemp", async (req, resp) => {
-//   try {
-//     const existingEmployee = await EmpAdd.findOne({ email: req.body.email });
-
-//     if (existingEmployee) {
-//       return resp.status(400).send("Email already exists");
-//     }
-
-//     let details = new EmpAdd(req.body);
-//     let result = await details.save();
-//     resp.send(result);
-//   } catch (error) {
-//     // Handle other errors
-//     console.error("An error occurred:", error);
-//     return resp
-//       .status(500)
-//       .send("An error occurred while adding the employee.");
-//   }
-// });
 
 app.get("/empprofile/:id", async (req, resp) => {
   try {
@@ -676,76 +658,6 @@ app.get("/statuscount/:id", async (req, resp) => {
   }
 });
 
-// app.get("/emptime/:id", async (req, resp) => {
-//   try {
-//     const result = await EmpDetail.findOne({ empid: req.params.id });
-//     if (result) {
-//       resp.send(result.time); 
-//     } else {
-//       resp.status(404).send("Employee details not found");
-//     }
-//   } catch (error) {
-//     resp.status(500).send("Internal server error");
-//   }
-// });
-
-// app.get("/searchusers/:key", async (req, res) => {
-//   try {
-//     const keyword = req.params.key//.toLowerCase();
-//     const users = await EmpAdd.find({
-//       name: { $regex: keyword },
-//     }); // Filter users based on name
-//     const userListWithCounts = await Promise.all(
-//       users.map(async (user) => {
-//         const { _id } = user;
-//         const pendingCount = await EmpDetail.countDocuments({
-//           empid: _id,
-//           status: "Pending",
-//         });
-//         const runningCount = await EmpDetail.countDocuments({
-//           empid: _id,
-//           status: "Running",
-//         });
-//         const completedCount = await EmpDetail.countDocuments({
-//           empid: _id,
-//           status: "Completed",
-//         });
-//         return {
-//           ...user.toObject(), // Convert Mongoose document to plain JavaScript object
-//           counts: {
-//             pending: pendingCount,
-//             running: runningCount,
-//             completed: completedCount,
-//           },
-//         };
-//       })
-//     );
-//     res.json(userListWithCounts);
-//   } catch (error) {
-//     console.error("Error searching users:", error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// });
-
-// app.get("/statuscount/:id", async (req, res) => {
-//   // let eid = req.params.id;
-//   try {
-//     let item = await EmpDetail.find(empid : req.params.id);
-
-//     const pendingCount = await item.countDocuments({ status: "Pending" });
-//     const runningCount = await item.countDocuments({ status: "Running" });
-//     const completedCount = await item.countDocuments({ status: "Completed" });
-
-//     res.json({
-//       pending: pendingCount,
-//       running: runningCount,
-//       completed: completedCount,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// });
 
 app.post("/forgotpassword", async (req, res) => {
   const { email } = req.body;
@@ -819,6 +731,129 @@ app.post("/resetpassword", async (req, res) => {
   } catch (error) {
     console.error("Error:", error);
     res.status(400).json({ message: "Invalid or expired token" });
+  }
+});
+
+app.get("/listname-menu", async (req, resp) => {
+  try {
+    const res = await EmpAdd.aggregate([
+      {
+        $lookup: {
+          from: "empdetails",
+          localField: "_id",
+          foreignField: "empid",
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$archive", false] }
+              }
+            }
+          ],
+          as: "tasks",
+        },
+      },
+      {
+        $addFields: {
+          pending: {
+            $size: {
+              $filter: {
+                input: "$tasks",
+                as: "task",
+                cond:
+
+                  { $eq: ["$$task.status", "Pending"] },
+
+              },
+            },
+          },
+          completed: {
+            $size: {
+              $filter: {
+                input: "$tasks",
+                as: "task",
+                cond:
+
+                  { $eq: ["$$task.status", "Completed"] },
+
+              },
+            },
+          },
+          running: {
+            $size: {
+              $filter: {
+                input: "$tasks",
+                as: "task",
+                cond:
+
+                  { $eq: ["$$task.status", "Running"] },
+
+              },
+            },
+          },
+          time: {
+            $size: {
+              $filter: {
+                input: "$tasks",
+                as: "task",
+                cond:
+
+                  { $eq: ["$$task.time", "On Going"] },
+
+              },
+            },
+          },
+
+          // totalTime: {
+          //   $reduce: {
+          //     input: "$tasks",
+          //     initialValue: 0,
+          //     in: {
+          //       $add: [
+          //         "$$value",
+          //         {
+          //           $toInt: {
+          //             $arrayElemAt: [{ $split: ["$$this.time", " "] }, 0],
+          //           },
+          //         },
+          //       ],
+          //     },
+          //   },
+          // },
+          totalTime: {
+            $reduce: {
+              input: {
+                $map: {
+                  input: "$tasks",
+                  as: "task",
+                  in: {
+                    $cond: [
+                      { $eq: ["$$task.time", "On Going"] },
+                      0, 
+                      {
+                        $toInt: {
+                          $arrayElemAt: [{ $split: ["$$task.time", " "] }, 0],
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+              initialValue: 0,
+              in: { $add: ["$$value", "$$this"] },
+            },
+          },
+        },
+      },
+    ]);
+
+    // console.log("res", res);
+    if (res) {
+      resp.send(res);
+    } else {
+      resp.send("result not found");
+    }
+  } catch (error) {
+    resp.status(500).send("Error: " + error.message);
   }
 });
 
