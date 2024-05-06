@@ -9,7 +9,9 @@ import Home from "./Components/Layouts/Home";
 import Loginpage from "./Components/Pages/Loginpage";
 import ResetPasswordPage from "./Components/Pages/ResetPage";
 import PrivateComponent from "./Components/Pages/PrivateComponent";
-import Alldetails from "./Components/Layouts/Alldetails";
+// import Alldetails from "./Components/Layouts/Alldetails";
+import AllDetailsAdmin from "./Components/AdminPanel/AllDetailsAdmin";
+import AllDetailsUser from "./Components/UserPanel/AllDetailsUser";
 import Allemployee from "./Components/Pages/Allemployee";
 import Empprofile from "./Components/Pages/Empprofile";
 import Userdashboard from "./Components/Layouts/Userdashboard";
@@ -36,7 +38,7 @@ function App() {
           />
 
           <Route
-            path="/:id"
+            path="/employee/:id"
             element={
               <>
                 <Userdashboard /> <Navbar />
@@ -68,10 +70,18 @@ function App() {
             }
           /> */}
           <Route
-            path="/alldetails/:id"
+            path="/all-employee/:id"
             element={
               <>
-                <Alldetails /> <Navbar />
+                <AllDetailsAdmin /> <Navbar />
+              </>
+            }
+          />
+          <Route
+            path="/employee/:id"
+            element={
+              <>
+                <AllDetailsUser /> <Navbar />
               </>
             }
           />

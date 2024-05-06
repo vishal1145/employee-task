@@ -278,7 +278,9 @@ export default function Allemployee() {
 
   return (
     <>
-      {authData.role === "admin" || authData.role === "Team Lead" || authData.role === "Human Resource" ? (
+      {authData.role === "admin" ||
+      authData.role === "Team Lead" ||
+      authData.role === "Human Resource" ? (
         <div className="allemployee flex-column">
           <div
             className="py-2 px-3 d-flex align-items-center justify-content-between bg-white wid-100"
@@ -543,7 +545,10 @@ export default function Allemployee() {
                                   <img
                                     src={item.profileimage}
                                     alt=""
-                                    style={{ width: "100%" }}
+                                    style={{
+                                      width: "100%",
+                                      objectFit: "cover",
+                                    }}
                                   />
                                 )}
                               </div>

@@ -74,8 +74,8 @@ export default function Algofolkshome() {
     });
   };
 
-  const origString = showempid;
-  const modifString = origString.replace("archive", "");
+  // const origString = showempid;
+  // const modifString = origString.replace("archive", "");
 
   const removearchivetask = async () => {
     // setArchiveTask(modifString);
@@ -84,7 +84,8 @@ export default function Algofolkshome() {
         `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
         {
           method: "put",
-          body: JSON.stringify({ empid: modifString, archive: "N" }),
+          // body: JSON.stringify({ empid: modifString, archive: "N" }),
+          body: JSON.stringify({ archive: false }),
           headers: {
             "Content-Type": "application/json",
           },
@@ -195,7 +196,7 @@ export default function Algofolkshome() {
                       <h4
                         className="text-center mb-0"
                         style={{
-                          marginLeft: "7%",
+                          marginLeft: "35%",
                           color: "rgba(0, 137, 123, 0.3)",
                         }}
                       >

@@ -57,7 +57,7 @@ export default function Navbar() {
           <div>
             <NavLink
               className="navbar-brand"
-              to={"/" + JSON.parse(authData)._id}
+              to={"/employee/" + JSON.parse(authData)._id}
             >
               <img
                 src="/cropelogo.png"
@@ -89,7 +89,8 @@ export default function Navbar() {
                   <NavLink
                     className="btn ButtonText"
                     aria-current="page"
-                    to={"/alldetails/" + JSON.parse(authData)._id}
+                    to={"/all-employee/" + JSON.parse(authData)._id}
+                    // "661e497c9dd60067919b3336"
                   >
                     Tasks
                   </NavLink>
@@ -135,7 +136,7 @@ export default function Navbar() {
                   <NavLink
                     className="btn ButtonText"
                     aria-current="page"
-                    to={"/alldetails/" + JSON.parse(authData)._id}
+                    to={"/employee/" + JSON.parse(authData)._id}
                   >
                     Tasks
                   </NavLink>
@@ -162,7 +163,11 @@ export default function Navbar() {
                             className="profimage rounded-circle"
                             src={JSON.parse(authData).profileimage}
                             alt=""
-                            style={{ width: "40px", height: "40px" }}
+                            style={{
+                              width: "40px",
+                              height: "40px",
+                              objectFit: "cover",
+                            }}
                           />
                         )}
                       </div>

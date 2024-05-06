@@ -38,19 +38,19 @@ export default function Updateprofile() {
       setPassword(result.password);
       setMobile(result.mobile);
       setDob(result.dob);
-      setPosition(result.role);
+      setPosition(result.position);
       setProfileImage(result.profileimage);
 
     } catch (error) {
       console.error("Error fetching update:", error);
     } 
     finally {
-      setLoading(false); // Set loading to false after data is fetched
+      setLoading(false); 
     }
   };
 
   const collectData = async () => {
-    // setLoading(true); // Set loading to true when data submission starts
+    // setLoading(true); 
     if (name === "" || null) {
       toast.info("Please fill Employee Name");
     } else if (password === "" || null) {
@@ -75,6 +75,7 @@ export default function Updateprofile() {
             },
           }
         );
+
         result = await result.json();
         if (result) {
           toast.success("Profile updated successfully");
@@ -83,11 +84,11 @@ export default function Updateprofile() {
           navigate(-1);
         }, 1000);
       } catch (error) {
-        // console.error("Error updating profile:", error);
+        console.log("Error updating profile:", error);
         toast.error("Failed Update Employee Details");
       }
       finally {
-        setLoading(false); // Set loading to false after data submission
+        setLoading(false); 
       }
     }
   };
@@ -190,16 +191,16 @@ export default function Updateprofile() {
                 />
 
                 <label for="addposition" className="form-label">
-                  Position
+                  Technology
                 </label>
                 <input
                   type="text"
                   className="form-control"
                   id="addposition"
                   value={position}
-                  // onChange={(e) => setPosition(e.target.value)}
-                  placeholder="Position"
-                  disabled
+                  onChange={(e) => setPosition(e.target.value)}
+                  placeholder="Technology"
+                  // disabled
                 />
               </div>
 
@@ -209,7 +210,12 @@ export default function Updateprofile() {
                     {profileimage === "" || profileimage == null ? (
                       <img className="profimage" src={"/empimg.jpg"} alt="" />
                     ) : (
-                      <img className="profimage" src={profileimage} alt="" />
+                      <img
+                        className="profimage"
+                        src={profileimage}
+                        alt=""
+                        style={{ objectFit: "cover" }}
+                      />
                     )}
                   </div>
                   <div className="overflow-hidden">
@@ -225,11 +231,7 @@ export default function Updateprofile() {
             </div>
             <div className="d-flex pt-3">
               <div className="pe-2" style={{ width: "50%" }}>
-                <button
-                  className="btn w-100"
-                  type="button"
-                  onClick={backstep}
-                >
+                <button className="btn w-100" type="button" onClick={backstep}>
                   Cancel
                 </button>
               </div>
@@ -263,7 +265,6 @@ export default function Updateprofile() {
         draggable
         pauseOnHover
         theme="light"
-        // transition:Bounce
       />
     </>
   );
