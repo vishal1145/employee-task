@@ -13,6 +13,7 @@ export default function Updateprofile() {
   const [position, setPosition] = useState("");
   const [profileimage, setProfileImage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [btnloading, setBtnLoading] = useState(false);
 
   const navigate = useNavigate();
   const params = useParams();
@@ -50,11 +51,13 @@ export default function Updateprofile() {
   };
 
   const collectData = async () => {
-    // setLoading(true); 
+    setBtnLoading(true);
     if (name === "" || null) {
       toast.info("Please fill Employee Name");
+      setBtnLoading(false);
     } else if (password === "" || null) {
       toast.info("Please fill Employee Password");
+      setBtnLoading(false);
     } else {
       try {
         let result = await fetch(
@@ -88,7 +91,7 @@ export default function Updateprofile() {
         toast.error("Failed Update Employee Details");
       }
       finally {
-        setLoading(false); 
+        setBtnLoading(false);
       }
     }
   };
@@ -104,14 +107,14 @@ export default function Updateprofile() {
     };
   };
 
-  const backstep = () => {
-    {authData.role==="admin" || authData.role==="Team Lead" || authData.role==="Human Resource" ?
-      navigate("/allemployee")
-    :
-    navigate("/" + authData._id)
-    }
-    // navigate(-1);
-  }
+  // const backstep = () => {
+  //   {authData.role==="admin" || authData.role==="Team Lead" || authData.role==="Human Resource" ?
+  //     navigate("/allemployee")
+  //   :
+  //   navigate("/" + authData._id)
+  //   }
+  //   // navigate(-1);
+  // }
 
   return (
     <>
@@ -231,7 +234,7 @@ export default function Updateprofile() {
             </div>
             <div className="d-flex pt-3">
               <div className="pe-2" style={{ width: "50%" }}>
-                <button className="btn w-100" type="button" onClick={backstep}>
+                <button className="btn w-100" type="button">
                   Cancel
                 </button>
               </div>
@@ -241,12 +244,18 @@ export default function Updateprofile() {
                   className="btn w-100"
                   type="button"
                   onClick={collectData}
-                  disabled={loading}
+                  // disabled={loading}
                 >
-                  {loading ? (
-                    <ClipLoader size={18} color={"#ffffff"} loading={loading} />
+                  {btnloading ? (
+                    <div className="d-flex align-items-center justify-content-center">
+                      <ClipLoader
+                        size={22}
+                        color={"#36D7B7"}
+                        loading={btnloading}
+                      />
+                    </div>
                   ) : (
-                    "Update"
+                    <span>Update</span>
                   )}
                 </button>
               </div>

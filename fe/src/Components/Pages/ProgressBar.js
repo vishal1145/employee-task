@@ -108,9 +108,12 @@ const ProgressBar = ({ totalTimes, hourTime, empId }) => {
       const progressPercentage = Math.min(calculatedProgress, 100);
       setProgress(progressPercentage);
 
+      if (progressPercentage < 50) {
+        setProgressColor("orange");
+      }
       if (progressPercentage >= 50) {
         setProgressColor("green");
-      } 
+      }
       if (progressPercentage >= 80) {
         setProgressColor("red");
       }
@@ -125,13 +128,24 @@ const ProgressBar = ({ totalTimes, hourTime, empId }) => {
 
   return (
     <div className="wid-100 d-flex align-items-center">
-      <div className="progress wid-95" style={{ borderRadius: "10px", height: "0.5vw", marginTop: "7px" }}>
+      <div
+        className="progress wid-95"
+        style={{ borderRadius: "10px", height: "0.5vw", marginTop: "7px" }}
+      >
         {totalTimes > 0 ? (
-          <div className="progress-bar" role="progressbar" style={{ width: `${progress}%`, borderRadius: "10px", backgroundColor: progressColor }} aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100"></div>
-
-        ) : (
-          null
-        )}
+          <div
+            className="progress-bar"
+            role="progressbar"
+            style={{
+              width: `${progress}%`,
+              borderRadius: "10px",
+              backgroundColor: progressColor,
+            }}
+            aria-valuenow={progress}
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
+        ) : null}
       </div>
       <span
         className="mb-0 ps-1 wid-5"

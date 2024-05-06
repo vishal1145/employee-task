@@ -17,6 +17,7 @@ export default function Algofolkshome() {
   const [allprojects, setAllProjects] = useState([]);
   const [projectId, setProjectId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [btnloading, setBtnLoading] = useState(false);
   // const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
 
   var authData = JSON.parse(localStorage.getItem("user"));
@@ -36,10 +37,12 @@ export default function Algofolkshome() {
   };
 
   const collectData = async () => {
-    // setLoading(true);
+    setBtnLoading(true);
     if (project === "" || null) {
       toast.info("Please fill the project Name");
+      setBtnLoading(false);
     } else {
+      // setBtnLoading(true);
       try {
         let result2 = await fetch(
           `${process.env.REACT_APP_API_KEY}/addprojects`,
@@ -65,10 +68,9 @@ export default function Algofolkshome() {
         }
       } catch (error) {
         toast.error("Failed to add project");
+      } finally {
+        setBtnLoading(false);
       }
-      // finally {
-      //   setLoading(false);
-      // }
     }
   };
 
@@ -93,38 +95,42 @@ export default function Algofolkshome() {
   };
 
   const updateProjects = async () => {
-    try {
-      let result2 = await fetch(
-        `${process.env.REACT_APP_API_KEY}/updateprojects/${projectId}`,
-        {
-          method: "PUT",
-          body: JSON.stringify({
-            project,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      result2 = await result2.json();
+    setBtnLoading(true);
+    if (project === "" || null) {
+      toast.info("Please fill the project Name");
+      setBtnLoading(false);
+    } else {
+      try {
+        let result2 = await fetch(
+          `${process.env.REACT_APP_API_KEY}/updateprojects/${projectId}`,
+          {
+            method: "PUT",
+            body: JSON.stringify({
+              project,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        result2 = await result2.json();
 
-      if (result2) {
-        toast.success("Project updated successfully");
-        // closeButtonRef9.current.click();
-        setShowUpdateProjectModal(false);
-        getAllProjects(); // Refresh task list
-        setProject("");
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1000);
+        if (result2) {
+          toast.success("Project updated successfully");
+          // closeButtonRef9.current.click();
+          setShowUpdateProjectModal(false);
+          getAllProjects(); // Refresh task list
+          setProject("");
+          // setTimeout(() => {
+          //   window.location.reload();
+          // }, 1000);
+        }
+      } catch (error) {
+        toast.error("Failed to update Project");
+      } finally {
+        setBtnLoading(false);
       }
-    } catch (error) {
-      toast.error("Failed to update Project");
     }
-    // finally {
-    //   // setLoading(false);
-    //    setShowUpdateProjectModal(true);
-    // }
   };
 
   //   const getListname = async () => {
@@ -302,7 +308,17 @@ export default function Algofolkshome() {
                           type="button"
                           onClick={collectData}
                         >
-                          Submit
+                          {btnloading ? (
+                            <div className="d-flex align-items-center justify-content-center">
+                              <ClipLoader
+                                size={22}
+                                color={"#36D7B7"}
+                                loading={btnloading}
+                              />
+                            </div>
+                          ) : (
+                            <span>Submit</span>
+                          )}
                         </button>
                       </div>
                     </div>
@@ -519,7 +535,17 @@ export default function Algofolkshome() {
                                         type="button"
                                         onClick={updateProjects}
                                       >
-                                        Update
+                                        {btnloading ? (
+                                          <div className="d-flex align-items-center justify-content-center">
+                                            <ClipLoader
+                                              size={22}
+                                              color={"#36D7B7"}
+                                              loading={btnloading}
+                                            />
+                                          </div>
+                                        ) : (
+                                          <span>Update</span>
+                                        )}
                                       </button>
                                     </div>
                                   </div>

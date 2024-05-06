@@ -16,6 +16,7 @@ export default function Allemployee() {
   const [newpassword, setNewPassword] = useState("");
 
   const [loading, setLoading] = useState(true);
+  const [btnloading, setBtnLoading] = useState(false);
   const [updatePassword, setUpdatePassword] = useState("");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [originalList, setOriginalList] = useState([]);
@@ -73,19 +74,20 @@ export default function Allemployee() {
   };
 
   const collectData = async () => {
-    // setLoading(true);
+    setBtnLoading(true);
     if (name === "" || null) {
       toast.info("Please fill Employee Name");
-      setLoading(false);
+      setBtnLoading(false);
     } else if (email === "" || null) {
       toast.info("Please fill Employee Email");
-      setLoading(false);
+      setBtnLoading(false);
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
       toast.warning("Invalid email address");
+      setBtnLoading(false);
       return;
     } else if (password === "" || null) {
       toast.info("Please fill Employee Password");
-      setLoading(false);
+      setBtnLoading(false);
     } else {
       try {
         let result = await fetch(`${process.env.REACT_APP_API_KEY}/addemp`, {
@@ -118,22 +120,29 @@ export default function Allemployee() {
         // }
       } catch (error) {
         toast.warning("Email Id already exists");
+      }finally{
+        setBtnLoading(false);
       }
     }
   };
 
   const collectData2 = async () => {
+    setBtnLoading(true);
     if (name === "" || !name) {
       toast.info("Please fill Employee Name");
+      setBtnLoading(false);
       return;
     } else if (email === "" || !email) {
       toast.info("Please fill Employee Email");
+      setBtnLoading(false);
       return;
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
       toast.warning("Invalid email address");
+      setBtnLoading(false);
       return;
     } else if (password === "" || !password) {
       toast.info("Please fill Employee Password");
+      setBtnLoading(false);
       return;
     }
 
@@ -163,6 +172,8 @@ export default function Allemployee() {
       }
     } catch (error) {
       toast.error("Failed to update employee: " + error.message);
+    }finally{
+      setBtnLoading(false);
     }
   };
 
@@ -207,6 +218,7 @@ export default function Allemployee() {
   // };
 
   const updateEmployeePassword = async () => {
+    setBtnLoading(true);
     // if (password === "" || null) {
     //   toast.info("Please fill Employee Password");
     //   // return;
@@ -237,6 +249,8 @@ export default function Allemployee() {
       } catch (error) {
         console.error("Error updating password:", error);
         toast.error("Failed to update password");
+      }finally{
+        setBtnLoading(false);
       }
     // }
   };
@@ -395,7 +409,17 @@ export default function Allemployee() {
                           type="button"
                           onClick={collectData}
                         >
-                          Submit
+                          {btnloading ? (
+                            <div className="d-flex align-items-center justify-content-center">
+                              <ClipLoader
+                                size={22}
+                                color={"#36D7B7"}
+                                loading={btnloading}
+                              />
+                            </div>
+                          ) : (
+                            <span>Submit</span>
+                          )}
                         </button>
                       </div>
                     </div>
@@ -632,7 +656,17 @@ export default function Allemployee() {
                   className="btn wid-100"
                   onClick={updateEmployeePassword}
                 >
-                  Save changes
+                  {btnloading ? (
+                    <div className="d-flex align-items-center justify-content-center">
+                      <ClipLoader
+                        size={22}
+                        color={"#36D7B7"}
+                        loading={btnloading}
+                      />
+                    </div>
+                  ) : (
+                    <span>Update</span>
+                  )}
                 </button>
               </div>
             </div>
@@ -722,7 +756,17 @@ export default function Allemployee() {
                   type="button"
                   onClick={collectData2}
                 >
-                  Update
+                  {btnloading ? (
+                    <div className="d-flex align-items-center justify-content-center">
+                      <ClipLoader
+                        size={22}
+                        color={"#36D7B7"}
+                        loading={btnloading}
+                      />
+                    </div>
+                  ) : (
+                    <span>Update</span>
+                  )}
                 </button>
               </div>
             </div>

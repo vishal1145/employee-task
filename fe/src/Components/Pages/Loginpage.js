@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
 
 export default function Loginpage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [btnloading, setBtnLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -23,33 +25,40 @@ export default function Loginpage() {
   // };
 
   const handlelogin = async () => {
-    // console.log(email, password)
-    let result = await fetch(`${process.env.REACT_APP_API_KEY}/login`, {
-      method: "post",
-      body: JSON.stringify({ email, password }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    result = await result.json();
+    setBtnLoading(true);
+    try {
+      // console.log(email, password)
+      let result = await fetch(`${process.env.REACT_APP_API_KEY}/login`, {
+        method: "post",
+        body: JSON.stringify({ email, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      result = await result.json();
 
-    if (result.auth) {
-      localStorage.setItem("user", JSON.stringify(result.user));
-      localStorage.setItem("token", JSON.stringify(result.auth));
+      if (result.auth) {
+        localStorage.setItem("user", JSON.stringify(result.user));
+        localStorage.setItem("token", JSON.stringify(result.auth));
 
-      var authData = localStorage.getItem("user");
+        var authData = localStorage.getItem("user");
 
-      if (
-        JSON.parse(authData).role === "admin" ||
-        JSON.parse(authData).role === "Team Lead" ||
-        JSON.parse(authData).role === "Human Resource"
-      ) {
-        navigate("/");
+        if (
+          JSON.parse(authData).role === "admin" ||
+          JSON.parse(authData).role === "Team Lead" ||
+          JSON.parse(authData).role === "Human Resource"
+        ) {
+          navigate("/");
+        } else {
+          navigate("/employee/" + JSON.parse(authData)._id);
+        }
       } else {
-        navigate("/employee/" + JSON.parse(authData)._id);
+        toast("please enter correct details.");
       }
-    } else {
-      toast("please enter correct details.");
+    } catch (error) {
+      toast.error("Error Loading");
+    }finally{
+      setBtnLoading(false);
     }
   };
 
@@ -133,9 +142,18 @@ export default function Loginpage() {
                   Reset Password
                 </Link>
               </div>
-              {/* <div className="wid-100"> */}
               <button className="btn mt-2" type="button" onClick={handlelogin}>
-                Login
+                {btnloading ? (
+                  <div className="d-flex align-items-center justify-content-center">
+                    <ClipLoader
+                      size={22}
+                      color={"#36D7B7"}
+                      loading={btnloading}
+                    />
+                  </div>
+                ) : (
+                  <span>Login</span>
+                )}
               </button>
 
               {/* <button
@@ -174,7 +192,6 @@ export default function Loginpage() {
         draggable
         pauseOnHover
         theme="light"
-        // transition:Bounce
       />
     </>
   );

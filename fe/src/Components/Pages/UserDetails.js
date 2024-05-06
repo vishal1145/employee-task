@@ -15,6 +15,7 @@ export default function Empdetails() {
   const [listname, setListname] = useState([]);
   const [taskId, setTaskId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [btnloading, setBtnLoading] = useState(false);
   const [stopInterval2, setStopInterval2] = React.useState("stop");
   const [showUpdateStatusModal, setShowUpdateStatusModal] = useState(true);
 
@@ -64,6 +65,7 @@ export default function Empdetails() {
   };
 
   const addstatus = async () => {
+    setBtnLoading(true);
     try {
       let result = await fetch(
         `${process.env.REACT_APP_API_KEY}/addstatus/${taskId}`,
@@ -84,6 +86,8 @@ export default function Empdetails() {
       }
     } catch (error) {
       toast.error("Error Loading");
+    }finally{
+      setBtnLoading(false);
     }
   };
 
@@ -409,7 +413,17 @@ export default function Empdetails() {
                                   }}
                                   className="btn wid-100"
                                 >
-                                  Update
+                                  {btnloading ? (
+                                    <div className="d-flex align-items-center justify-content-center">
+                                      <ClipLoader
+                                        size={22}
+                                        color={"#36D7B7"}
+                                        loading={btnloading}
+                                      />
+                                    </div>
+                                  ) : (
+                                    <span>Update</span>
+                                  )}
                                 </button>
                               </div>
                             </div>

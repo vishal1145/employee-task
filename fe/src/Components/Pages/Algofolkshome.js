@@ -18,6 +18,7 @@ export default function Algofolkshome() {
   const [project, setProject] = useState("");
   const [listproject, setListProject] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [btnloading, setBtnLoading] = useState(false);
 
   const closeButtonRef4 = useRef();
   const closeButtonRef5 = useRef();
@@ -35,9 +36,10 @@ export default function Algofolkshome() {
   };
 
   const collectData = async () => {
-    // setLoading(true);
+    setBtnLoading(true);
     if (task === "" || null) {
       toast.info("Please fill the task");
+      setBtnLoading(false);
     } else {
       try {
         let result2 = await fetch(
@@ -66,10 +68,9 @@ export default function Algofolkshome() {
         }
       } catch (error) {
         toast.error("Failed to add task");
+      } finally {
+        setBtnLoading(false);
       }
-      // finally {
-      //   setLoading(false);
-      // }
     }
   };
 
@@ -92,55 +93,60 @@ export default function Algofolkshome() {
   };
 
   const updateTask = async (taskId) => {
-    // setLoading(true);
+    setBtnLoading(true);
+    if (task === "" || null) {
+      toast.info("Please fill the task");
+      setBtnLoading(false);
+    } else {
+      try {
+        let result1 = await fetch(
+          `${process.env.REACT_APP_API_KEY}/listnamess`,
+          {
+            method: "get",
+          }
+        );
+        result1 = await result1.json();
+        setListname(result1);
+        let empid = name;
 
-    try {
-      let result1 = await fetch(`${process.env.REACT_APP_API_KEY}/listnamess`, {
-        method: "get",
-      });
-      result1 = await result1.json();
-      setListname(result1);
-      let empid = name;
+        let result3 = await fetch(
+          `${process.env.REACT_APP_API_KEY}/updatetaskss/${taskId}`,
+          {
+            method: "PUT",
+            body: JSON.stringify({
+              task,
+              empid,
+              time,
+              project,
+              date: new Date(),
+              // assign,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        result3 = await result3.json();
 
-      let result3 = await fetch(
-        `${process.env.REACT_APP_API_KEY}/updatetaskss/${taskId}`,
-        {
-          method: "PUT",
-          body: JSON.stringify({
-            task,
-            empid,
-            time,
-            project,
-            date: new Date(),
-            // assign,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
+        if (result3) {
+          toast.success("Task updated successfully");
+          setShowUpdateNullTaskModal(false);
+          getAllTaskNotId(); // Refresh task list
+          setTask("");
+          setTime("1 hour");
+          setName(null);
+          setProject("");
+          // closeButtonRef4.current.click();
+          // setTimeout(() => {
+          //   window.location.reload();
+          // }, 1000);
         }
-      );
-      result3 = await result3.json();
-
-      if (result3) {
-        toast.success("Task updated successfully");
-        setShowUpdateNullTaskModal(false);
-        getAllTaskNotId(); // Refresh task list
-        setTask("");
-        setTime("1 hour");
-        setName(null);
-        setProject("");
-        // closeButtonRef4.current.click();
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1000);
+      } catch (error) {
+        toast.error("Failed to update task");
+      } finally {
+        setBtnLoading(false);
       }
-    } catch (error) {
-      toast.error("Failed to update task");
     }
-    // finally {
-    //   // setLoading(false);
-
-    // }
   };
 
   const getListname = async () => {
@@ -191,21 +197,6 @@ export default function Algofolkshome() {
   };
 
   const deletetask = async (id) => {
-    //   let result = await fetch(
-    //     `${process.env.REACT_APP_API_KEY}/deletetask/${id}`,
-    //     {
-    //       method: "Delete",
-    //       headers: {
-    //         // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
-    //       },
-    //     }
-    //   );
-    //   result = await result.json();
-    //   if (result) {
-    //     toast("Task deleted Successfully");
-    //     getAllTaskNotId();
-    //   }
-    // };
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -304,7 +295,17 @@ export default function Algofolkshome() {
                         type="button"
                         onClick={collectData}
                       >
-                        Submit
+                        {btnloading ? (
+                          <div className="d-flex align-items-center justify-content-center">
+                            <ClipLoader
+                              size={22}
+                              color={"#36D7B7"}
+                              loading={btnloading}
+                            />
+                          </div>
+                        ) : (
+                          <span>Submit</span>
+                        )}
                       </button>
                     </div>
                   </div>
@@ -560,7 +561,17 @@ export default function Algofolkshome() {
                                         updateTask(taskId);
                                       }}
                                     >
-                                      Update
+                                      {btnloading ? (
+                                        <div className="d-flex align-items-center justify-content-center">
+                                          <ClipLoader
+                                            size={22}
+                                            color={"#36D7B7"}
+                                            loading={btnloading}
+                                          />
+                                        </div>
+                                      ) : (
+                                        <span>Update</span>
+                                      )}
                                     </button>
                                   </div>
 

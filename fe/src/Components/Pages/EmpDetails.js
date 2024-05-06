@@ -23,6 +23,7 @@ export default function Empdetails() {
   // const [date, setDate] = useState("");
   const [taskId, setTaskId] = useState("");
   const [loading, setLoading] = useState(true);
+  const [btnloading, setBtnLoading] = useState(false);
   const [stopInterval2, setStopInterval2] = useState("stop");
   // const [socket, setSocket] = useState(null);
   const [project, setProject] = useState("");
@@ -71,17 +72,20 @@ export default function Empdetails() {
 
   const getListNameMenu = async () => {
     try {
-      let result = await fetch(`${process.env.REACT_APP_API_KEY}/listname-menu`);
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/listname-menu`
+      );
       result = await result.json();
 
       const maxChars = 15;
-      result.forEach(item => {
-        item.name = item.name.length > maxChars ? item.name.slice(0, maxChars) + '..' : item.name;
+      result.forEach((item) => {
+        item.name =
+          item.name.length > maxChars
+            ? item.name.slice(0, maxChars) + ".."
+            : item.name;
       });
 
-      result.sort((a, b) =>
-        a.name > b.name ? 1 : b.name > a.name ? -1 : 0
-      );
+      result.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
       if (result) {
         setListNameMenu(result);
       }
@@ -123,10 +127,10 @@ export default function Empdetails() {
   };
 
   const collectData = async () => {
-    // setLoading(true);
+    setBtnLoading(true);
     if (task === "" || null) {
       toast.info("Please fill the task");
-      setLoading(false);
+      setBtnLoading(false);
     } else {
       const empid = params.id;
 
@@ -165,14 +169,14 @@ export default function Empdetails() {
       } catch (error) {
         toast.error("Failed to add task");
       } finally {
-        setLoading(false);
+        setBtnLoading(false);
       }
     }
   };
 
   const [showReassignTaskModal, setShowReassignTaskModal] = useState(true);
   const reassignCollectData = async (taskId) => {
-    // setLoading(true);
+    setBtnLoading(true);
     try {
       let result = await fetch(
         `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
@@ -196,7 +200,7 @@ export default function Empdetails() {
     } catch {
       toast.error("Failed Reassign Data");
     } finally {
-      setLoading(false);
+      setBtnLoading(false);
     }
   };
 
@@ -224,37 +228,42 @@ export default function Empdetails() {
   };
 
   const updateCollectData = async (taskId) => {
-    // setLoading(true);
-    try {
-      let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
-        {
-          method: "put",
-          body: JSON.stringify({ task, time, project, status }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      result = await result.json();
-      if (result) {
-        toast.success("Task updated successfully");
-        setTask("");
-        setProject("");
-        setStatus("");
-        getEmpdetails();
-        getListNameMenu();
-        setShowUpdateTaskModal(false);
+    setBtnLoading(true);
+    if (task === "" || null) {
+      toast.info("Please fill the task");
+      setBtnLoading(false);
+    } else {
+      try {
+        let result = await fetch(
+          `${process.env.REACT_APP_API_KEY}/updatetask/${taskId}`,
+          {
+            method: "put",
+            body: JSON.stringify({ task, time, project, status }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        result = await result.json();
+        if (result) {
+          toast.success("Task updated successfully");
+          setTask("");
+          setProject("");
+          setStatus("");
+          getEmpdetails();
+          getListNameMenu();
+          setShowUpdateTaskModal(false);
 
-        // closeButtonRef7.current.click();
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 1000);
+          // closeButtonRef7.current.click();
+          // setTimeout(() => {
+          //   window.location.reload();
+          // }, 1000);
+        }
+      } catch {
+        toast.error("Failed Update Data");
+      } finally {
+        setBtnLoading(false);
       }
-    } catch {
-      toast.error("Failed Update Data");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -499,12 +508,15 @@ export default function Empdetails() {
   };
 
   const referesh = () => {
-    // setLoading(true);
+    setBtnLoading(true);
     try {
       getEmpdetails();
       getListNameMenu();
     } finally {
-      setLoading(false);
+      // catch(error){
+      //   toast.error("Error Loading")
+      // }
+      setBtnLoading(false);
     }
   };
 
@@ -515,9 +527,9 @@ export default function Empdetails() {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     scrollToBottom();
-  },[getMessages]);
+  }, [getMessages]);
 
   return (
     <>
@@ -536,7 +548,7 @@ export default function Empdetails() {
           </form>
         </div>
         {loading ? (
-          <div className="loader-container">
+          <div className="d-flex justify-content-center">
             <ClipLoader size={35} color={"#36D7B7"} loading={loading} />
           </div>
         ) : (
@@ -685,8 +697,8 @@ export default function Empdetails() {
               title="Referesh"
               onClick={referesh}
             >
-              {loading ? (
-                <ClipLoader size={18} color={"#36D7B7"} loading={loading} />
+              {btnloading ? (
+                <ClipLoader size={18} color={"#36D7B7"} loading={btnloading} />
               ) : (
                 <i
                   className="bi bi-arrow-clockwise"
@@ -802,14 +814,16 @@ export default function Empdetails() {
                       onClick={collectData}
                       disabled={loading}
                     >
-                      {loading ? (
-                        <ClipLoader
-                          size={18}
-                          color={"#ffffff"}
-                          loading={loading}
-                        />
+                      {btnloading ? (
+                        <div className="d-flex align-items-center justify-content-center">
+                          <ClipLoader
+                            size={22}
+                            color={"#36D7B7"}
+                            loading={btnloading}
+                          />
+                        </div>
                       ) : (
-                        "Submit"
+                        <span>Submit</span>
                       )}
                     </button>
                   </div>
@@ -830,375 +844,395 @@ export default function Empdetails() {
               <th className="wid-10 text-center">Modification</th>
             </tr>
           </thead>
-          <tbody>
-            {empdeatils.length > 0 ? (
-              empdeatils.map((item, index) => (
-                <tr
-                  key={index}
-                  style={{
-                    backgroundColor:
-                      item.status === "Pending"
-                        ? "rgba(239, 154, 154, 0.7)"
-                        : item.status === "Running"
-                        ? "rgba(255, 235, 59, 0.6)"
-                        : item.status === "Completed"
-                        ? "rgba(0, 137, 123, 0.8)"
-                        : "rgba(239, 154, 154, 0.7)",
-                  }}
-                >
-                  {/* <td className="text-start">{htmlToText(item.task)}</td> */}
-                  <td className="text-start lh-sm pb-0 pt-3">
-                    {parse(item.task)}
-                  </td>
-                  <td className="text-start lh-sm pb-0 pt-3">
-                    {typeof item.project === "string"
-                      ? parse(item.project)
-                      : null}
-                  </td>
-                  {/* <td className="text-center">
+          {loading ? (
+            <div
+              className="text-center d-flex align-items-center"
+              style={{ marginLeft: "80%" }}
+            >
+              <ClipLoader size={30} color={"#36D7B7"} loading={loading} />
+            </div>
+          ) : (
+            <tbody>
+              {empdeatils.length > 0 ? (
+                empdeatils.map((item, index) => (
+                  <tr
+                    key={index}
+                    style={{
+                      backgroundColor:
+                        item.status === "Pending"
+                          ? "rgba(239, 154, 154, 0.7)"
+                          : item.status === "Running"
+                          ? "rgba(255, 235, 59, 0.6)"
+                          : item.status === "Completed"
+                          ? "rgba(0, 137, 123, 0.8)"
+                          : "rgba(239, 154, 154, 0.7)",
+                    }}
+                  >
+                    {/* <td className="text-start">{htmlToText(item.task)}</td> */}
+                    <td className="text-start lh-sm pb-0 pt-3">
+                      {parse(item.task)}
+                    </td>
+                    <td className="text-start lh-sm pb-0 pt-3">
+                      {typeof item.project === "string"
+                        ? parse(item.project)
+                        : null}
+                    </td>
+                    {/* <td className="text-center">
                           {moment(item.date).format("DD-MM-YYYY")}
                         </td> */}
-                  <td className="text-center">{item.time}</td>
-                  <td className="text-center">
-                    <Link
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title="Priority"
-                      className="modifysec"
-                      onClick={() => {
-                        if (item.priority === "bi-check-circle") {
-                          nocheckbtn(item._id);
-                        } else {
-                          yescheckbtn(item._id);
-                        }
-                      }}
-                    >
-                      <i className={`bi ${item.priority}`}></i>
-                    </Link>
-                  </td>
-
-                  <td className="modifysec text-center">
-                    <Link
-                      data-bs-toggle="modal"
-                      data-bs-target="#reassignTaskModal"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        getUpdate(item._id);
-                      }}
-                      onMouseEnter={(e) => {
-                        e.preventDefault();
-                        setShowReassignTaskModal(true);
-                        setReassign("");
-                      }}
-                    >
-                      <i
+                    <td className="text-center">{item.time}</td>
+                    <td className="text-center">
+                      <Link
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
-                        title="Switch Task"
-                        // type="button"
-                        className="bi bi-bootstrap-reboot pe-2"
-                      ></i>
-                    </Link>
-                    {showReassignTaskModal && (
-                      <div
-                        class="modal fade"
-                        id="reassignTaskModal"
-                        tabindex="-1"
-                        aria-labelledby="reassignTaskModalLabel"
-                        aria-hidden="true"
+                        title="Priority"
+                        className="modifysec"
+                        onClick={() => {
+                          if (item.priority === "bi-check-circle") {
+                            nocheckbtn(item._id);
+                          } else {
+                            yescheckbtn(item._id);
+                          }
+                        }}
                       >
-                        <div class="modal-dialog modal-dialog-centered">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5
-                                class="modal-title"
-                                id="reassignTaskModalLabel"
-                              >
-                                Reassign Task
-                              </h5>
-                              <button
-                                ref={closeButtonRef15}
-                                type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                              ></button>
-                            </div>
-                            <div class="modal-body">
-                              <form className="text-start">
-                                <div className="wid-100">
-                                  <label
-                                    htmlFor="employeename"
-                                    className="form-label"
-                                  >
-                                    Employee Name
-                                  </label>
-                                  <select
-                                    className="form-select"
-                                    aria-label="Default select example"
-                                    id="employeename"
-                                    value={reassign}
-                                    onChange={(e) =>
-                                      setReassign(e.target.value)
-                                    }
-                                  >
-                                    <option value="">Choose Employee</option>
-                                    {reassignListName.length > 0
-                                      ? reassignListName
-                                          .filter(
-                                            (item) =>
-                                              item.role !== "admin" &&
-                                              item.role !== "Human Resource"
-                                          )
-                                          .map((item, index) => (
-                                            <option
-                                              value={item._id}
-                                              key={item._id}
-                                            >
-                                              {item.name}
-                                            </option>
-                                          ))
-                                      : null}
-                                  </select>
-                                </div>
-                              </form>
-                            </div>
-                            <div className="modal-footer">
-                              <button
-                                className="btn wid-100"
-                                type="button"
-                                onClick={() => reassignCollectData(taskId)}
-                                disabled={loading}
-                              >
-                                {loading ? (
-                                  <ClipLoader
-                                    size={18}
-                                    color={"#ffffff"}
-                                    loading={loading}
-                                  />
-                                ) : (
-                                  "Update"
-                                )}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                        <i className={`bi ${item.priority}`}></i>
+                      </Link>
+                    </td>
 
-                    <Link
-                      onClick={(e) => {
-                        e.preventDefault();
-                        getUpdate(item._id);
-                      }}
-                      onMouseEnter={(e) => {
-                        e.preventDefault();
-                        setShowUpdateTaskModal(true);
-                      }}
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#updateTaskModal"
-                    >
-                      <i
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        title="Update Task"
-                        // type="button"
-                        className="bi bi-pencil-square pe-2"
-                        // onClick={() => handleUpdateTaskClick(item._id)}
-                        style={{ cursor: "pointer" }}
-                      ></i>
-                    </Link>
-
-                    {showUpdateTaskModal && (
-                      <div
-                        class="modal fade"
-                        id="updateTaskModal"
-                        tabindex="-1"
-                        aria-labelledby="updateTaskModalLabel"
-                        aria-hidden="true"
+                    <td className="modifysec text-center">
+                      <Link
+                        data-bs-toggle="modal"
+                        data-bs-target="#reassignTaskModal"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          getUpdate(item._id);
+                        }}
+                        onMouseEnter={(e) => {
+                          e.preventDefault();
+                          setShowReassignTaskModal(true);
+                          setReassign("");
+                        }}
                       >
-                        <div class="modal-dialog modal-dialog-centered modal-xl">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title" id="updateTaskModalLabel">
-                                Update Task
-                              </h5>
-                              <button
-                                ref={closeButtonRef7}
-                                type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                              ></button>
-                            </div>
-                            <div class="modal-body">
-                              <form className="text-start">
-                                <label
-                                  htmlFor="addtask"
-                                  className="form-label shno"
+                        <i
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          title="Switch Task"
+                          // type="button"
+                          className="bi bi-bootstrap-reboot pe-2"
+                        ></i>
+                      </Link>
+                      {showReassignTaskModal && (
+                        <div
+                          class="modal fade"
+                          id="reassignTaskModal"
+                          tabindex="-1"
+                          aria-labelledby="reassignTaskModalLabel"
+                          aria-hidden="true"
+                        >
+                          <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5
+                                  class="modal-title"
+                                  id="reassignTaskModalLabel"
                                 >
-                                  Task
-                                </label>
-
-                                <JoditEditor
-                                  //ref={editor}
-                                  value={task}
-                                  onChange={(newTask) => {
-                                    setTask(newTask);
-                                  }}
-                                />
-
-                                <div className="d-flex justify-content-between pt-3">
-                                  <div className="wid-100 me-2">
+                                  Reassign Task
+                                </h5>
+                                <button
+                                  ref={closeButtonRef15}
+                                  type="button"
+                                  class="btn-close"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                ></button>
+                              </div>
+                              <div class="modal-body">
+                                <form className="text-start">
+                                  <div className="wid-100">
                                     <label
-                                      htmlFor="timeduration"
+                                      htmlFor="employeename"
                                       className="form-label"
                                     >
-                                      Time Duration
+                                      Employee Name
                                     </label>
                                     <select
                                       className="form-select"
                                       aria-label="Default select example"
-                                      id="timeduration"
-                                      value={time}
-                                      onChange={(e) => setTime(e.target.value)}
-                                    >
-                                      <option value="">Choose Time</option>
-                                      <option value="1 hour">1 hour</option>
-                                      <option value="2 hours">2 hours</option>
-                                      <option value="3 hours">3 hours</option>
-                                      <option value="4 hours">4 hours</option>
-                                      <option value="5 hours">5 hours</option>
-                                      <option value="6 hours">6 hours</option>
-                                      <option value="7 hours">7 hours</option>
-                                      <option value="8 hours">8 hours</option>
-                                      <option value="On Going">On Going</option>
-                                    </select>
-                                  </div>
-
-                                  <div className="wid-100 me-2">
-                                    <label
-                                      htmlFor="projectname"
-                                      className="form-label"
-                                    >
-                                      Project Name
-                                    </label>
-                                    <select
-                                      // type="text"
-                                      className="form-select"
-                                      aria-label="Default select example"
-                                      id="projectname"
-                                      value={project}
-                                      // value={item._id}
+                                      id="employeename"
+                                      value={reassign}
                                       onChange={(e) =>
-                                        setProject(e.target.value)
+                                        setReassign(e.target.value)
                                       }
                                     >
-                                      <option value="" disabled>
-                                        Choose any one
-                                      </option>
-                                      {listproject.length > 0
-                                        ? listproject.map((item, index) => (
-                                            <option
-                                              key={item._id}
-                                              value={item.project}
-                                            >
-                                              {parse(item.project)}
-                                            </option>
-                                          ))
+                                      <option value="">Choose Employee</option>
+                                      {reassignListName.length > 0
+                                        ? reassignListName
+                                            .filter(
+                                              (item) =>
+                                                item.role !== "admin" &&
+                                                item.role !== "Human Resource"
+                                            )
+                                            .map((item, index) => (
+                                              <option
+                                                value={item._id}
+                                                key={item._id}
+                                              >
+                                                {item.name}
+                                              </option>
+                                            ))
                                         : null}
                                     </select>
                                   </div>
-
-                                  <div className="wid-100">
-                                    <label
-                                      htmlFor="statusname"
-                                      className="form-label"
-                                    >
-                                      Status
-                                    </label>
-                                    <select
-                                      // type="text"
-                                      className="form-select"
-                                      aria-label="Default select example"
-                                      id="statusname"
-                                      value={status}
-                                      // value={item._id}
-                                      onChange={(e) =>
-                                        setStatus(e.target.value)
-                                      }
-                                    >
-                                      <option value="">Choose any one</option>
-                                      <option value="Pending">Pending</option>
-                                    </select>
-                                  </div>
-                                </div>
-                              </form>
-                            </div>
-                            <div className="modal-footer">
-                              <button
-                                className="btn wid-100"
-                                type="button"
-                                onClick={() => updateCollectData(taskId)}
-                                disabled={loading}
-                              >
-                                {loading ? (
-                                  <ClipLoader
-                                    size={18}
-                                    color={"#ffffff"}
-                                    loading={loading}
-                                  />
-                                ) : (
-                                  "Update"
-                                )}
-                              </button>
+                                </form>
+                              </div>
+                              <div className="modal-footer">
+                                <button
+                                  className="btn wid-100"
+                                  type="button"
+                                  onClick={() => reassignCollectData(taskId)}
+                                  // disabled={loading}
+                                >
+                                  {btnloading ? (
+                                    <div className="d-flex align-items-center justify-content-center">
+                                      <ClipLoader
+                                        size={22}
+                                        color={"#36D7B7"}
+                                        loading={btnloading}
+                                      />
+                                    </div>
+                                  ) : (
+                                    <span>Update</span>
+                                  )}
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    <Link
-                      className=""
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title="Archive"
-                      // type="button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        addarchivetask();
-                      }}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        setTaskId(item._id);
-                        setParamsId(item.empid);
-                      }}
-                    >
-                      <i class="bi bi-dash-circle"></i>
-                    </Link>
+                      <Link
+                        onClick={(e) => {
+                          e.preventDefault();
+                          getUpdate(item._id);
+                        }}
+                        onMouseEnter={(e) => {
+                          e.preventDefault();
+                          setShowUpdateTaskModal(true);
+                        }}
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#updateTaskModal"
+                      >
+                        <i
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          title="Update Task"
+                          // type="button"
+                          className="bi bi-pencil-square pe-2"
+                          // onClick={() => handleUpdateTaskClick(item._id)}
+                          style={{ cursor: "pointer" }}
+                        ></i>
+                      </Link>
 
-                    <Link
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title="Delete"
-                      // type="button"
-                      onClick={() => deletetask(item._id)}
-                    >
-                      <i className="bi bi-trash3-fill"></i>
-                    </Link>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <h4
-                className="text-center mb-0"
-                style={{ marginLeft: "65%", color: "rgba(0, 137, 123, 0.3)" }}
-              >
-                No Record
-              </h4>
-            )}
-          </tbody>
+                      {showUpdateTaskModal && (
+                        <div
+                          class="modal fade"
+                          id="updateTaskModal"
+                          tabindex="-1"
+                          aria-labelledby="updateTaskModalLabel"
+                          aria-hidden="true"
+                        >
+                          <div class="modal-dialog modal-dialog-centered modal-xl">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5
+                                  class="modal-title"
+                                  id="updateTaskModalLabel"
+                                >
+                                  Update Task
+                                </h5>
+                                <button
+                                  ref={closeButtonRef7}
+                                  type="button"
+                                  class="btn-close"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                ></button>
+                              </div>
+                              <div class="modal-body">
+                                <form className="text-start">
+                                  <label
+                                    htmlFor="addtask"
+                                    className="form-label shno"
+                                  >
+                                    Task
+                                  </label>
+
+                                  <JoditEditor
+                                    //ref={editor}
+                                    value={task}
+                                    onChange={(newTask) => {
+                                      setTask(newTask);
+                                    }}
+                                  />
+
+                                  <div className="d-flex justify-content-between pt-3">
+                                    <div className="wid-100 me-2">
+                                      <label
+                                        htmlFor="timeduration"
+                                        className="form-label"
+                                      >
+                                        Time Duration
+                                      </label>
+                                      <select
+                                        className="form-select"
+                                        aria-label="Default select example"
+                                        id="timeduration"
+                                        value={time}
+                                        onChange={(e) =>
+                                          setTime(e.target.value)
+                                        }
+                                      >
+                                        <option value="">Choose Time</option>
+                                        <option value="1 hour">1 hour</option>
+                                        <option value="2 hours">2 hours</option>
+                                        <option value="3 hours">3 hours</option>
+                                        <option value="4 hours">4 hours</option>
+                                        <option value="5 hours">5 hours</option>
+                                        <option value="6 hours">6 hours</option>
+                                        <option value="7 hours">7 hours</option>
+                                        <option value="8 hours">8 hours</option>
+                                        <option value="On Going">
+                                          On Going
+                                        </option>
+                                      </select>
+                                    </div>
+
+                                    <div className="wid-100 me-2">
+                                      <label
+                                        htmlFor="projectname"
+                                        className="form-label"
+                                      >
+                                        Project Name
+                                      </label>
+                                      <select
+                                        // type="text"
+                                        className="form-select"
+                                        aria-label="Default select example"
+                                        id="projectname"
+                                        value={project}
+                                        // value={item._id}
+                                        onChange={(e) =>
+                                          setProject(e.target.value)
+                                        }
+                                      >
+                                        <option value="" disabled>
+                                          Choose any one
+                                        </option>
+                                        {listproject.length > 0
+                                          ? listproject.map((item, index) => (
+                                              <option
+                                                key={item._id}
+                                                value={item.project}
+                                              >
+                                                {parse(item.project)}
+                                              </option>
+                                            ))
+                                          : null}
+                                      </select>
+                                    </div>
+
+                                    <div className="wid-100">
+                                      <label
+                                        htmlFor="statusname"
+                                        className="form-label"
+                                      >
+                                        Status
+                                      </label>
+                                      <select
+                                        // type="text"
+                                        className="form-select"
+                                        aria-label="Default select example"
+                                        id="statusname"
+                                        value={status}
+                                        // value={item._id}
+                                        onChange={(e) =>
+                                          setStatus(e.target.value)
+                                        }
+                                      >
+                                        <option value="">Choose any one</option>
+                                        <option value="Pending">Pending</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                </form>
+                              </div>
+                              <div className="modal-footer">
+                                <button
+                                  className="btn wid-100"
+                                  type="button"
+                                  onClick={() => updateCollectData(taskId)}
+                                  disabled={loading}
+                                >
+                                  {btnloading ? (
+                                    <div className="d-flex align-items-center justify-content-center">
+                                      <ClipLoader
+                                        size={22}
+                                        color={"#36D7B7"}
+                                        loading={btnloading}
+                                      />
+                                    </div>
+                                  ) : (
+                                    <span>Update</span>
+                                  )}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      <Link
+                        className=""
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Archive"
+                        // type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          addarchivetask();
+                        }}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          setTaskId(item._id);
+                          setParamsId(item.empid);
+                        }}
+                      >
+                        <i class="bi bi-dash-circle"></i>
+                      </Link>
+
+                      <Link
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Delete"
+                        // type="button"
+                        onClick={() => deletetask(item._id)}
+                      >
+                        <i className="bi bi-trash3-fill"></i>
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <h4
+                  className="text-center mb-0"
+                  style={{ marginLeft: "65%", color: "rgba(0, 137, 123, 0.3)" }}
+                >
+                  No Record
+                </h4>
+              )}
+            </tbody>
+          )}
         </table>
 
         <div>

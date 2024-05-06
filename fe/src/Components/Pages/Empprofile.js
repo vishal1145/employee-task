@@ -7,6 +7,7 @@ export default function Empprofile() {
   const emprole = JSON.parse(localStorage.getItem("user")).role;
 
   const [loading, setLoading] = useState(true);
+  const [btnloading, setBtnLoading] = useState(false);
   const [empprofile, setEmpprofile] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -71,11 +72,13 @@ export default function Empprofile() {
   };
 
   const collectData = async () => {
-    // setLoading(true); 
+    setBtnLoading(true); 
     if (name === "" || null) {
       toast.info("Please fill Employee Name");
+      setBtnLoading(false);
     } else if (password === "" || null) {
       toast.info("Please fill Employee Password");
+      setBtnLoading(false);
     } else {
       try {
         let result = await fetch(
@@ -113,7 +116,7 @@ export default function Empprofile() {
         toast.error("Failed Update Employee Details");
       }
       finally {
-        setLoading(false);
+        setBtnLoading(false);
       }
     }
   };
@@ -218,7 +221,7 @@ export default function Empprofile() {
                             data-bs-toggle="modal"
                             data-bs-target="#updateProfileModal"
                           >
-                            Edit Profile
+                            Update Profile
                           </button>
                         </div>
 
@@ -240,7 +243,7 @@ export default function Empprofile() {
                                   className="modal-title"
                                   id="updateProfileModalLabel"
                                 >
-                                  Modal title
+                                  Update Profile
                                 </h5>
                                 <button
                                   ref={closeButtonRef}
@@ -429,16 +432,18 @@ export default function Empprofile() {
                                     className="btn w-100"
                                     type="button"
                                     onClick={collectData}
-                                    disabled={loading}
+                                    // disabled={loading}
                                   >
-                                    {loading ? (
-                                      <ClipLoader
-                                        size={18}
-                                        color={"#ffffff"}
-                                        loading={loading}
-                                      />
+                                    {btnloading ? (
+                                      <div className="d-flex align-items-center justify-content-center">
+                                        <ClipLoader
+                                          size={22}
+                                          color={"#36D7B7"}
+                                          loading={btnloading}
+                                        />
+                                      </div>
                                     ) : (
-                                      "Update"
+                                      <span>Update</span>
                                     )}
                                   </button>
                                 </div>
