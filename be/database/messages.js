@@ -8,10 +8,15 @@ const messagesSchema = new mongoose.Schema(
       default: null,
     },
     sender: {
-        type: String,
-        // default: "sender"
+      type: String,
     },
-    empid: String,
+    msgStatus: {
+      type: String,
+    },
+    empid: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "empadd",
+    },
     role: String,
   },
   { timestamps: true }
