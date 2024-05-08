@@ -494,7 +494,7 @@ export default function Allemployee() {
                         key={index}
                       >
                         <NavLink
-                          to={"/empprofile/" + item._id}
+                          to={"/allemployee/empprofile/" + item._id}
                           className="text-decoration-none"
                         >
                           <div className="card">

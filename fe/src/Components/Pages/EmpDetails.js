@@ -9,14 +9,29 @@ import ProgressBar from "./ProgressBar";
 import PageNotFound from "./PageNotFound";
 // import Empnamemenu from "./Empnamemenu";
 
+// import {
+//   query,
+//   collection,
+//   orderBy,
+//   onSnapshot,
+//   limit,
+//   addDoc,
+//   serverTimestamp,
+// } from "firebase/firestore";
+// import { auth, db } from "./firebase";
+
 export default function Empdetails() {
   var authData = localStorage.getItem("user");
 
   const [listnamemenu, setListNameMenu] = useState([]);
-  const [empdeatils, setEmpdetails] = useState([]);
+  const [empdetails, setEmpdetails] = useState([]);
   const [status, setStatus] = useState("");
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
+  // const [newMessage, setNewMessage] = useState("");
+  const [message, setMessage] = useState("");
+  const [unreadCount, setUnreadCount] = useState(0);
+  // const [msgstatus, setMsgStatus] = useState("");
   const [listname, setListname] = useState([]);
   const [task, setTask] = useState("");
   const [time, setTime] = useState("1 hour");
@@ -31,6 +46,8 @@ export default function Empdetails() {
   const [reassign, setReassign] = useState("");
   const [reassignListName, setReassignListName] = useState([]);
   const [paramsid, setParamsId] = useState("");
+  // const [count, setCount] = useState(0);
+  // const [userId, setUserId] = useState("");
 
   const closeButtonRef6 = useRef();
   const closeButtonRef7 = useRef();
@@ -62,7 +79,28 @@ export default function Empdetails() {
     //   const interval = setInterval(getMessages, 5000);
     //   return () => clearInterval(interval);
     // }
-  }, [params.id, stopInterval2]);
+  }, [params.id]);
+  // stopInterval2
+
+  // useEffect(() => {
+  //   const q = query(
+  //     collection(db, "messages"),
+  //     orderBy("createdAt", "desc"),
+  //     limit(50)
+  //   );
+
+  //   const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
+  //     const fetchedMessages = [];
+  //     QuerySnapshot.forEach((doc) => {
+  //       fetchedMessages.push({ ...doc.data(), id: doc.id });
+  //     });
+  //     const sortedMessages = fetchedMessages.sort(
+  //       (a, b) => a.createdAt - b.createdAt
+  //     );
+  //     setMessages(sortedMessages);
+  //   });
+  //   return () => unsubscribe;
+  // }, []);
 
   const idnull = () => {
     setTask("");
@@ -77,21 +115,22 @@ export default function Empdetails() {
       );
       result = await result.json();
 
-      const maxChars = 15;
-      result.forEach((item) => {
-        item.name =
-          item.name.length > maxChars
-            ? item.name.slice(0, maxChars) + ".."
-            : item.name;
-      });
-
-      result.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
       if (result) {
+        result.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
+
+        const maxChars = 15;
+        result.forEach((item) => {
+          item.name =
+            item.name.length > maxChars
+              ? item.name.slice(0, maxChars) + ".."
+              : item.name;
+        });
         setListNameMenu(result);
       }
     } catch (error) {
       console.log("Error loading");
-    } finally {
+    } 
+    finally {
       setLoading(false);
     }
   };
@@ -118,11 +157,80 @@ export default function Empdetails() {
       );
 
       result = await result.json();
+      // result.sort((a, b) => {
+      //   if (
+      //     a.priority === "bi-check-circle-fill" 
+      //     // && a.index < b.index
+      //     && b.priority !== "bi-check-circle-fill"
+      //   ) {
+      //     return -1; 
+      //   } 
+      //   else if (
+      //     b.priority === "bi-check-circle-fill" 
+      //     // && a.index > b.index 
+      //     && a.priority !== "bi-check-circle-fill"
+      //   ) {
+      //     return 1; 
+      //   } 
+      //   else {
+      //     return 0; 
+      //   }
+      // });
       setEmpdetails(result);
     } catch (error) {
       toast.error("Error loading");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePriorityClick = async (id) => {
+    try {
+      const itemToUpdate = empdetails.find((item) => item._id === id);
+      const newPriority =
+        itemToUpdate.priority === "bi-check-circle-fill"
+          ? "bi-check-circle"
+          : "bi-check-circle-fill";
+
+      // if (newPriority === "bi-check-circle-fill"){
+      //   setCount(count+1);
+      // }else if (newPriority === "bi-check-circle"){
+      //   setCount(count-1);
+      // }
+        // if (index > 0 && newPriority === "bi-check-circle-fill") {
+        //   const updatedEmpdetails = [...empdetails];
+        //   updatedEmpdetails.splice(index, 1); // Remove the item from its current position
+        //   updatedEmpdetails.unshift(itemToUpdate); // Move it to the top
+        //   setEmpdetails(updatedEmpdetails); // Update the state
+        // }
+        await updatePriority(id, newPriority);
+
+      getEmpdetails();
+    } catch (error) {
+      console.error("Error updating priority:", error);
+      toast.error("Error updating priority");
+    }
+  };
+
+  const updatePriority = async (id, newPriority) => {
+    try {
+      let result = await fetch(
+        `${process.env.REACT_APP_API_KEY}/addhighlight/${id}`,
+        {
+          method: "put",
+          body: JSON.stringify({
+            priority: newPriority,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      result = await result.json();
+      return result; 
+    } catch (error) {
+      console.error("Error updating priority:", error);
+      toast.error("Error updating priority");
     }
   };
 
@@ -337,31 +445,49 @@ export default function Empdetails() {
   //       return "textRed";
   //   }
   // };
+  const name = JSON.parse(localStorage.getItem("user")).name;
+  const role = JSON.parse(localStorage.getItem("user")).role;
+  // const empid = JSON.parse(localStorage.getItem("user"))._id;
+  const empid = params.id;
 
-  const addMessages = async () => {
-    const name = JSON.parse(localStorage.getItem("user")).name;
-    const role = JSON.parse(localStorage.getItem("user")).role;
-    const empid = params.id;
-
+  const addMessages = async (event) => {
+    event.preventDefault();
+    if (message.trim() === "") {
+      toast.info("Enter valid message");
+      return;
+    }
+    //   // const {  } = auth.currentUser;
+    //   await addDoc(collection(db, "messages"), {
+    //     text: message,
+    //     name,
+    //     role,
+    //     uid,
+    //     createdAt: serverTimestamp(),
+    //   });
+    //   setMessage("");
     try {
       let result = await fetch(`${process.env.REACT_APP_API_KEY}/addmessages`, {
         method: "post",
-        body: JSON.stringify({ empid, name, text, role, sender: "sender" }),
+        body: JSON.stringify({
+          empid,
+          name,
+          text: message,
+          role,
+          sender: "sender",
+          msgStatus: "Pending",
+        }),
         headers: {
           "Content-Type": "application/json",
         },
       });
       result = await result.json();
       if (result) {
-        setText("");
+        setMessage("");
         getMessages();
       }
     } catch {
       toast.error("Failed to send messages");
     }
-    // finally {
-    //   setStopInterval2("stop");
-    // }
   };
 
   const getMessages = async () => {
@@ -376,11 +502,38 @@ export default function Empdetails() {
       if (result) {
         setMessages(result);
         // setStopInterval("run");
+        const newUnreadCount = result.filter(
+          (message) => message.msgStatus === "Pending" && !message.seen
+        ).length;
+        setUnreadCount(newUnreadCount);
       }
     } catch (error) {
       toast.error("Error Loading");
     }
   };
+
+  // const updateMessage = async () => {
+  //   // setArchiveTask(paramsid+"archive");
+  //   try {
+  //     let result = await fetch(
+  //       `${process.env.REACT_APP_API_KEY}/updatemessages/${params.id}`,
+  //       {
+  //         method: "PUT",
+  //         // body: JSON.stringify({ empid: archivetask, archive: "Y" }),
+  //         body: JSON.stringify({ msgStatus: "Seen" }),
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     result = await result.json();
+  //     if (result) {
+  //       toast.info("status change");
+  //     }
+  //   } catch {
+  //     toast.error("Failed Update Data");
+  //   }
+  // };
 
   const getReassignListName = async () => {
     try {
@@ -459,59 +612,60 @@ export default function Empdetails() {
   //   }
   // };
 
-  const nocheckbtn = async (id) => {
-    let result = await fetch(
-      `${process.env.REACT_APP_API_KEY}/addhighlight/${id}`,
-      {
-        method: "put",
-        body: JSON.stringify({
-          priority: "bi-check-circle-fill",
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
-        },
-      }
-    );
-    result = await result.json();
-    if (result) {
-      getEmpdetails();
-    }
-  };
+  // const nocheckbtn = async (id) => {
+  //   let result = await fetch(
+  //     `${process.env.REACT_APP_API_KEY}/addhighlight/${id}`,
+  //     {
+  //       method: "put",
+  //       body: JSON.stringify({
+  //         priority: "bi-check-circle-fill",
+  //       }),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
+  //       },
+  //     }
+  //   );
+  //   result = await result.json();
+  //   if (result) {
+  //     getEmpdetails();
+  //   }
+  // };
 
-  const yescheckbtn = async (id) => {
-    let result = await fetch(
-      `${process.env.REACT_APP_API_KEY}/addhighlight/${id}`,
-      {
-        method: "put",
-        body: JSON.stringify({
-          priority: "bi-check-circle",
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
-        },
-      }
-    );
-    result = await result.json();
-    if (result) {
-      getEmpdetails();
-    }
-  };
+  // const yescheckbtn = async (id) => {
+  //   let result = await fetch(
+  //     `${process.env.REACT_APP_API_KEY}/addhighlight/${id}`,
+  //     {
+  //       method: "put",
+  //       body: JSON.stringify({
+  //         priority: "bi-check-circle",
+  //       }),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         // authorization: `bearer ${JSON.parse(localStorage.getItem('token'))}`
+  //       },
+  //     }
+  //   );
+  //   result = await result.json();
+  //   if (result) {
+  //     getEmpdetails();
+  //   }
+  // };
 
-  const stop = () => {
-    setStopInterval2("stop");
-  };
+  // const stop = () => {
+  //   setStopInterval2("stop");
+  // };
 
-  const start = () => {
-    setStopInterval2("run");
-  };
+  // const start = () => {
+  //   setStopInterval2("run");
+  // };
 
   const referesh = () => {
     setBtnLoading(true);
     try {
       getEmpdetails();
       getListNameMenu();
+      getMessages();
     } finally {
       // catch(error){
       //   toast.error("Error Loading")
@@ -677,7 +831,7 @@ export default function Empdetails() {
         )}
       </div>
 
-      <div className="empdeatils wid-75">
+      <div className="empdetails wid-75">
         <div className="headsec">
           <div className="d-flex align-items-center">
             {listname.length > 0
@@ -853,8 +1007,8 @@ export default function Empdetails() {
             </div>
           ) : (
             <tbody>
-              {empdeatils.length > 0 ? (
-                empdeatils.map((item, index) => (
+              {empdetails.length > 0 ? (
+                empdetails.map((item, index) => (
                   <tr
                     key={index}
                     style={{
@@ -886,16 +1040,21 @@ export default function Empdetails() {
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
                         title="Priority"
-                        className="modifysec"
+                        className="modifysec text-decoration-none"
                         onClick={() => {
-                          if (item.priority === "bi-check-circle") {
-                            nocheckbtn(item._id);
-                          } else {
-                            yescheckbtn(item._id);
-                          }
+                          handlePriorityClick(item._id);
+                          // if (item.priority === "bi-check-circle") {
+                          //   nocheckbtn(item._id);
+                          // } else {
+                          //   yescheckbtn(item._id);
+                          // }
                         }}
                       >
-                        <i className={`bi ${item.priority}`}></i>
+                        {/* <div className="d-flex align-items-center"> */}
+                          <i className={`bi ${item.priority}`}></i>
+                          {/* <span key={item._id}>{count}</span> */}
+                          {/* <span>{item._id}</span> */}
+                        {/* </div> */}
                       </Link>
                     </td>
 
@@ -1242,8 +1401,21 @@ export default function Empdetails() {
             data-bs-toggle="modal"
             data-bs-target="#chatModal"
             // onClick={joinroom}
+            // onClick={(e)=>{
+            //   e.preventDefault();
+            //   updateMessage();}}
+
+            // onMouseDown={(e) => {
+            //   e.preventDefault();
+            //   setMsgStatus("Seen");
+            // }}
           >
             <i className="bi bi-chat-square-text-fill"></i>
+            {unreadCount > 0 && (
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger position-absolute top-0 ">
+                {unreadCount}
+              </span>
+            )}
           </button>
 
           <div
@@ -1308,6 +1480,11 @@ export default function Empdetails() {
                             )}
                           </div>
                           <div className="ps-2">{item.name}</div>
+
+                          {/* <span className="ms-2 badge rounded-pill bg-danger">
+                            99+
+                            <span className="visually-hidden">unread messages</span>
+                          </span> */}
                         </div>
                         <button
                           type="button"
@@ -1419,14 +1596,14 @@ export default function Empdetails() {
                       onKeyPress={handleKeyPress}
                       type="text"
                       placeholder="Message here"
-                      value={text}
-                      onChange={(e) => setText(e.target.value)}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
                     />
                     <button
                       id="messageButton"
                       className=""
                       type="button"
-                      onClick={addMessages}
+                      onClick={(event) => addMessages(event)}
                     >
                       <i className="bi bi-send"></i>
                     </button>

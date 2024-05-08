@@ -6,12 +6,14 @@ import parse from "html-react-parser";
 import PageNotFound from "./PageNotFound";
 
 export default function Empdetails() {
-  var authData = localStorage.getItem("user");
+  const authData = localStorage.getItem("user");
+  const userId= JSON.parse(authData)._id;
 
-  const [empdeatils, setEmpdetails] = useState([]);
+  const [empdetails, setEmpdetails] = useState([]);
   const [status, setStatus] = useState("");
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [listname, setListname] = useState([]);
   const [taskId, setTaskId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,11 +38,11 @@ export default function Empdetails() {
     getListname();
     getUpdate();
 
-    if (stopInterval2 === "run") {
-      const interval = setInterval(getMessages, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [params.id, stopInterval2]);
+    // if (stopInterval2 === "run") {
+    //   const interval = setInterval(getMessages, 5000);
+    //   return () => clearInterval(interval);
+    // }
+  }, [userId]);
 
   // const idnull = () => {
   //   setTask("");
@@ -51,7 +53,7 @@ export default function Empdetails() {
   const getEmpdetails = async () => {
     try {
       let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/empdetails/${params.id}`,
+        `${process.env.REACT_APP_API_KEY}/empdetails/${userId}`,
         {
           method: "get",
         }
@@ -86,7 +88,7 @@ export default function Empdetails() {
       }
     } catch (error) {
       toast.error("Error Loading");
-    }finally{
+    } finally {
       setBtnLoading(false);
     }
   };
@@ -125,12 +127,19 @@ export default function Empdetails() {
   const addMessages = async () => {
     const name = JSON.parse(localStorage.getItem("user")).name;
     const role = JSON.parse(localStorage.getItem("user")).role;
-    const empid = params.id;
+    const empid = userId;
 
     try {
       let result = await fetch(`${process.env.REACT_APP_API_KEY}/addmessages`, {
         method: "post",
-        body: JSON.stringify({ empid, name, text, role, sender: "sender" }),
+        body: JSON.stringify({
+          empid,
+          name,
+          text,
+          role,
+          sender: "sender",
+          msgStatus: "Pending",
+        }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -151,7 +160,7 @@ export default function Empdetails() {
   const getMessages = async () => {
     try {
       let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/getmessages/${params.id}`,
+        `${process.env.REACT_APP_API_KEY}/getmessages/${userId}`,
         {
           method: "get",
         }
@@ -160,6 +169,11 @@ export default function Empdetails() {
       if (result) {
         setMessages(result);
         // setStopInterval("run");
+
+        const newUnreadCount = result.filter(
+          (message) => message.msgStatus === "Pending" && !message.seen
+        ).length;
+        setUnreadCount(newUnreadCount);
       }
     } catch (error) {
       toast.error("Error Loading");
@@ -169,7 +183,7 @@ export default function Empdetails() {
   const getListname = async () => {
     try {
       let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/messagebodyname/${params.id}`
+        `${process.env.REACT_APP_API_KEY}/messagebodyname/${userId}`
       );
 
       result = await result.json();
@@ -207,20 +221,21 @@ export default function Empdetails() {
   //   }
   // };
 
-  const stop = () => {
-    setStopInterval2("stop");
-  };
+  // const stop = () => {
+  //   setStopInterval2("stop");
+  // };
 
-  const start = () => {
-    setStopInterval2("run");
-  };
+  // const start = () => {
+  //   setStopInterval2("run");
+  // };
 
   const referesh = () => {
-    setLoading(true);
+    setBtnLoading(true);
     try {
       getEmpdetails();
+      getMessages();
     } finally {
-      setLoading(false);
+      setBtnLoading(false);
     }
   };
 
@@ -231,13 +246,13 @@ export default function Empdetails() {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     scrollToBottom();
-  },[getMessages]);
+  }, [getMessages]);
 
   return (
     <>
-      <div className="empdeatils wid-100">
+      <div className="empdetails wid-100">
         <div className="headsec">
           <div className="d-flex align-items-center">
             {listname.length > 0
@@ -281,174 +296,183 @@ export default function Empdetails() {
               </th>
             </tr>
           </thead>
-          <tbody>
-            {empdeatils.length > 0 ? (
-              empdeatils.map((item, index) => (
-                <tr
-                  key={index}
-                  style={{
-                    backgroundColor:
-                      item.status === "Pending"
-                        ? "rgba(239, 154, 154, 0.7)"
-                        : item.status === "Running"
-                        ? "rgba(255, 235, 59, 0.6)"
-                        : item.status === "Completed"
-                        ? "rgba(0, 137, 123, 0.8)"
-                        : "rgba(239, 154, 154, 0.7)",
-                  }}
-                >
-                  {/* <td className="text-start">{htmlToText(item.task)}</td> */}
-                  <td className="text-start lh-sm pb-0 pt-3">
-                    {parse(item.task)}
-                  </td>
-                  <td className="text-start lh-sm pb-0 pt-3">
-                    {typeof item.project === "string"
-                      ? parse(item.project)
-                      : null}
-                  </td>
-                  {/* <td className="text-center">
+          {loading ? (
+            <div className="loader-container">
+              <ClipLoader size={35} color={"#36D7B7"} loading={loading} />
+            </div>
+          ) : (
+            <tbody>
+              {empdetails.length > 0 ? (
+                empdetails.map((item, index) => (
+                  <tr
+                    key={index}
+                    style={{
+                      backgroundColor:
+                        item.status === "Pending"
+                          ? "rgba(239, 154, 154, 0.7)"
+                          : item.status === "Running"
+                          ? "rgba(255, 235, 59, 0.6)"
+                          : item.status === "Completed"
+                          ? "rgba(0, 137, 123, 0.8)"
+                          : "rgba(239, 154, 154, 0.7)",
+                    }}
+                  >
+                    {/* <td className="text-start">{htmlToText(item.task)}</td> */}
+                    <td className="text-start lh-sm pb-0 pt-3">
+                      {parse(item.task)}
+                    </td>
+                    <td className="text-start lh-sm pb-0 pt-3">
+                      {typeof item.project === "string"
+                        ? parse(item.project)
+                        : null}
+                    </td>
+                    {/* <td className="text-center">
                           {moment(item.date).format("DD-MM-YYYY")}
                         </td> */}
-                  {/* <td className="text-center">{item.time}</td> */}
-                  <td className="text-center" key={item._id}>
-                    <button
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#updateStatusModal"
-                      className="wid-100"
-                      style={{
-                        overflow: "hidden",
-                        backgroundColor:
-                          item.status === "Pending"
-                            ? "rgba(239, 154, 154, 0.7)"
-                            : item.status === "Running"
-                            ? "rgba(255, 235, 59, 0.6)"
-                            : item.status === "Completed"
-                            ? "rgba(0, 137, 123, 0.8)"
-                            : "rgba(239, 154, 154, 0.7)",
-                      }}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        getUpdate(item._id);
-                        setShowUpdateStatusModal(true);
-                      }}
-                    >
-                      {item.status}
-                    </button>
-                    {showUpdateStatusModal && (
-                      <div
-                        className="modal fade"
-                        id="updateStatusModal"
-                        tabindex="-1"
-                        aria-labelledby="updateStatusModalLabel"
-                        aria-hidden="true"
+                    {/* <td className="text-center">{item.time}</td> */}
+                    <td className="text-center" key={item._id}>
+                      <button
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#updateStatusModal"
+                        className="wid-100"
+                        style={{
+                          overflow: "hidden",
+                          backgroundColor:
+                            item.status === "Pending"
+                              ? "rgba(239, 154, 154, 0.7)"
+                              : item.status === "Running"
+                              ? "rgba(255, 235, 59, 0.6)"
+                              : item.status === "Completed"
+                              ? "rgba(0, 137, 123, 0.8)"
+                              : "rgba(239, 154, 154, 0.7)",
+                        }}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          getUpdate(item._id);
+                          setShowUpdateStatusModal(true);
+                        }}
                       >
-                        <div className="modal-dialog modal-dialog-centered">
-                          <div className="modal-content">
-                            <div className="modal-header">
-                              <h5
-                                className="modal-title"
-                                id="updateStatusModalLabel"
-                              >
-                                Choose Status
-                              </h5>
-                              <button
-                                type="button"
-                                ref={closeButtonRef}
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                              ></button>
-                            </div>
-                            <div className="modal-body">
-                              <form className="text-start">
-                                <label htmlFor="status" className="form-label">
-                                  Status
-                                </label>
-                                <select
-                                  className="form-select"
-                                  aria-label="Default select example"
-                                  id="status"
-                                  value={status}
-                                  onChange={(e) => setStatus(e.target.value)}
+                        {item.status}
+                      </button>
+                      {showUpdateStatusModal && (
+                        <div
+                          className="modal fade"
+                          id="updateStatusModal"
+                          tabindex="-1"
+                          aria-labelledby="updateStatusModalLabel"
+                          aria-hidden="true"
+                        >
+                          <div className="modal-dialog modal-dialog-centered">
+                            <div className="modal-content">
+                              <div className="modal-header">
+                                <h5
+                                  className="modal-title"
+                                  id="updateStatusModalLabel"
                                 >
-                                  <option value="" disabled className="">
-                                    Choose Status
-                                  </option>
-                                  <option
-                                    value="Pending"
-                                    // style={{ color: "red" }}
-                                  >
-                                    Pending
-                                  </option>
-                                  <option
-                                    value="Running"
-                                    // style={{ color: "rgba(255, 235, 59, 0.6)" }}
-                                  >
-                                    Running
-                                  </option>
-                                  <option
-                                    value="Completed"
-                                    // style={{ color: "green" }}
-                                  >
-                                    Completed
-                                  </option>
-                                </select>
-                              </form>
-                            </div>
-                            <div className="modal-footer">
-                              <div className="d-flex wid-100">
+                                  Choose Status
+                                </h5>
                                 <button
                                   type="button"
-                                  className="btn wid-100"
+                                  ref={closeButtonRef}
+                                  className="btn-close"
                                   data-bs-dismiss="modal"
-                                >
-                                  Cancel
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    addstatus();
-                                  }}
-                                  className="btn wid-100"
-                                >
-                                  {btnloading ? (
-                                    <div className="d-flex align-items-center justify-content-center">
-                                      <ClipLoader
-                                        size={22}
-                                        color={"#36D7B7"}
-                                        loading={btnloading}
-                                      />
-                                    </div>
-                                  ) : (
-                                    <span>Update</span>
-                                  )}
-                                </button>
+                                  aria-label="Close"
+                                ></button>
+                              </div>
+                              <div className="modal-body">
+                                <form className="text-start">
+                                  <label
+                                    htmlFor="status"
+                                    className="form-label"
+                                  >
+                                    Status
+                                  </label>
+                                  <select
+                                    className="form-select"
+                                    aria-label="Default select example"
+                                    id="status"
+                                    value={status}
+                                    onChange={(e) => setStatus(e.target.value)}
+                                  >
+                                    <option value="" disabled className="">
+                                      Choose Status
+                                    </option>
+                                    <option
+                                      value="Pending"
+                                      // style={{ color: "red" }}
+                                    >
+                                      Pending
+                                    </option>
+                                    <option
+                                      value="Running"
+                                      // style={{ color: "rgba(255, 235, 59, 0.6)" }}
+                                    >
+                                      Running
+                                    </option>
+                                    <option
+                                      value="Completed"
+                                      // style={{ color: "green" }}
+                                    >
+                                      Completed
+                                    </option>
+                                  </select>
+                                </form>
+                              </div>
+                              <div className="modal-footer">
+                                <div className="d-flex wid-100">
+                                  <button
+                                    type="button"
+                                    className="btn wid-100"
+                                    data-bs-dismiss="modal"
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      addstatus();
+                                    }}
+                                    className="btn wid-100"
+                                  >
+                                    {btnloading ? (
+                                      <div className="d-flex align-items-center justify-content-center">
+                                        <ClipLoader
+                                          size={22}
+                                          color={"#36D7B7"}
+                                          loading={btnloading}
+                                        />
+                                      </div>
+                                    ) : (
+                                      <span>Update</span>
+                                    )}
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </td>
+                      )}
+                    </td>
 
-                  <td className="text-center">
-                    <div className="">
-                      <i className={`bi ${item.priority}`}></i>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <h4
-                className="text-center mb-0"
-                style={{ marginLeft: "50%", color: "rgba(0, 137, 123, 0.3)" }}
-              >
-                No Record
-              </h4>
-            )}
-          </tbody>
+                    <td className="text-center">
+                      <div className="">
+                        <i className={`bi ${item.priority}`}></i>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <h4
+                  className="text-center mb-0"
+                  style={{ marginLeft: "50%", color: "rgba(0, 137, 123, 0.3)" }}
+                >
+                  No Record
+                </h4>
+              )}
+            </tbody>
+          )}
         </table>
 
         <div>
@@ -459,6 +483,11 @@ export default function Empdetails() {
             data-bs-target="#chatModal"
             // onClick={joinroom}
           >
+            {unreadCount > 0 && (
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger position-absolute top-0 ">
+                {unreadCount}
+              </span>
+            )}
             <i className="bi bi-chat-square-text-fill"></i>
           </button>
 

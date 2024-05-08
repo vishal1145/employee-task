@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
+// import { auth } from "./Components/Pages/firebase";
+// import { useAuthState } from "react-firebase-hooks/auth";
 
 // Components for different routes
 import Navbar from "./Components/Pages/Navbar";
@@ -20,6 +22,9 @@ import Updateprofile from "./Components/Pages/Updateprofile";
 import PageNotFound from "./Components/Pages/PageNotFound";
 import Projects from "./Components/Pages/Projects";
 import Allarchivetask from "./Components/Pages/Allarchivetask";
+import EmpprofileAdmin from "./Components/Pages/EmpprofileAdmin";
+// import Chat from "./Components/Pages/Chat";
+// import ChatNavbar from "./Components/Pages/ChatNavbar";
 
 
 
@@ -37,27 +42,38 @@ function App() {
             }
           />
 
-          <Route
+          {/* <Route
             path="/employee/:id"
             element={
               <>
                 <Userdashboard /> <Navbar />
               </>
             }
-          />
+          /> */}
 
           <Route
             path="/allemployee"
             element={
-              <> <Allemployee /> <Navbar /></>
+              <>
+                {" "}
+                <Allemployee /> <Navbar />
+              </>
             }
           />
 
           <Route
-            path="/empprofile/:id"
+            path="/empprofile"
             element={
               <>
                 <Empprofile /> <Navbar />
+              </>
+            }
+          />
+          <Route
+            path="/allemployee/empprofile/:id"
+            element={
+              <>
+                <EmpprofileAdmin /> <Navbar />
               </>
             }
           />
@@ -98,16 +114,31 @@ function App() {
           <Route
             path="/projects"
             element={
-              <> <Projects /> <Navbar /> </>
+              <>
+                {" "}
+                <Projects /> <Navbar />{" "}
+              </>
             }
           />
 
           <Route
             path="/allarchivetask"
             element={
-              <> <Allarchivetask /> <Navbar /> </>
+              <>
+                {" "}
+                <Allarchivetask /> <Navbar />{" "}
+              </>
             }
           />
+          {/* <Route
+            path="/chat/:id"
+            element={
+              <>
+                {" "}
+                <Chat /> <ChatNavbar />{" "}
+              </>
+            }
+          /> */}
         </Route>
         <Route path="/loginpage" element={<Loginpage />} />
         <Route path="/resetpassword" element={<ResetPasswordPage />} />

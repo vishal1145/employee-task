@@ -57,7 +57,7 @@ export default function Navbar() {
           <div>
             <NavLink
               className="navbar-brand"
-              to={"/employee/" + JSON.parse(authData)._id}
+              to="/"
             >
               <img
                 src="/cropelogo.png"
@@ -127,7 +127,7 @@ export default function Navbar() {
               ) : (
                 <div className="d-flex">
                   <NavLink
-                    to={"/empprofile/" + JSON.parse(authData)._id}
+                    to={"/empprofile"}
                     className="btn ButtonText"
                   >
                     Profile
@@ -136,12 +136,20 @@ export default function Navbar() {
                   <NavLink
                     className="btn ButtonText"
                     aria-current="page"
-                    to={"/employee/" + JSON.parse(authData)._id}
+                    to="/"
                   >
                     Tasks
                   </NavLink>
                 </div>
               )}
+
+              {/* <NavLink
+                className="btn ButtonText"
+                aria-current="page"
+                to={"/chat/" + JSON.parse(authData)._id}
+              >
+                Chat
+              </NavLink> */}
 
               {JSON.parse(authData).role === "admin" ||
               JSON.parse(authData).role === "Team Lead" ||

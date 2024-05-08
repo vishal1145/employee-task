@@ -413,7 +413,7 @@ export default function Algofolkshome() {
                                         class="modal-title"
                                         id="updateProjectModalLabel"
                                       >
-                                        Update Task
+                                        Update Project
                                       </h5>
                                       <button
                                         // ref={closeButtonRef9}

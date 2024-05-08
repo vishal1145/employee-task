@@ -50,7 +50,8 @@ export default function Loginpage() {
         ) {
           navigate("/");
         } else {
-          navigate("/employee/" + JSON.parse(authData)._id);
+          // navigate("/employee/" + JSON.parse(authData)._id);
+          navigate("/");
         }
       } else {
         toast("please enter correct details.");

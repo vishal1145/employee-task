@@ -4,7 +4,8 @@ import { ClipLoader } from "react-spinners";
 import { ToastContainer, toast } from "react-toastify";
 
 export default function Empprofile() {
-  const emprole = JSON.parse(localStorage.getItem("user")).role;
+  const authData = JSON.parse(localStorage.getItem("user"));
+  const userId = authData._id;
 
   const [loading, setLoading] = useState(true);
   const [btnloading, setBtnLoading] = useState(false);
@@ -30,7 +31,7 @@ export default function Empprofile() {
   const getEmpprofile = async () => {
     try {
       let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/empprofile/${params.id}`
+        `${process.env.REACT_APP_API_KEY}/empprofile/${userId}`
       );
 
       result = await result.json();
@@ -47,7 +48,7 @@ export default function Empprofile() {
     // setLoading(true); // Set loading to true when data submission starts
     try {
       let result = await fetch(
-        `${process.env.REACT_APP_API_KEY}/profileautofill/${params.id}`,
+        `${process.env.REACT_APP_API_KEY}/profileautofill/${userId}`,
         {
           method: "get",
         }
@@ -82,7 +83,7 @@ export default function Empprofile() {
     } else {
       try {
         let result = await fetch(
-          `${process.env.REACT_APP_API_KEY}/updateprofile/${params.id}`,
+          `${process.env.REACT_APP_API_KEY}/updateprofile/${userId}`,
           {
             method: "put",
             body: JSON.stringify({
